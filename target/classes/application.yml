@@ -1,0 +1,22 @@
+server:
+  port: 8089
+  servlet:
+    session:
+      timeout: 1800s
+spring:
+  thymeleaf:
+    prefix: classpath:/view/
+    suffix: .html
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    # 生产环境设置true
+    cache: false
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
+
+
+
+

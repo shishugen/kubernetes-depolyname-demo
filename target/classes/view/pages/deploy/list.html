@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-content">
+	    <div class="layui-row">
+			<div class="layui-card">
+                <div class="layui-card-header">
+                	<i class="layui-icon mr5">&#xe66f;</i>应用部署
+                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="add"><i class="layui-icon mr5">&#xe654;</i>前端新增</button>&nbsp;&nbsp;
+                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="addNginx"><i class="layui-icon mr5">&#xe654;</i>JAR新增</button>&nbsp;&nbsp;
+                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="deployNginx"><i class="layui-icon mr5">&#xe654;</i>前端部署</button>
+                </div>
+                    项目名称 ：
+                    <div class="layui-inline mr10">
+                        <input class="layui-input" name="projectName" value="appl" autocomplete="off">
+                    </div>
+                <button class="layui-btn" id="reload" data-type="reload">查询</button>
+					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
+					<script type="text/html" id="operation">
+						<a class="layui-btn layui-btn-xs" lay-event="deploy" >部署</a>
+						<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+					</script>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+var element = layui.element;
+var table = layui.table;
+var layer = layui.layer;
+
+
+
+
+table.render({
+
+	id: 'harborTable'
+	,elem: '#harborDataTable'
+    ,url: '[[@{/harbor/listData}]]'
+    ,cols: [
+    	[
+	      ,{field:'imageName', title: '镜像'}
+	      ,{field:'version', title: '版本', align: 'center'}
+	      ,{title:'操作', align: 'center', toolbar: '#operation', width:150}
+    	]
+   	]
+    ,response: {
+        statusCode: 200
+    }
+    ,parseData: function(res){
+	    console.log(res)
+    	return {
+    		"code": res.code
+            ,"msg": res.msg
+            ,"count": res.data.total
+            ,"data": res.data.records
+    	};
+    }
+});
+
+
+active = {
+	add: function() {
+		layer.open({
+    		type: 2,
+    		area: ['80%', '50%'],
+    		title: '新增',
+    		content: '[[@{/}]]deploy/add'
+    	});
+	},
+    addNginx: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '80%'],
+    		title: '新增',
+    		content: '[[@{/}]]deploy/addNginx'
+    	});
+	},
+    deployNginx: function() {
+		layer.open({
+    		type: 2,
+    		area: ['80%', '80%'],
+    		title: '新增',
+    		content: '[[@{/}]]deploy/deployNginx'
+    	});
+	},
+
+
+
+
+	reload: function() {
+		table.reload('harborTable', {
+            where: {
+                projectName : $("input[name='projectName']").val()
+        }
+		}, 'data');
+	},
+	reset: function() {
+		$(".layui-input").val("");
+	}
+};
+
+// 按钮事件
+$('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+});
+
+//监听行工具事件
+table.on('tool(config)', function(obj){
+	var row = obj.data;
+	if(obj.event === 'del') {
+		layer.confirm("确认删除吗？", {icon: 3, title:'提示'}, function(index) {
+			layer.close(index);
+			$.ajax({
+		        url : "[[@{/}]]harbor/delete",
+		        data : {'projectName': row.imageName,'tag':row.version},
+		        type : "post",
+		        dataType : "json",
+		        error : function(data) {
+		        	errorHandle(data);
+		        },
+		        success : function(data) {
+                    console.log("删除",data)
+                    layer.msg('删除成功');
+                     active.reload();
+		        }
+		    });
+		});
+    }else if(obj.event ==="deploy"){
+        layer.open({
+            type: 2,
+            area: ['80%', '80%'],
+            title: '部署',
+            content: '[[@{/}]]deploy/deployPod?image='+row.imageName+':'+row.version
+        });
+
+
+
+
+
+    /*    $.ajax({
+            url : "[[@{/}]]deploy/pod",
+            data : {'imageName': row.imageName,'tag':row.version},
+            type : "post",
+            dataType : "json",
+            error : function(data) {
+                errorHandle(data);
+            },
+            success : function(data) {
+                layer.msg('部署成功');
+               // active.reload();
+            }
+        });*/
+    }
+});
+$("#reload").click();
+//错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

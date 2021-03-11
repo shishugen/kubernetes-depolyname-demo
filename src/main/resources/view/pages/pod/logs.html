@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-content">
+	    <div class="layui-row">
+			<div class="layui-card" style="position: fixed;top: 0;">
+                <button type="button"id="btnSend"  class="layui-btn layui-btn-normal">在线查看</button>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">查看行数</label>
+                    <div class="layui-input-inline">
+                        <input type="rowNumber" name="rowNumber" placeholder="200"  id="rowNumber" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <button type="button"id="downloadLogs"  class="layui-btn layui-btn-normal">下载日志</button>
+                <button type="button" id="empty" class="layui-btn layui-btn-warm">清空</button>
+                <input hidden id="namespace" th:value="${namespace}"  name="namespace"/>
+                <input hidden id="podName" th:value="${podName}"  name="podName"/>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text" style="width:5000px;overflow-x:auto ;color: #0000FF" id="mag"> </div>
+</body>
+
+<script type="text/javascript">
+
+
+var element = layui.element;
+var table = layui.table;
+var layer = layui.layer;
+
+
+
+var websocket = null;
+var host = document.location.host;
+
+
+
+// 获取项目名
+var webName = '${webName}';
+
+console.log("webName==",webName)
+console.log("host==",host)
+
+//判断当前浏览器是否支持WebSocket
+if ('WebSocket' in window) {
+    // 浏览器支持Websocket
+    websocket = new WebSocket('ws://'+host+'/logs');
+
+    var stats = websocket.readyState;
+
+    t= setTimeout(function(){
+        var stats = websocket.readyState;
+        if(stats == 1){
+            var namespace = $("#namespace").val()
+            var podName =  $("#podName").val()
+            var rowNumber =  $("#rowNumber").val()
+            console.log(namespace,podName,"podName")
+            var data={
+                namespace:namespace,podName:podName,rowNumber:rowNumber
+            }
+            websocket.send(JSON.stringify(data));
+            console.log("0000==",stats)
+            clearTimeout(t)
+        }
+    },1000);
+
+
+    console.log("stats==",stats)
+
+} else {
+    // 浏览器 Not support websocket
+}
+
+
+//获得消息事件
+websocket.onmessage = function(msg) {
+   // console.log("msg==",msg.data)
+    var html ="<p>"+msg.data+"</p>"
+   // console.log("msg==",html)
+    $("#mag").append(html)
+};
+
+//发送消息  downloadLogs
+$("#btnSend").click(function() {
+
+    var stats = websocket.readyState;
+    console.log("stats==",stats)
+    var namespace = $("#namespace").val()
+    var podName =  $("#podName").val()
+    var rowNumber =  $("#rowNumber").val()
+    console.log(namespace,podName,"podName")
+    var data={
+        namespace:namespace,podName:podName,rowNumber:rowNumber
+    }
+    websocket.send(JSON.stringify(data));
+});
+$("#empty").click(function() {
+    $("#mag").html('')
+});
+
+$("#downloadLogs").click(function() {
+    var namespace = $("#namespace").val()
+    var podName =  $("#podName").val()
+    window.open("[[@{/}]]pod/downloadLogs?namespace="+namespace+"&podName="+podName)
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

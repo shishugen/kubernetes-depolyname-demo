@@ -1,0 +1,536 @@
+package com.c3stones.controller;
+
+import com.c3stones.client.Dockers;
+import com.c3stones.client.Kubes;
+import com.c3stones.client.pod.NacosPod;
+import com.c3stones.client.pod.NginxPod;
+import com.c3stones.client.pod.NginxPod2;
+import com.c3stones.common.Response;
+import com.c3stones.entity.*;
+import com.c3stones.util.KubeUtils;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
+import io.fabric8.kubernetes.api.model.Volume;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentList;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotNull;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 部署应用 Controller
+ * 
+ * @author CL
+ *
+ */
+@Controller
+@Slf4j
+@RequestMapping(value = "deploy")
+public class DeployController {
+
+
+	@Autowired
+	private Kubes kubes;
+
+	@Autowired
+	private Dockers dockers;
+
+	@Autowired
+	private NacosPod nacosPod ;
+
+    /***
+     * labels
+     */
+    private  static  String LABELS_KEY = "app";
+
+	@Value("${harbor.image.prefix}")
+      private String imagePrefix;
+
+	/**
+	 * nfs 名称
+	 */
+	@Value("${nfs.storage.className}")
+	private String nfsStorageClassName;
+
+	@Autowired
+	private  NginxPod nginxPod;
+
+	@Autowired
+	private NginxPod2 nginxPod2;
+
+	@Value("${pod.namespace.prefix}")
+	private String podNamespacePrefix;
+
+	@Value("${pod.nginx.prefix}")
+	private String podNginxPrefix;
+
+	/**
+	 * 查询列表
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "list")
+	public String list() {
+		return "pages/deploy/list";
+	}
+
+
+
+
+	/**
+	 * 检验
+	 *
+	 * @param namespace
+	 * @return false 可能， true 已存在
+	 */
+	@RequestMapping(value = "check")
+	@ResponseBody
+	public Response<Boolean> checkUserName(@NotNull String namespace) {
+		return Response.success(!kubes.checkNamespace(namespace));
+	}
+
+	/**
+	 * 新增
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "add")
+	public String add() {
+		return "pages/deploy/add";
+	}
+
+
+	/**
+	 * 新增
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "addNginx")
+	public String addNginx() {
+		return "pages/deploy/addNginx";
+	}
+
+	/**
+	 * deployPod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "deployPod")
+	public String deployPod( Model model,String image) {
+        model.addAttribute("image", image);
+        model.addAttribute("namespace", kubes.getNamespace());
+        return "pages/deploy/deployPod";
+    }
+		/**
+	 * deployPod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "deployNginx")
+	public String deployNginx( Model model) {
+		model.addAttribute("namespace",kubes.getNamespace());
+		return "pages/deploy/deployNginx";
+	}
+
+	@RequestMapping(value = "updatePage")
+	public String update(String deployname,String replicas,String image,String namespace, Model model) {
+		model.addAttribute("deployname",deployname);
+		model.addAttribute("replicas",replicas);
+		model.addAttribute("image",image);
+		model.addAttribute("namespace",namespace);
+		return "pages/pod/update";
+	}
+
+	/**
+	 * deployPod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "getNamespace")
+	@ResponseBody
+	public List<Namespaces> getNamespace() {
+		return kubes.getNamespace();
+	}
+
+	/**
+	 * getNacos
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "getNacos")
+	@ResponseBody
+	public List<Pods> getNacos() {
+		return nacosPod.getNacos();
+	}
+
+	@RequestMapping(value = "update")
+	@ResponseBody
+	public Response<Boolean> update(String deployname ,String namespace ,String image,Integer replicas) {
+		Assert.notNull(deployname, "deployname不能为空");
+		Assert.notNull(namespace, "namespace不能为空");
+		Assert.notNull(image, "image不能为空");
+		Assert.notNull(replicas, "replicas不能为空");
+		System.out.println("image===>"+image);
+		System.out.println("deployname===>"+deployname);
+		System.out.println("namespace===>"+namespace);
+		System.out.println("replicas===>"+replicas);
+		KubernetesClient kubeclinet = kubes.getKubeclinet();
+		kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).edit()
+				.editSpec().withReplicas(replicas).editTemplate().editSpec().editContainer(0)
+				.withImage(imagePrefix+"/"+image)
+				.endContainer().endSpec().endTemplate().endSpec().done();
+		return Response.success(true);
+	}
+
+	@RequestMapping(value = "delDeployment")
+	@ResponseBody
+	public Response<Boolean> delDeployment(String deployname ,String namespace) {
+		Assert.notNull(deployname, "deployname不能为空");
+		Assert.notNull(namespace, "namespace不能为空");
+		System.out.println("deployname===>"+deployname);
+		System.out.println("namespace===>"+namespace);
+		KubernetesClient kubeclinet = kubes.getKubeclinet();
+        Deployment deployment = kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).get();
+        Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).delete();
+        kubes.deleteService(namespace,deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
+
+		kubeclinet.configMaps().inNamespace(namespace).withName(deployname).delete();
+
+		List<Volume> volumes = deployment.getSpec().getTemplate().getSpec().getVolumes();
+		if(volumes != null  && volumes.size() > 0){
+			volumes.forEach(a->{
+				kubeclinet.persistentVolumeClaims().inNamespace(namespace).withName(a.getName()).delete();
+			});
+		}
+		//System.out.println(str.indexOf(namespace));
+		//System.out.println(str.length()-str.indexOf(namespace));
+
+	//	String substring = str.substring(namespace.length(), str.length());
+
+
+
+		return Response.success(true);
+	}
+
+	/**
+	 * pod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "pod")
+	@ResponseBody
+	public Response<Boolean> pod(String namespace, String image,String podName,String nacos,Integer port,Integer nodePort,Integer replicas,
+	String nacosNamespace,Integer nfs
+	) {
+		System.out.println(namespace);
+		System.out.println(podName);
+		System.out.println(image);
+		String[] split = nacos.split("---");
+		System.out.println(nacos);
+		System.out.println(split[2]);
+		System.out.println(port);
+		System.out.println(nodePort);
+		System.out.println(nacosNamespace);
+		System.out.println(replicas);
+		System.out.println("nfs==="+nfs);
+		log.info("部署  namespace : {},image:{},nacos:{},port:{},nodePort:{}",namespace,image,nacos,port,nodePort);
+		Assert.notNull(namespace, "namespace不能为空");
+		Assert.notNull(image, "image不能为空");
+		Assert.notNull(split[2], "nacos不能为空");
+		Assert.notNull(nfs, "nfs不能为空");
+		//String podName =image.substring(image.indexOf("/")+1,image.lastIndexOf(":"));
+		System.out.println(podName);
+		image = imagePrefix + "/"+image;
+            String randomPortName = KubeUtils.randomPortName();
+            if(nfs == 1){
+				kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
+				if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace,namespace+podName)){
+					if(nodePort != null  && port != null) {
+						kubes.createService(namespace,randomPortName,port,nodePort);
+					}
+					return Response.success(true);
+				}
+			}else{
+				if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace)){
+					if(nodePort != null  && port != null) {
+						kubes.createService(namespace,randomPortName,port,nodePort);
+					}
+					return Response.success(true);
+				}
+			}
+		return Response.error("失败");
+	}
+	/**
+	 * pod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "pod/nginx")
+	@ResponseBody
+	public Response<Boolean> deployNginx(String namespace, String image,Integer port,Integer nodePort,
+	MultipartFile file) {
+		System.out.println("namespace=="+namespace);
+		System.out.println("image=="+image);
+		System.out.println("port=="+port);
+		System.out.println("nodePort=="+nodePort);
+		log.info("部署  namespace : {},image:{},nacos:{},port:{},nodePort:{}",namespace,image,file,port,nodePort);
+		Assert.notNull(namespace, "namespace不能为空");
+		Assert.notNull(image, "image不能为空");
+		Assert.notNull(file, "file不能为空");
+		//String podName =image.substring(image.indexOf("/")+1,image.lastIndexOf(":"));
+		String podName =image.substring(image.lastIndexOf("/")+1,image.length()).replaceAll(":","-").replaceAll("\\.","-");
+		System.out.println("podName="+podName);
+		image = imagePrefix + "/"+image;
+		try {
+            nginxPod2.configMap(namespace,podName,podName,nginxConfig(file));
+			nginxPod2.createDeployment(namespace,podName,podName,image,port,podName);
+			nginxPod2.createService(namespace,podName,port,nodePort);
+        }catch (Exception e){
+		    e.printStackTrace();
+            nginxPod.delete(namespace,podName);
+        }
+
+		return Response.success("OK");
+	}
+
+	/**
+	 * pod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "getNacosNamespace")
+	@ResponseBody
+	public Response<List<NacosEntity>> getNacosNamespace(String ip, Integer port) {
+		List<NacosEntity> namespace = nacosPod.getNamespace(ip, port);
+		return Response.success(namespace);
+	}
+
+	@RequestMapping(value = "getDeployment")
+	@ResponseBody
+	public Response<Pages<Deployments>> getDeployment(String namespace) {
+		List<Deployments> deployments = new ArrayList<>();
+		List<Deployment> items = kubes.getKubeclinet().apps().deployments().list().getItems();
+		items.forEach(a->{
+			if((a.getMetadata().getNamespace().startsWith(podNamespacePrefix) ||
+					a.getMetadata().getNamespace().startsWith(podNginxPrefix))
+					&& StringUtils.isNotBlank(namespace)&&a.getMetadata().getNamespace().startsWith(namespace)){
+				ObjectMeta metadata = a.getMetadata();
+				String name = metadata.getName();
+				Integer replicas = a.getSpec().getReplicas();
+				String creationTimestamp = metadata.getCreationTimestamp();
+				String image = a.getSpec().getTemplate().getSpec().getContainers().get(0).getImage();
+				String substring = image.substring(image.indexOf("/") + 1, image.length());
+				Deployments deployment = new Deployments(name,replicas,KubeUtils.StringFormatDate(creationTimestamp),metadata.getNamespace(),substring);
+				deployments.add(deployment);
+			}
+			if(a.getMetadata().getNamespace().startsWith(podNamespacePrefix) && StringUtils.isBlank(namespace)){
+				ObjectMeta metadata = a.getMetadata();
+				String name = metadata.getName();
+				Integer replicas = a.getSpec().getReplicas();
+				String creationTimestamp = metadata.getCreationTimestamp();
+				String image = a.getSpec().getTemplate().getSpec().getContainers().get(0).getImage();
+				String substring = image.substring(image.indexOf("/") + 1, image.length());
+				Deployments deployment = new Deployments(name,replicas,KubeUtils.StringFormatDate(creationTimestamp),metadata.getNamespace(),substring);
+				deployments.add(deployment);
+
+			}
+
+		});
+		Pages page = new Pages();
+		page.setRecords(deployments);
+		page.setTotal(deployments.size());
+		return Response.success(page);
+	}
+
+	private static String nginxConfig(MultipartFile file){
+		Reader reader = null;
+		String scriptContent = "";
+		try {
+			reader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
+			BufferedReader bufferedReader = new BufferedReader(reader);
+			StringBuilder stringBuilder = new StringBuilder();
+			String lineStr;
+			//逐行读取
+			while (null != (lineStr = bufferedReader.readLine())) {
+				//TODO 按你的需求处理
+				stringBuilder.append(lineStr).append("\n");
+			}
+			scriptContent = stringBuilder.toString();
+			System.out.println(scriptContent);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return  scriptContent;
+	}
+
+	/**
+	 * 上传文件
+	 *
+	 * @param file
+	 * @return
+	 */
+	@RequestMapping("/upload")
+	@ResponseBody
+	public Response<Pages<HarborImage>>upload(MultipartFile file ,String version
+	) {
+		Assert.notNull(version, "version不能为空");
+		Assert.notNull(file, "file不能为空");
+		log.info("制作镜像 file :{} , version : {}",file,version);
+		String homeDir = null;
+		try {
+			String name = KubeUtils.randomPortName();
+			 homeDir = Dockers.getHomeDir()+File.separator+name;
+			new File(homeDir).mkdirs();
+			log.info("制作目录--> homeDir : {}",homeDir);
+			 multipartFileToFile(file,homeDir);
+			String originalFilename = file.getOriginalFilename();
+			dockers.writeDockerfile(originalFilename,homeDir);
+			dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.error("失败");
+		}finally {
+			removeTempFile(homeDir);
+		}
+		log.info("制作镜像成功");
+		return Response.success("ok");
+
+	}
+	/**
+	 * 上传文件
+	 *
+	 * @param file
+	 * @return
+	 */
+	@RequestMapping("/upload/nginx")
+	@ResponseBody
+	public Response<Pages<HarborImage>>uploadNginx(MultipartFile file ,String version
+	) {
+		log.info("制作镜像 file :{} , version : {}",file,version);
+		Assert.notNull(version, "version不能为空");
+		Assert.notNull(file, "file不能为空");
+		String homeDir = null;
+		try {
+			String name = KubeUtils.randomPortName();
+			 homeDir = Dockers.getHomeDir()+File.separator+name;
+			 new File(homeDir).mkdirs();
+			log.info("制作目录--> homeDir : {}",homeDir);
+		    multipartFileToFile(file,homeDir);
+			String originalFilename = file.getOriginalFilename();
+			dockers.writeNginxDockerfile(originalFilename,homeDir);
+			dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
+		} catch (Exception e) {
+			e.printStackTrace();
+            return Response.error("失败");
+        }finally {
+			try {
+				removeTempFile(homeDir);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		log.info("制作镜像成功");
+		return Response.success("OK");
+
+	}
+
+
+	/**
+	 * MultipartFile 转 File
+	 *
+	 * @param file
+	 * @throws Exception
+	 */
+	public static File multipartFileToFile(MultipartFile file ,String homeDir) throws Exception {
+		File toFile = null;
+		if (file.equals("") || file.getSize() <= 0) {
+			file = null;
+		} else {
+			InputStream ins = null;
+			ins = file.getInputStream();
+			toFile = new File(homeDir,file.getOriginalFilename());
+			inputStreamToFile(ins, toFile);
+			ins.close();
+		}
+		return toFile;
+	}
+
+	//获取流文件
+	private static void inputStreamToFile(InputStream ins, File file) {
+		try {
+			OutputStream os = new FileOutputStream(file);
+			int bytesRead = 0;
+			byte[] buffer = new byte[8192];
+			while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+				os.write(buffer, 0, bytesRead);
+			}
+			os.close();
+			ins.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 删除本地临时文件
+	 *
+	 * @param file
+	 */
+	public static void delteTempFile(File file) {
+		if (file != null) {
+			File del = new File(file.toURI());
+			del.delete();
+		}
+
+	}
+
+	/**
+	 * 删除文件与目录
+	 * @param filePath
+	 */
+	public static void removeTempFile(String... filePath) {
+		if(filePath.length > 0){
+			for (int i = 0; i < filePath.length; i++){
+				log.info("删除目录 : {} "+filePath[i]);
+				File tempFilePath=new File(filePath[i]);
+				if(tempFilePath.exists() && tempFilePath.isDirectory()){
+					for (File chunk : tempFilePath.listFiles()) {
+						if(chunk.isDirectory()){
+							removeTempFile(chunk.getPath());
+						}else{
+							System.gc();//启动jvm垃圾回收
+							chunk.delete();
+						}
+					}
+				}
+				System.gc();//启动jvm垃圾回收
+				tempFilePath.delete();
+
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		String str = "app-syszhsys-training-kubernetes-server-1-0";
+      String namespace ="app-sys";
+		System.out.println(str.indexOf(namespace));
+		System.out.println(str.length()-str.indexOf(namespace));
+
+		String substring = str.substring(namespace.length(), str.length());
+		System.out.println(substring);
+	}
+
+}
