@@ -13,9 +13,11 @@
 <body class="layui-view-body">
 	<div class="layui-row">
     	<div class="layui-card">
-        	<form class="layui-form layui-card-body layui-form-pane" method="post" >
+        	<form class="layui-form layui-card-body layui-form-pane" enctype='multipart/form-data' method="post" th:action="@{/deploy/pod/nginx}">
 				<div class="layui-form-item">
-
+<!--
+                    <input name="conf" id="conf" hidden />
+-->
 					<div class="layui-form-item">
 						<label class="layui-form-label">命名空间</label>
 						<div class="layui-input-block">
@@ -45,15 +47,15 @@
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label"><i>*</i>conf配置</label>
-						<button type="button" class="layui-btn layui-btn-primary"  name="file" id="file"><i class="layui-icon"></i>只允许conf文件</button>
+						<label class="layui-form-label"><i>*</i>nginx.conf</label>
+                        <input type="file" name="conf" lay-verify="required" class="layui-btn layui-btn-primary" />
 					</div>
 					<div class="layui-form-item">
 						<label style="width: 560px" class="layui-form-label">前端内端口为:80 外端口:30801  管理后台内端口为:80 外端口:30803</label>
 					</div>
 				</div>
 				<div class="layui-form-item">
-					<button  class="layui-btn" id="test9" >提交</button>
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
 				</div>
 			</form>
 		</div>
@@ -66,46 +68,6 @@ var layer = layui.layer;
 layui.use('upload', function(){
     var $ = layui.jquery
         ,upload = layui.upload;
-//普通图片上传
-    var uploadInst = upload.render({
-        elem: '#file'
-        ,url: '[[@{/}]]deploy/pod/nginx' //改成您自己的上传接口
-        ,accept: 'file' //普通文件
-        ,auto: false
-        ,bindAction: '#test9'
-        , data: {
-            file: function(){
-                return $('#file').val();
-            } ,
-			namespace: function(){
-                return $('#namespace').val();
-            } ,
-            image: function(){
-                return $('#image').val();
-            }  ,
-            port: function(){
-                return $('#port').val();
-            } ,
-            nodePort: function(){
-                return $('#nodePort').val();
-            }
-		}
-        ,done: function(res){
-            console.log("1111",res)
-            if(res.code == 200){
-                parent.location.reload();
-                var index = parent.layer.getFrameIndex(window.name);
-                parent.layer.close(index);
-                return layer.msg('成功');
-            }else{
-                return layer.error('失败');
-			}
-        }
-        ,error: function(){
-            console.log("error")
-            return   layer.error('失败');
-      }
-    });
 });
 
 layui.use('form', function(){
@@ -136,7 +98,6 @@ $.ajax({
         errorHandle(data);
     },
     success : function(data) {
-        console.log(data)
         $.each(data.data, function (index, item) {
             $('#image').append(new Option(item.imageName+":"+item.version, item.imageName+":"+item.version));// 下拉菜单里添加元素
         });
@@ -152,7 +113,6 @@ $.ajax({
         errorHandle(data);
     },
     success : function(data) {
-        console.log(data)
         $.each(data, function (index, item) {
             $('#nacosList').append(new Option(item, item));// 下拉菜单里添加元素
         });
@@ -174,9 +134,15 @@ form.on('submit(*)', function(data){
             errorHandle(data);
         },
         success: function(data) {
-            parent.location.reload();
-            var index = parent.layer.getFrameIndex(window.name);
-            parent.layer.close(index);
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("部署成功", {icon: 2});
+            }else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+            }
         }
     });
 });

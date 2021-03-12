@@ -58,6 +58,35 @@ public class Kubes {
     }
 
 
+    /**
+     *
+     * @param nodePort  true存在，false不存在
+     * @return
+     */
+    public boolean checkSvc(Integer nodePort){
+        AtomicBoolean falg = new AtomicBoolean(false);
+        List<Service> items = getKubeclinet().services().list().getItems();
+        items.forEach(a->{
+            List<ServicePort> ports = a.getSpec().getPorts();
+            ports.forEach(b->{
+                Integer nodePort1 = b.getNodePort();
+                if(nodePort1 != null && nodePort1.equals(nodePort)){
+                    falg.set(true);
+                    return;
+                }
+            });
+        });
+        return falg.get();
+    }
+
+
+    /**
+     * 检查 命名空间
+     * */
+    public  boolean checkdeployname(String namespace ,String name){
+        Deployment deployment = getKubeclinet().apps().deployments().inNamespace(namespace).withName(name).get();
+        return deployment == null ? false : true;
+    }
 
     /**
      * 检查 命名空间
@@ -160,7 +189,7 @@ public class Kubes {
                 .withType(type)
                 .addToSelector(LABELS_KEY, serviceName).endSpec()
                 .build();
-        return getKubeclinet().services().create(build);
+        return getKubeclinet().services().createOrReplace(build);
     }
     public  Service createService(String namespace, String serviceName, Integer port){
         String type = "NodePort";
@@ -206,6 +235,9 @@ public class Kubes {
 
     public  Boolean deleteService(String namesapce,String podName){
         return getKubeclinet().services().inNamespace(namesapce).withName(podName).delete();
+    }
+    public  Boolean deletePvc(String namesapce,String name){
+        return getKubeclinet().persistentVolumeClaims().inNamespace(namesapce).withName(name).delete();
     }
     public  Boolean deleteConf(String namesapce,String podName){
         return getKubeclinet().configMaps().inNamespace(namesapce).withName(podName).delete();
@@ -273,7 +305,7 @@ public class Kubes {
                 .withStorageClassName(storageClassName)
                 .endSpec()
                 .build();
-        return getKubeclinet().persistentVolumeClaims().create(build);
+        return getKubeclinet().persistentVolumeClaims().createOrReplace(build);
     }
 
     public  boolean check(String name, String namespace) {

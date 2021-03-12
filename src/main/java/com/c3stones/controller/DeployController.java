@@ -9,9 +9,10 @@ import com.c3stones.common.Response;
 import com.c3stones.entity.*;
 import com.c3stones.util.KubeUtils;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
+import io.fabric8.kubernetes.api.model.Service;
+import io.fabric8.kubernetes.api.model.ServicePort;
 import io.fabric8.kubernetes.api.model.Volume;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +30,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 部署应用 Controller
@@ -73,6 +75,9 @@ public class DeployController {
 
 	@Value("${pod.namespace.prefix}")
 	private String podNamespacePrefix;
+
+	@Value("${pod.app.prefix}")
+	private String podAppPrefix;
 
 	@Value("${pod.nginx.prefix}")
 	private String podNginxPrefix;
@@ -215,13 +220,6 @@ public class DeployController {
 				kubeclinet.persistentVolumeClaims().inNamespace(namespace).withName(a.getName()).delete();
 			});
 		}
-		//System.out.println(str.indexOf(namespace));
-		//System.out.println(str.length()-str.indexOf(namespace));
-
-	//	String substring = str.substring(namespace.length(), str.length());
-
-
-
 		return Response.success(true);
 	}
 
@@ -251,28 +249,43 @@ public class DeployController {
 		Assert.notNull(image, "image不能为空");
 		Assert.notNull(split[2], "nacos不能为空");
 		Assert.notNull(nfs, "nfs不能为空");
-		//String podName =image.substring(image.indexOf("/")+1,image.lastIndexOf(":"));
-		System.out.println(podName);
+		String randomPortName = KubeUtils.randomPortName();
+		if(kubes.checkSvc(nodePort)){
+			return Response.error("端口已存在");
+		}
+
+		if(kubes.checkdeployname(namespace,podAppPrefix+podName)){
+			return Response.error("服务已存在");
+		}
+		try {
 		image = imagePrefix + "/"+image;
-            String randomPortName = KubeUtils.randomPortName();
-            if(nfs == 1){
-				kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
-				if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace,namespace+podName)){
-					if(nodePort != null  && port != null) {
-						kubes.createService(namespace,randomPortName,port,nodePort);
+				if(nfs == 1){
+					kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
+					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace,namespace+podName)){
+						if(nodePort != null  && port != null) {
+							kubes.createService(namespace,randomPortName,port,nodePort);
+						}
+						return Response.success(true);
 					}
-					return Response.success(true);
-				}
-			}else{
-				if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace)){
-					if(nodePort != null  && port != null) {
-						kubes.createService(namespace,randomPortName,port,nodePort);
+				}else{
+					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace)){
+						if(nodePort != null  && port != null) {
+							kubes.createService(namespace,randomPortName,port,nodePort);
+						}
+						return Response.success(true);
 					}
-					return Response.success(true);
 				}
-			}
+		}catch (Exception e){
+			kubes.deleteDeployments(namespace,podAppPrefix+podName);
+			kubes.deleteService(namespace,randomPortName);
+			kubes.deletePvc(namespace,namespace+podName);
+			e.printStackTrace();
+		}
+
 		return Response.error("失败");
 	}
+
+
 	/**
 	 * pod
 	 *
@@ -281,28 +294,34 @@ public class DeployController {
 	@RequestMapping(value = "pod/nginx")
 	@ResponseBody
 	public Response<Boolean> deployNginx(String namespace, String image,Integer port,Integer nodePort,
-	MultipartFile file) {
+										 MultipartFile  conf) {
 		System.out.println("namespace=="+namespace);
 		System.out.println("image=="+image);
 		System.out.println("port=="+port);
 		System.out.println("nodePort=="+nodePort);
-		log.info("部署  namespace : {},image:{},nacos:{},port:{},nodePort:{}",namespace,image,file,port,nodePort);
+		System.out.println("conf=="+conf);
+		log.info("部署  namespace : {},image:{},nacos:{},port:{},nodePort:{}",namespace,image,conf,port,nodePort);
 		Assert.notNull(namespace, "namespace不能为空");
 		Assert.notNull(image, "image不能为空");
-		Assert.notNull(file, "file不能为空");
-		//String podName =image.substring(image.indexOf("/")+1,image.lastIndexOf(":"));
+		Assert.notNull(conf, "file不能为空");
 		String podName =image.substring(image.lastIndexOf("/")+1,image.length()).replaceAll(":","-").replaceAll("\\.","-");
 		System.out.println("podName="+podName);
+		if(kubes.checkSvc(nodePort)){
+			return Response.error("端口已存在");
+		}
+		if(kubes.checkdeployname(namespace,podNginxPrefix+podName)){
+			return Response.error("服务已存在");
+		}
 		image = imagePrefix + "/"+image;
 		try {
-            nginxPod2.configMap(namespace,podName,podName,nginxConfig(file));
+            nginxPod2.configMap(namespace,podName,podName,nginxConfig(conf));
 			nginxPod2.createDeployment(namespace,podName,podName,image,port,podName);
 			nginxPod2.createService(namespace,podName,port,nodePort);
         }catch (Exception e){
 		    e.printStackTrace();
             nginxPod.delete(namespace,podName);
+			return Response.error("失败");
         }
-
 		return Response.success("OK");
 	}
 

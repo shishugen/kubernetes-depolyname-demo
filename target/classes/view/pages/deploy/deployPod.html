@@ -199,9 +199,15 @@ form.on('submit(*)', function(data){
             errorHandle(data);
         },
         success: function(data) {
-            parent.location.reload();
-            var index = parent.layer.getFrameIndex(window.name);
-            parent.layer.close(index);
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("部署成功", {icon: 2});
+			}else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+			}
         }
     });
 });
