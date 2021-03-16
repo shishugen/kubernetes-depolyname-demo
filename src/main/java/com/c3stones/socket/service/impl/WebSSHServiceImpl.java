@@ -144,9 +144,10 @@ public class WebSSHServiceImpl implements WebSSHService {
                      s = "<p style=\"color: #0000FF\">" + line + "</p>";
                 }else if(line.contains("ERROR")){
                      s = "<p style=\"color: crimson\">" + line + "</p>";
+                }else{
+                    s = "<p style=\"color: #009688\">" + line + "</p>";
                 }
                 System.out.println(s);
-             //   System.out.println(line);
                 sendMessage(webSocketSession,s.getBytes());
             }
 
