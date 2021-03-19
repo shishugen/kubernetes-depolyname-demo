@@ -185,11 +185,10 @@ public class GuacdPod {
 
 
 
-    public void createGuacamole(String namespace){
-        String podName="guacamole";
-        String labelsName="guacamole";
-        String portName="guacamole";
+    public void createGuacamole(String namespace,String podName){
+        String labelsName=podName;
+        String portName=podName;
         create(namespace,podName,labelsName,image,4822,portName);
-        createService(namespace,podName,labelsName,4822,portName);
+       // createService(namespace,podName,labelsName,4822,portName);
     }
 }

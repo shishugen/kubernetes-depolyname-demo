@@ -41,6 +41,12 @@
 							<input  type="number" name="nodePort"  placeholder="30000-32766" th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
 						</div>
 					</div>
+					<div class="layui-inline" id="guacamoleName">
+						<div class="layui-form-mid">pod名称</div>
+						<div class="layui-input-inline" style="width: 180px;">
+							<input  type="text" name="guacamoleName" value="guacamole-1" autocomplete="off" class="layui-input">
+						</div>
+					</div>
 				<div class="layui-form-item">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
 				</div>
@@ -57,14 +63,22 @@ layui.use('form', function(){
     form.render();
 });
 $("#nodePort").attr("style","display:none;");//显示div
+$("#guacamoleName").attr("style","display:none;");//显示div
 
 form.on('select(image)', function(data){
     console.log(data);
     if(data.value == 'fdfs'){
         $("#nodePort").attr("style","display:block;");//显示div
+        $("#guacamoleName").attr("style","display:none;");//隐藏div
+	}else if(data.value == 'guacamole'){
+        $("#guacamoleName").attr("style","display:block;");//显示div
+        $("#nodePort").attr("style","display:none;");//隐藏div
 	}else{
+        $("#guacamoleName").attr("style","display:none;");//隐藏div
         $("#nodePort").attr("style","display:none;");//隐藏div
 	}
+
+
 
 
 

@@ -102,7 +102,7 @@ public class EnvController {
      */
     @RequestMapping(value = "create")
     @ResponseBody
-    public Response<Boolean> create(String name,String namespace,Integer nodePort) {
+    public Response<Boolean> create(String name,String namespace,Integer nodePort,String guacamoleName) {
         System.out.println("创建 名称为 : "+name+namespace);
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(name, "name不能为空");
@@ -120,7 +120,7 @@ public class EnvController {
             }else if(name.contains("libreoffice")){
                 libreofficePod.createlibreoffice(namespace);
             }else if(name.contains("guacamole")){
-                guacdPod.createGuacamole(namespace);
+                guacdPod.createGuacamole(namespace,guacamoleName);
             }
 
         }catch (Exception e){
