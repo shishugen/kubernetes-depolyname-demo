@@ -436,4 +436,22 @@ public class PodController {
         return Response.success(true);
     }
 
+    /**
+     *
+     *
+     * @param namespace
+     * @param podName
+     * @return
+     */
+    @RequestMapping(value = "rollback")
+    @ResponseBody
+    public Response<Boolean> rollback(String namespace ,String deployname) {
+        Assert.notNull(namespace, "namespace不能为空");
+        Assert.notNull(deployname, "podName不能为空");
+        log.info("重启-deployname=={}",deployname);
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+         kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).rolling().undo();
+        return Response.success(true);
+    }
+
 }

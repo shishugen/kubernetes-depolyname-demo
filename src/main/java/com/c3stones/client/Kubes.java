@@ -4,9 +4,7 @@ import com.c3stones.entity.Namespaces;
 import com.c3stones.util.KubeUtils;
 import com.sun.org.apache.xml.internal.utils.NameSpace;
 import io.fabric8.kubernetes.api.model.*;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
-import io.fabric8.kubernetes.api.model.apps.DeploymentList;
+import io.fabric8.kubernetes.api.model.apps.*;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
@@ -351,6 +349,13 @@ public class Kubes {
                 .withNamespace(namespace)
                 .endMetadata()
                 .withNewSpec()
+                .withStrategy(new DeploymentStrategyBuilder()
+                        .withRollingUpdate(new RollingUpdateDeploymentBuilder()
+                                .withMaxSurge(new IntOrStringBuilder().withStrVal("25%").build())
+                                .withMaxUnavailable(new IntOrStringBuilder().withStrVal("25%").build())
+                                .build())
+                        .withType("RollingUpdate")
+                        .build())
                 .withNewSelector()
                 .addToMatchLabels(LABELS_KEY, randomPortName)
                 .endSelector()
@@ -360,6 +365,7 @@ public class Kubes {
                 .addToLabels(LABELS_KEY, randomPortName)
                 .endMetadata()
                 .withNewSpec()
+                .withTerminationGracePeriodSeconds(60L)
                 .withContainers(container)
                 .addNewVolume()
                 .withName(pvcName)
@@ -375,13 +381,47 @@ public class Kubes {
      *
      * @param appName
      * @param image
-     * @param cpu
      * @return
      */
     private  Container createContainer(String appName,String image,Integer ports,String serviceName,String nacos ,String nacosNamespace,String pvcName){
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
+        Probe probe = new Probe();
+        HTTPGetAction httpGetAction = new HTTPGetAction();
+        httpGetAction.setPath("/health");
+        httpGetAction.setPort(new IntOrStringBuilder().withIntVal(9000).build());
+        httpGetAction.setScheme("HTTP");
+        probe.setHttpGet(httpGetAction);
+        probe.setInitialDelaySeconds(60);
+        probe.setTimeoutSeconds(5);
+        probe.setSuccessThreshold(1);
+        probe.setFailureThreshold(5);
+        container.setLivenessProbe(probe);
+
+        Probe probe2 = new Probe();
+        HTTPGetAction httpGetAction2 = new HTTPGetAction();
+        httpGetAction2.setPath("/health");
+        httpGetAction2.setPort(new IntOrStringBuilder().withIntVal(9000).build());
+        httpGetAction2.setScheme("HTTP");
+        probe2.setHttpGet(httpGetAction2);
+        probe2.setInitialDelaySeconds(30 );
+        probe2.setTimeoutSeconds(5);
+        probe2.setSuccessThreshold(1);
+        probe2.setFailureThreshold(5);
+        container.setReadinessProbe(probe2);
+ /*       Lifecycle lifecycle = new Lifecycle();
+        Handler handler = new Handler();
+        ExecAction execAction = new ExecAction();
+        List<String> list =new ArrayList<>();
+        list.add("sleep");
+        list.add("30");
+        execAction.setCommand(list);
+        handler.setExec(execAction);
+        lifecycle.setPreStop(handler);
+        container.setLifecycle(lifecycle);*/
+
+
         container.setName(appName);
         container.setImage(image);
 

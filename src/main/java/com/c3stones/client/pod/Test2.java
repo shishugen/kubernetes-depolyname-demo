@@ -5,9 +5,16 @@ import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * @ClassName: Test
@@ -93,10 +100,64 @@ public class Test2 {
         return null;//  Kubes.getKubeclinet().services().create(newService);
     }
 
-    public static void main(String[] args) {
-        createDeployment();
-      //  createService();
-     //  Kubes.deleteDeployments("storage0","fastdfs");
-      // Kubes.deleteService("fastdfs","storage0");
+    public static void main(String[] args) throws IOException {
+        unzipJar("E:\\xuanyuan_project\\xuanyuan-base-spring-cloud\\training-docker-1.0\\training\\kubernetes\\zhsys-training-kubernetes-server\\target\\test",
+                "E:\\xuanyuan_project\\xuanyuan-base-spring-cloud\\training-docker-1.0\\training\\kubernetes\\zhsys-training-kubernetes-server\\target\\zhsys-training-kubernetes-server.jar");
+
+    }
+
+    public static void unzipJar(String destinationDir, String jarPath) throws IOException {
+
+        File file = new File(jarPath);
+
+        JarFile jar = new JarFile(file);
+
+
+        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();) {
+
+            JarEntry entry = (JarEntry) enums.nextElement();
+
+            String fileName = destinationDir + File.separator + entry.getName();
+
+            File f = new File(fileName);
+
+            if (fileName.endsWith("/")) {
+
+                f.mkdirs();
+
+            }
+
+        }
+
+
+        for (Enumeration<JarEntry> enums = jar.entries(); enums.hasMoreElements();) {
+
+            JarEntry entry = (JarEntry) enums.nextElement();
+
+            String fileName = destinationDir + File.separator + entry.getName();
+
+            File f = new File(fileName);
+
+            if (!fileName.endsWith("/")) {
+
+                InputStream is = jar.getInputStream(entry);
+
+
+                FileOutputStream fos = new FileOutputStream(f);
+
+
+                while (is.available() > 0) {
+                    fos.write(is.read());
+                }
+                fos.flush();
+                fos.close();
+                is.close();
+
+            }
+
+        }
+
     }
 }
+
+

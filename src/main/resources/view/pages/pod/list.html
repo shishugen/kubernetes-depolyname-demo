@@ -104,6 +104,7 @@
                         <script type="text/html" id="operation4">
                             <a class="layui-btn layui-btn-xs" lay-event="update">编辑</a>
                             <a class="layui-btn layui-btn-xs" lay-event="restart">重启</a>
+                            <a class="layui-btn layui-btn-xs" lay-event="rollback">回滚</a>
                             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delDeployment">删除</a>
                         </script>
                     </div>
@@ -356,6 +357,24 @@ table.on('tool(config)', function(obj){
                 }
             });
         });
+       }else if(obj.event ==='rollback'){
+        console.log(obj.data.namespace)
+        layer.confirm("确认回滚吗？", {icon: 3, title:'提示'}, function(index) {
+            layer.close(index);
+            $.ajax({
+                url : "[[@{/}]]pod/rollback",
+                data : {"namespace":row.namespace,'deployname': row.name},
+                type : "post",
+                dataType : "json",
+                error : function(data) {
+                    errorHandle(data);
+                },
+                success : function(data) {
+                    console.log(data)
+                    $(".searchTable .layui-btn").eq(0).click();
+                }
+            });
+        });
 
         //delDeploy
     }else if(obj.event ==='delDeploy'){
@@ -398,7 +417,7 @@ table.on('tool(config)', function(obj){
     }else if(obj.event ==='update'){
         layer.open({
             type: 2,
-            area: ['80%', '50%'],
+            area: ['100%', '80%'],
             title: '修改',
             content: '[[@{/}]]deploy/updatePage?deployname='+obj.data.name+"&replicas="+obj.data.replicas+"&image="+obj.data.image+"&namespace="+obj.data.namespace
         });

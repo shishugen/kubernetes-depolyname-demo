@@ -4,14 +4,12 @@ import com.c3stones.util.UnRar;
 import com.c3stones.util.XYFileUtils;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.BuildImageCmd;
-import com.github.dockerjava.api.command.BuildImageResultCallback;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.DockerCmdExecFactory;
+import com.github.dockerjava.api.model.AuthConfig;
 import com.github.dockerjava.api.model.Version;
-import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.DockerClientConfig;
-import com.github.dockerjava.core.DockerClientImpl;
+import com.github.dockerjava.core.*;
+import com.github.dockerjava.core.command.BuildImageResultCallback;
 import com.github.dockerjava.core.command.PushImageResultCallback;
 import com.github.dockerjava.core.command.WaitContainerResultCallback;
 import com.github.dockerjava.core.dockerfile.Dockerfile;
@@ -30,6 +28,7 @@ import sun.tools.jar.resources.jar;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.JarFile;
 
 /**
  * @ClassName: Dockers
@@ -41,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class Dockers {
 
- //   private static final String DEFAULT_HOST_IP = "10.49.0.9";
+ //   private static final String DEFAULT_HOST_I P = "10.49.0.9";
 
     @Value("${docker.host}")
     private String dockerHost;
@@ -86,11 +85,13 @@ public class Dockers {
             synchronized (Dockers.class) {
                 log.info("配置文件路径===" + DEFAULT_FILE_DIRECTORY + File.separator + dockerHost);
                 DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerTlsVerify(true)
-                        .withDockerCertPath(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost).withDockerHost("tcp://" + dockerHost + ":" + dockerPort)
+                       // .withCustomSslConfig(new LocalDirectorySSLConfig(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost))
+                        .withDockerHost("tcp://" + dockerHost + ":" + dockerPort)
+                        .withDockerCertPath(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost)
                         .withDockerConfig(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost)
-                        .withRegistryUrl(harborUrl)
-                        .withRegistryUsername(harborUser)
-                        .withRegistryPassword(harborPassword)
+                     //   .withRegistryUrl(harborUrl)
+                      //  .withRegistryUsername(harborUser)
+                    //    .withRegistryPassword(harborPassword)
                         .build();
                 // .withRegistryEmail("dockeruser@github.com").build();
                 DockerCmdExecFactory dockerCmdExecFactory = new JerseyDockerCmdExecFactory()
@@ -130,6 +131,17 @@ public class Dockers {
         outputStream.write(separator.getBytes());
         outputStream.write(conf.getBytes());
         outputStream.write(separator.getBytes());
+
+
+     /*   String confFile = "jar app.jar  BOOT-INF/classes/application.yml";
+        outputStream.write(confFile.getBytes());
+        outputStream.write(separator.getBytes());
+
+        String env = "ENV PORT = ";
+        outputStream.write(env.getBytes());
+        outputStream.write(separator.getBytes());
+*/
+
 
        // outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
       //  outputStream.write(separator.getBytes());
@@ -184,7 +196,15 @@ public class Dockers {
                 "                server-addr: ${NACOS_IP}:${NACOS_PORT}\n" +
                 "            discovery:\n" +
                 "                namespace: ${NAMESPACE}\n" +
-                "                server-addr: ${NACOS_IP}:${NACOS_PORT}";
+                "                server-addr: ${NACOS_IP}:${NACOS_PORT}\n"+
+                "management:\n" +
+                "    server:\n" +
+                "      port: 9000\n" +
+                "    endpoints:\n" +
+                "        web:\n" +
+                "            exposure:\n" +
+                "                include: '*'\n" +
+                "            base-path: /";
         outputStream.write(conf.getBytes());
         return file;
     }
@@ -210,7 +230,12 @@ public class Dockers {
         dockerClient.buildImageCmd(new File(baseDir)).withNoCache(true)
                 .withTags(objects).exec(new BuildImageResultCallback()).awaitImageId(8, TimeUnit.MINUTES);
         log.info("end buildImage……imageName  : {}:{} ",imageName,tag);
-        dockerClient.pushImageCmd(imageName)
+
+        AuthConfig authConfig = new AuthConfig();
+        authConfig.withUsername(harborUser);
+        authConfig.withPassword(harborPassword);
+        authConfig.withRegistryAddress(harborUrl);
+        dockerClient.pushImageCmd(imageName).withAuthConfig(authConfig)
                 .withTag(tag)
                 .exec(new PushImageResultCallback())
                 .awaitCompletion(3, TimeUnit.MINUTES);
@@ -220,48 +245,16 @@ public class Dockers {
     }
 
 
-
     public static void main(String[] args) throws InterruptedException, Exception {
+        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost("tcp://10.49.0.9:2375")
+                .withCustomSslConfig(new LocalDirectorySSLConfig("E:\\dockerfile\\10.49.0.9"))
+                .build();
+        DockerClient dockerClient = DockerClientBuilder.getInstance(config).build();
+        com.github.dockerjava.api.model.Version exec = dockerClient.versionCmd().exec();
+        System.out.println("docker Version"+exec.getVersion());
 
-       // writeNacosConfFile("");
 
     }
-
-
-    public static void write() {
-        /* Initialize data. */
-        Person father = new Person();
-        father.setName("simon.zhang");
-        father.setAge(23);
-        father.setSex("man");
-        List<Person> children=new ArrayList<Person>();
-        for (int i = 8; i < 10; i++) {
-            Person child = new Person();
-            if (i % 2 == 0) {
-                child.setSex("man");
-                child.setName("mary" + (i - 7));
-            } else {
-                child.setSex("fatel");
-                child.setName("simon" + (i - 7));
-            }
-            child.setAge(i);
-            children.add(child);
-        }
-        father.setChildren(children);
-        /* Export data to a YAML file. */
-        File dumpFile = new File("C:\\Users\\Administrator\\docker\\setting.yaml");
-
-        try {
-            Yaml.dump(father, dumpFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
-
-
 
 }
