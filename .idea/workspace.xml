@@ -150,8 +150,8 @@
       <file leaf-file-name="application.properties" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="20" column="20" lean-forward="true" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
+            <state relative-caret-position="132">
+              <caret line="23" column="68" lean-forward="true" selection-start-line="23" selection-start-column="68" selection-end-line="23" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -408,16 +408,6 @@
               <item name="c3stones" type="462c0819:PsiDirectoryNode" />
               <item name="client" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="spring-boot-layui-demo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spring-boot-layui-demo" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="c3stones" type="462c0819:PsiDirectoryNode" />
-              <item name="client" type="462c0819:PsiDirectoryNode" />
-              <item name="pod" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -613,7 +603,7 @@
       <workItem from="1615357226711" duration="47806000" />
       <workItem from="1615863551983" duration="9994000" />
       <workItem from="1615970610413" duration="659000" />
-      <workItem from="1615972783082" duration="25821000" />
+      <workItem from="1615972783082" duration="26088000" />
     </task>
     <task id="LOCAL-00001" summary="修改判断问题">
       <created>1615864721264</created>
@@ -626,7 +616,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="592675000" />
+    <option name="totallyTimeSpent" value="592942000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -638,7 +628,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50075644" side_tool="true" weight="0.36573312" />
@@ -655,7 +646,7 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.49924356" visible="true" weight="0.8267327" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49924356" weight="0.51650167" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.28265765" />
       <window_info anchor="bottom" id="Messages" order="7" weight="0.21122113" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
@@ -663,11 +654,11 @@
       <window_info anchor="bottom" id="Java Enterprise" order="7" weight="0.36573312" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.36138615" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.37953794" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="7" visible="true" weight="0.26237625" />
       <window_info anchor="bottom" id="Spring" order="7" weight="0.27227724" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17298187" />
       <window_info anchor="right" id="Jenkins" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25945538" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23146747" />
       <window_info anchor="right" id="Bean Validation" order="3" />
       <window_info id="Web" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Apicloud Log" order="7" weight="0.3294893" />
@@ -693,7 +684,8 @@
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
     <MESSAGE value="修改判断问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改判断问题" />
+    <MESSAGE value="添加容器检查功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加容器检查功能" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1134,8 +1126,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="20" column="20" lean-forward="true" selection-start-line="20" selection-start-column="20" selection-end-line="20" selection-end-column="20" />
+        <state relative-caret-position="132">
+          <caret line="23" column="68" lean-forward="true" selection-start-line="23" selection-start-column="68" selection-end-line="23" selection-end-column="68" />
         </state>
       </provider>
     </entry>
