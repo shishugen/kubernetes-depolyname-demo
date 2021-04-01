@@ -186,9 +186,12 @@ public class GuacdPod {
 
 
     public void createGuacamole(String namespace,String podName){
-        String labelsName=podName;
+        String labelsName="guacamole";
         String portName=podName;
         create(namespace,podName,labelsName,image,4822,portName);
-       // createService(namespace,podName,labelsName,4822,portName);
+        Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
+        if(service == null){
+            createService(namespace,labelsName,labelsName,4822,portName);
+        }
     }
 }

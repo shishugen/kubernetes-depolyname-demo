@@ -41,6 +41,12 @@
 							<input  type="number" name="nodePort"  placeholder="30000-32766" th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
 						</div>
 					</div>
+					<div class="layui-inline" id="mysqlNodePort">
+						<div class="layui-form-mid">MySQL访问端口</div>
+						<div class="layui-input-inline" style="width: 180px;">
+							<input  type="number" name="MySQLnodePort"  placeholder="30000-32766" th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
 					<div class="layui-inline" id="guacamoleName">
 						<div class="layui-form-mid">pod名称</div>
 						<div class="layui-input-inline" style="width: 180px;">
@@ -49,6 +55,7 @@
 					</div>
 				<div class="layui-form-item">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
+				</div>
 				</div>
 			</form>
 		</div>
@@ -70,12 +77,19 @@ form.on('select(image)', function(data){
     if(data.value == 'fdfs'){
         $("#nodePort").attr("style","display:block;");//显示div
         $("#guacamoleName").attr("style","display:none;");//隐藏div
+        $("#mysqlNodePort").attr("style","display:none;");//隐藏div
 	}else if(data.value == 'guacamole'){
         $("#guacamoleName").attr("style","display:block;");//显示div
+        $("#nodePort").attr("style","display:none;");//隐藏div
+        $("#mysqlNodePort").attr("style","display:none;");//隐藏div
+	}else if(data.value == 'mysql'){
+        $("#mysqlNodePort").attr("style","display:block;");//显示div
+        $("#guacamoleName").attr("style","display:none;");//隐藏div
         $("#nodePort").attr("style","display:none;");//隐藏div
 	}else{
         $("#guacamoleName").attr("style","display:none;");//隐藏div
         $("#nodePort").attr("style","display:none;");//隐藏div
+        $("#mysqlNodePort").attr("style","display:none;");//隐藏div
 	}
 
 
@@ -108,9 +122,15 @@ form.on('submit(*)', function(data){
             errorHandle(data);
         },
         success: function(data) {
-            parent.location.reload();
-            var index = parent.layer.getFrameIndex(window.name);
-            parent.layer.close(index);
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("部署成功", {icon: 2});
+            }else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+            }
         }
     });
 });

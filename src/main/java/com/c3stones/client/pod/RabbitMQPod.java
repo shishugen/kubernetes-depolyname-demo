@@ -43,7 +43,7 @@ public class RabbitMQPod {
     /**
      * nfs 存储大小
      */
-    @Value("${nfs.storage.size:10}")
+    @Value("${nfs.storage.mq.size:3}")
     private Integer nfsStorageSize;
 
     @Value("${pod.env.prefix}")

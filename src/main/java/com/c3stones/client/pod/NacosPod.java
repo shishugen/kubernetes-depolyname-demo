@@ -48,7 +48,7 @@ public class NacosPod {
     /**
      * nfs 存储大小
      */
-    @Value("${nfs.storage.size:10}")
+    @Value("${nfs.storage.nacos.size:2}")
     private Integer nfsStorageSize;
 
     @Value("${pod.namespace.prefix}")
@@ -71,7 +71,7 @@ public class NacosPod {
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
         try{
             String pvcName =namespace + podName;
-            kubes.createPVC(pvcName,namespace,nfsStorageClassName,10);
+            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)

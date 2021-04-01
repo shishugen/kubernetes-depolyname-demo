@@ -1,6 +1,7 @@
 package com.c3stones.client.pod;
 
 import com.c3stones.client.Kubes;
+import com.c3stones.exception.KubernetesException;
 import io.fabric8.kubernetes.api.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -36,7 +37,7 @@ public class FastdfsPod {
     /**
      * nfs 存储大小
      */
-    @Value("${nfs.storage.size:10}")
+    @Value("${nfs.storage.fdfs.size:10}")
     private Integer nfsStorageSize;
 
     @Autowired
@@ -53,7 +54,7 @@ public class FastdfsPod {
       //  String image = "";
         // String image = "10.49.0.9/base/ssg-fastdfs:1.0";
         String pvcName =namespace + podName;
-        kubes.createPVC(pvcName,namespace,nfsStorageClassName,50);
+        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsStorageSize);
         Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, podName).endMetadata()
                 .withNewSpec().withContainers(new ContainerBuilder()
                         .withName(podName)
@@ -78,6 +79,10 @@ public class FastdfsPod {
     }
 
     public  Service createService(String namespace ,Integer nodePort) {
+        if(nodePort > 30000 || nodePort < 32767){
+            log.error("端口为 30000-32767   nodePort : {}",nodePort);
+            new KubernetesException("端口为30000-32767  端口异常"+nodePort);
+        }
         List<ServicePort> servicePortList = new ArrayList<>();
         ServicePort servicePort =  new ServicePort();
         servicePort.setProtocol("TCP");

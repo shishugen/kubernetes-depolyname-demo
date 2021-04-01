@@ -42,7 +42,7 @@ public class Kubes {
     @Value("${pod.namespace.prefix}")
     private String podNamespacePrefix;
 
-    @Value("${kubernetes.config.file}")
+    @Value("${kubernetes.config.file:/root/.kube/config}")
     private String kubernetesConfigFile;
     @Value("${pod.app.prefix}")
     private String podAppPrefix;

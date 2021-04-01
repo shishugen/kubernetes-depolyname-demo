@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<div class="layui-tab layui-tab-card">
+<div class="layui-tab layui-tab-card" >
     <ul class="layui-tab-title">
         <li class="layui-this">应用管理</li>
         <li>环境管理</li>
@@ -333,12 +333,20 @@ table.on('tool(config)', function(obj){
       }
     }else if(obj.event ==='logs'){
         console.log(obj.data.namespace)
-        layer.open({
+        window.open('[[@{/}]]pod/logs?namespace='+obj.data.namespace+'&podName='+obj.data.podName)
+        //新增一个Tab项
+   /*     element.tabAdd('demo', {
+            title: '日志' //用于演示
+              ,  type: 2
+           , content: '[[@{/}]]pod/logs?namespace='+obj.data.namespace+'&podName='+obj.data.podName
+            ,id: new Date().getTime() //实际使用一般是规定好的id，这里以时间戳模拟下
+        })*/
+       /* layer.open({
             type: 2,
             area: ['100%', '100%'],
             title: '日志',
             content: '[[@{/}]]pod/logs?namespace='+obj.data.namespace+'&podName='+obj.data.podName
-        });
+        });*/
     }else if(obj.event ==='restart'){
         console.log(obj.data.namespace)
         layer.confirm("确认重启吗？", {icon: 3, title:'提示'}, function(index) {

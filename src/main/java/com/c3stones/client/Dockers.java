@@ -81,22 +81,18 @@ public class Dockers {
     public  DockerClient getDockerClient() {
         DockerClient dockerClient = null;
         log.info("获取连接:{}", dockerClient);
-      isWindows();
+     // isWindows();
             synchronized (Dockers.class) {
-                log.info("配置文件路径===" + DEFAULT_FILE_DIRECTORY + File.separator + dockerHost);
+                log.info("配置文件路径===" + dockerFileDir + File.separator + dockerHost);
                 DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerTlsVerify(true)
                        // .withCustomSslConfig(new LocalDirectorySSLConfig(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost))
                         .withDockerHost("tcp://" + dockerHost + ":" + dockerPort)
-                        .withDockerCertPath(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost)
-                        .withDockerConfig(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost)
+                         .withDockerCertPath(dockerFileDir + File.separator + dockerHost)
+                        .withDockerConfig(dockerFileDir + File.separator + dockerHost)
                      //   .withRegistryUrl(harborUrl)
                       //  .withRegistryUsername(harborUser)
                     //    .withRegistryPassword(harborPassword)
                         .build();
-                // .withRegistryEmail("dockeruser@github.com").build();
-                DockerCmdExecFactory dockerCmdExecFactory = new JerseyDockerCmdExecFactory()
-                        .withReadTimeout(1000)
-                        .withConnectTimeout(1000);
                 dockerClient = DockerClientBuilder.getInstance(config).build();
                 Version exec = dockerClient.versionCmd().exec();
                 System.out.println("docker Version"+exec.getVersion());
@@ -251,6 +247,7 @@ public class Dockers {
                 .withCustomSslConfig(new LocalDirectorySSLConfig("E:\\dockerfile\\10.49.0.9"))
                 .build();
         DockerClient dockerClient = DockerClientBuilder.getInstance(config).build();
+
         com.github.dockerjava.api.model.Version exec = dockerClient.versionCmd().exec();
         System.out.println("docker Version"+exec.getVersion());
 

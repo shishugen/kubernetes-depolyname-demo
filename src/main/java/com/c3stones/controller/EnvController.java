@@ -102,13 +102,19 @@ public class EnvController {
      */
     @RequestMapping(value = "create")
     @ResponseBody
-    public Response<Boolean> create(String name,String namespace,Integer nodePort,String guacamoleName) {
+    public Response<Boolean> create(String name,String namespace,Integer nodePort,String guacamoleName,Integer MySQLnodePort) {
         System.out.println("创建 名称为 : "+name+namespace);
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(name, "name不能为空");
+        if(kubes.checkSvc(nodePort)){
+            return Response.error("端口已存在");
+        }
+        if(kubes.checkSvc(MySQLnodePort)){
+            return Response.error("端口已存在");
+        }
         try {
             if(name.contains("mysql")){
-                mySQLPod.createMySQL(namespace);
+                mySQLPod.createMySQL(namespace,nodePort);
             }else if(name.contains("nacos")){
                 nacosPod.createNacos(namespace);
             }else if(name.contains("redis")){
@@ -122,7 +128,6 @@ public class EnvController {
             }else if(name.contains("guacamole")){
                 guacdPod.createGuacamole(namespace,guacamoleName);
             }
-
         }catch (Exception e){
             e.printStackTrace();
             kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+name).delete();

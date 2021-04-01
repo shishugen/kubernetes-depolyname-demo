@@ -1,6 +1,7 @@
 package com.c3stones.client.pod;
 
 import com.c3stones.client.Kubes;
+import com.c3stones.exception.KubernetesException;
 import io.fabric8.kubernetes.api.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -39,7 +40,7 @@ public class MySQLPod {
     /**
      * nfs 存储大小
      */
-    @Value("${nfs.storage.size:10}")
+    @Value("${nfs.storage.MySql.size:3}")
     private Integer nfsStorageSize;
 
     @Value("${pod.env.prefix}")
@@ -57,7 +58,6 @@ public class MySQLPod {
         if(StringUtils.isNotBlank(password)){
             MYSQL_ROOT_PASSWORD = password;
         }
-        try{
             String pvcName =namespace + podName;
             kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
@@ -75,10 +75,6 @@ public class MySQLPod {
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
         return true;
     }
 
@@ -93,11 +89,11 @@ public class MySQLPod {
      * @param portName
      * @param nodePort 30000-32767
      */
-    public  Service createService(String namespace, String serviceName,  String labelsValue , Integer port,String portName){
-/*        if(nodePort < 30000 && nodePort > 32767){
+    public  Service createService(String namespace, String serviceName,  String labelsValue , Integer port,String portName,Integer nodePort){
+        if(nodePort > 30000 || nodePort < 32767){
             log.error("端口为 30000-32767   nodePort : {}",nodePort);
-            return null;
-        }*/
+            new KubernetesException("端口为30000-32767  端口异常"+nodePort);
+        }
         String type = "NodePort";
         Service build = new ServiceBuilder()
                 .withNewMetadata()
@@ -118,25 +114,19 @@ public class MySQLPod {
     }
 
     public static void main(String[] args) {
-        String namespace="test2";
-        String podName="mysql";
-        String labelsName="mysql";
-        String image="10.49.0.9/app-tool/ssg-mysql:5.7";
-        String portName="mysql";
-       // kubes.createNamespace(namespace);
-       // createMySQL(namespace,podName,labelsName,image,3306,portName,"");
-       // createService(namespace,podName,labelsName,3306,portName);
+        Integer nodePort = 23234;
+        if(nodePort > 30000 || nodePort < 32767){
+            log.error("端口为 30000-32767   nodePort : {}",nodePort);
+        }
+        System.out.println(1111);
     }
-    public void  createMySQL(String namespace){
+    public void  createMySQL(String namespace, Integer nodePort){
         String podName="mysql";
         String labelsName="mysql";
         String portName="mysql";
         kubes.createNamespace(namespace);
         create(namespace,podName,labelsName,image,3306,portName,"");
-        createService(namespace,podName,labelsName,3306,portName);
-
+        createService(namespace,podName,labelsName,3306,portName,nodePort);
     }
-
-
 
 }
