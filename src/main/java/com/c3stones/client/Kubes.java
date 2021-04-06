@@ -1,7 +1,9 @@
 package com.c3stones.client;
 
+import com.c3stones.common.Response;
 import com.c3stones.entity.Namespaces;
 import com.c3stones.util.KubeUtils;
+import com.c3stones.util.OpenFileUtils;
 import com.sun.org.apache.xml.internal.utils.NameSpace;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
@@ -14,13 +16,12 @@ import io.fabric8.kubernetes.client.dsl.LogWatch;
 import io.fabric8.kubernetes.client.dsl.ServiceResource;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.omg.CORBA.portable.ValueBase;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,17 +43,23 @@ public class Kubes {
     @Value("${pod.namespace.prefix}")
     private String podNamespacePrefix;
 
-    @Value("${kubernetes.config.file:/root/.kube/config}")
-    private String kubernetesConfigFile;
+   /* @Value("${kubernetes.config.file:/root/.kube/config}")
+    private String kubernetesConfigFile;*/
     @Value("${pod.app.prefix}")
     private String podAppPrefix;
 
 
     public  KubernetesClient getKubeclinet() {
-        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE, kubernetesConfigFile);
-        Config config = new ConfigBuilder()
-                .build();
-        return new DefaultKubernetesClient(config);
+        String file = null;
+        try {
+            file = OpenFileUtils.readFileByChars(getHomeConfigFile().getPath());
+            if(StringUtils.isNotBlank(file)) {
+                return new DefaultKubernetesClient(Config.fromKubeconfig(file));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -469,8 +476,9 @@ public class Kubes {
 
     @SneakyThrows
     public static void main(String[] args) {
+      //  String homeConfigFile = getHomeConfigFile();
 
-        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE, "E:\\dockerfile\\kube-test-config");
+        /*System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE, "E:\\dockerfile\\kube-test-config");
         Config config = new ConfigBuilder()
                 .build();
         DefaultKubernetesClient kubernetesClient = new DefaultKubernetesClient(config);
@@ -513,11 +521,102 @@ public class Kubes {
                        .withNewPersistentVolumeClaim(pvcName,readOnly).endVolume()
                 .endSpec().build();
 
-        Pod newPod = kubernetesClient.pods().create(pod);
+        Pod newPod = kubernetesClient.pods().create(pod);*/
 
 
         //createDeployment(namespace, namespace, podName, 2, image, null);
 
     }
+
+    /**
+     * K8S配置文件夹
+     * @return
+     */
+    public static String getHomeConfigDir() {
+        String dir = System.getProperty("user.home")+ File.separator + ".kube-deployment"+ File.separator +".k8s"+ File.separator+"configs";
+        if(!new File(dir).exists()){
+            new File(dir).mkdirs();
+        }
+        return dir;
+    }
+
+    /**
+     * K8S配置名
+     * @return
+     */
+    public static File getHomeConfigFile() {
+        File file = null;
+        String dir = System.getProperty("user.home") +File.separator + ".kube-deployment"+ File.separator + ".k8s";
+        try {
+            if(!new File(dir).exists()){
+                new File(dir).mkdirs();
+            }
+             file = new File(dir + File.separator + "config");
+            if (!file.isFile()){
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+
+
+
+    /**
+     * 根据master获取配置
+     * @param masterUrl
+     * @return
+     * @throws Exception
+     */
+    public static Config getMasterConfig(String masterUrl) throws Exception {
+        File files = new File(Kubes.getHomeConfigDir());
+        File[] files1 = files.listFiles();
+        for (File f :files1){
+            FileInputStream  stream = new FileInputStream(f);
+            String file = OpenFileUtils.readFile(stream);
+            stream.close();
+            if(StringUtils.isNotBlank(file)){
+                Config config = Config.fromKubeconfig(file);
+                if(config.getMasterUrl().equals(masterUrl)){
+                    return  config;
+                }
+            }
+        }
+        return  null;
+    }
+
+    /**
+     * 根据master获取配置
+     * @param masterUrl
+     * @return
+     * @throws Exception
+     */
+    public static void setMasterConfig(String masterUrl) throws Exception {
+        File files = new File(Kubes.getHomeConfigDir());
+        File[] files1 = files.listFiles();
+        for (File f :files1){
+            FileInputStream  stream = new FileInputStream(f);
+            String file = OpenFileUtils.readFile(stream);
+            if(StringUtils.isNotBlank(file)){
+                Config config = Config.fromKubeconfig(file);
+                if(config.getMasterUrl().equals(masterUrl)){
+                    FileOutputStream fileOutputStream = null;
+                    try {
+                     fileOutputStream = new FileOutputStream(getHomeConfigFile());
+                    fileOutputStream.write(file.getBytes());
+                    }finally {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+
+                }
+            }
+        }
+    }
+
+
+
 
 }

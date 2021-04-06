@@ -1,5 +1,6 @@
 package com.c3stones.client.pod;
 
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class RabbitMQPod {
+public class RabbitMQPod extends BaseConfig {
 
 
     @Value("${rabbitmq.image}")
@@ -35,16 +36,7 @@ public class RabbitMQPod {
      */
     private  static  String LABELS_KEY = "app";
 
-    /**
-     * nfs 名称
-     */
-    @Value("${nfs.storage.className}")
-    private String nfsStorageClassName;
-    /**
-     * nfs 存储大小
-     */
-    @Value("${nfs.storage.mq.size:3}")
-    private Integer nfsStorageSize;
+
 
     @Value("${pod.env.prefix}")
     private String podEnvPrefix;
@@ -103,7 +95,7 @@ public class RabbitMQPod {
                     .endSpec()
                     .build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
-            kubes.createPVC(pvcName,namespace,nfsStorageClassName,10);
+            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMqStorageSize);
             System.out.println(newPod);
         }catch (Exception e){
             e.printStackTrace();

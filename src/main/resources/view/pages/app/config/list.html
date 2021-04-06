@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+<div class="layui-row">
+    <div class="layui-card">
+        <form class="layui-form layui-card-body layui-form-pane" method="post" th:action="@{/app/env/config/save}">
+            <div class="layui-form-item">
+            <!--    <div class="layui-inline">
+                    <div class="layui-form-mid">docker配置文件端口</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="number" name="dockerPort" id="dockerPort" th:value="${config.dockerPort}"  placeholder="2375"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>-->
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
+                    <legend>harbor 仓库配置</legend>
+                </fieldset>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 125px">地址</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="text" name="harborUrl"lay-verify="required"  th:value="${config.harborUrl}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 125px">用户名</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="text" name="harborUser" lay-verify="required" th:value="${config.harborUser}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 125px">用户密码</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="text" name="harborPassword"lay-verify="required"  th:value="${config.harborPassword}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
+                    <legend>镜像配置</legend>
+                </fieldset>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 125px">仓库地址</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="text" name="harborImagePrefix" lay-verify="required"  th:value="${config.harborImagePrefix}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 125px">项目镜像前缀</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="text" name="harborImageProjectName"lay-verify="required"  th:value="${config.harborImageProjectName}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 125px">环境镜像前缘</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="text" name="harborImageEnvProjectName"lay-verify="required"  th:value="${config.harborImageEnvProjectName}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
+                    <legend>NFS配置</legend>
+                </fieldset>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 125px">NFS名称</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input  type="text" name="nfsStorageClassName"lay-verify="required"  th:value="${config.nfsStorageClassName}" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 205px">Mysql 存储大小</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input  type="number" name="nfsMySqlStorageSize"th:min="2" th:max="100" id="nfsMySqlStorageSize"lay-verify="required"  th:value="${config.nfsMySqlStorageSize}"  placeholder="2"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 205px">nacos 存储大小</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input  type="number" name="nfsNacosStorageSize" th:min="2" th:max="100"id="nfsNacosStorageSize"lay-verify="required"  th:value="${config.nfsNacosStorageSize}"  placeholder="2"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 205px">Rabbitmq  存储大小</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input  type="number" name="nfsMqStorageSize"  th:min="2" th:max="100"id="nfsMqStorageSize"lay-verify="required"  th:value="${config.nfsMqStorageSize}"  placeholder="2"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 205px">fdfs  存储大小</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input  type="number" name="nfsFdfsStorageSize"th:min="2" th:max="1000" id="nfsFdfsStorageSize"lay-verify="required"  th:value="${config.nfsFdfsStorageSize}"  placeholder="2"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
+                    <legend>docker配置</legend>
+                </fieldset>
+                   <div class="layui-inline">
+                        <div class="layui-form-label">docker 端口</div>
+                        <div class="layui-input-inline" style="width: 180px;">
+                            <input  type="number" name="dockerPort" id="dockerPort"lay-verify="required"  th:value="${config.dockerPort}"  placeholder="2375"   autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                <div class="layui-form-item">
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+
+
+<script>
+var element = layui.element;
+var table = layui.table;
+var layer = layui.layer;
+
+
+
+
+// 按钮事件
+$('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+});
+
+// 提交表单
+form.on('submit(*)', function(data){
+    layer.confirm("确认提交吗？", {icon: 3, title: '提示'}, function (index) {
+        layer.close(index);
+        $(".layui-form").ajaxForm({
+            error: function (data) {
+                errorHandle(data);
+            },
+            success: function (data) {
+                if (data.code == 200) {
+                    //parent.location.reload();
+                    // var index = parent.layer.getFrameIndex(window.name);
+                    // parent.layer.close(index);
+                    layer.msg("成功", {icon: 2});
+                } else {
+                    console.log("data404", data)
+                    layer.msg(data.msg, {icon: 2});
+                }
+            }
+        });
+    })
+});
+
+//错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

@@ -8,6 +8,7 @@ import com.c3stones.client.pod.NginxPod2;
 import com.c3stones.common.Response;
 import com.c3stones.entity.*;
 import com.c3stones.util.KubeUtils;
+import com.c3stones.util.OpenFileUtils;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServicePort;
@@ -314,7 +315,7 @@ public class DeployController {
 		}
 		image = imagePrefix + "/"+image;
 		try {
-            nginxPod2.configMap(namespace,podName,podName,nginxConfig(conf));
+            nginxPod2.configMap(namespace,podName,podName,OpenFileUtils.fileConverString(conf));
 			nginxPod2.createDeployment(namespace,podName,podName,image,port,podName);
 			nginxPod2.createService(namespace,podName,port,nodePort);
         }catch (Exception e){
@@ -374,26 +375,7 @@ public class DeployController {
 		return Response.success(page);
 	}
 
-	private static String nginxConfig(MultipartFile file){
-		Reader reader = null;
-		String scriptContent = "";
-		try {
-			reader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
-			BufferedReader bufferedReader = new BufferedReader(reader);
-			StringBuilder stringBuilder = new StringBuilder();
-			String lineStr;
-			//逐行读取
-			while (null != (lineStr = bufferedReader.readLine())) {
-				//TODO 按你的需求处理
-				stringBuilder.append(lineStr).append("\n");
-			}
-			scriptContent = stringBuilder.toString();
-			System.out.println(scriptContent);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return  scriptContent;
-	}
+
 
 	/**
 	 * 上传文件
@@ -543,13 +525,7 @@ public class DeployController {
 	}
 
 	public static void main(String[] args) {
-		String str = "app-syszhsys-training-kubernetes-server-1-0";
-      String namespace ="app-sys";
-		System.out.println(str.indexOf(namespace));
-		System.out.println(str.length()-str.indexOf(namespace));
-
-		String substring = str.substring(namespace.length(), str.length());
-		System.out.println(substring);
+         removeTempFile("C:\\Users\\Administrator\\.kube-deployment\\.docker\\pod-380347");
 	}
 
 }

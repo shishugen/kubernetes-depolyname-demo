@@ -1,6 +1,7 @@
 package com.c3stones.controller;
 
 import cn.hutool.db.Page;
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.client.pod.*;
 import com.c3stones.common.Response;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "env")
-public class EnvController {
+public class EnvController extends BaseConfig {
 
     @Autowired
     private HttpHarbor httpHarbor ;
@@ -56,11 +57,7 @@ public class EnvController {
     private String podNamespacePrefix;
     @Value("${pod.env.prefix}")
     private String podEnvPrefix;
-    /**
-     * harbor url
-     */
-    @Value("${env.project}")
-    private  String harborProjectName;
+
 
     /**
      * 查询列表
@@ -87,7 +84,7 @@ public class EnvController {
     @RequestMapping(value = "listData")
     @ResponseBody
     public Response<Pages<HarborImage>> listData() {
-        List<HarborImage> harborList = httpHarbor.harborList(harborProjectName);
+        List<HarborImage> harborList = httpHarbor.harborList(harborImageEnvProjectName);
         Pages page = new Pages();
         page.setRecords(harborList);
         page.setTotal(harborList.size());

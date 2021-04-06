@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-content">
+	    <div class="layui-row">
+			<div class="layui-card">
+                <div class="layui-card-header">
+                	<i class="layui-icon mr5">&#xe66f;</i>k8s环境
+                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="add"><i class="layui-icon mr5">&#xe654;</i>配置</button>
+                </div>
+				<button class="layui-btn" data-type="reload">查询</button>
+					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
+                <script type="text/html" id="operation">
+                    <a class="layui-btn layui-btn-xs" lay-event="verify" >测试验证</a>
+                    <a class="layui-btn layui-btn-xs" lay-event="setEnv" >设为当前环境</a>
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/html" id="status">
+    {{#  if(d.status === '当前环境'){ }}
+    <span style="color: #F581B1;">{{ d.status }}</span>
+    {{#  } else { }}
+    {{ d.status }}
+    {{#  } }}
+</script>
+
+<script>
+var element = layui.element;
+var table = layui.table;
+var layer = layui.layer;
+
+
+table.render({
+	id: 'harborTable'
+	,elem: '#harborDataTable'
+    ,url: '[[@{/app/env/k8s/config/list}]]'
+    ,cols: [
+    	[
+	         {field:'masterUrl', title: '集群主节点'}
+	        , {field:'status', title: '启动状态',templet: '#status'}
+            ,{title:'操作', align: 'center', toolbar: '#operation', width:650}
+    	]
+   	]
+    ,response: {
+        statusCode: 200
+    }
+    ,parseData: function(res){
+	    console.log(res)
+    	return {
+    		"code": res.code
+            ,"msg": res.msg
+            ,"count": res.data.total
+            ,"data": res.data.records
+    	};
+    }
+});
+
+
+active = {
+	add: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '100%'],
+    		title: '新增',
+    		content: '[[@{/}]]app/env/k8s/add'
+    	});
+	},
+	reload: function() {
+		table.reload('harborTable', {
+		}, 'data');
+	},
+	reset: function() {
+		$(".layui-input").val("");
+	}
+};
+
+// 按钮事件
+$('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+});
+
+//监听行工具事件
+table.on('tool(config)', function(obj) {
+    var row = obj.data;
+    if (obj.event === "verify") {
+
+        $.ajax({
+            url : "[[@{/}]]app/env/k8s/config/verify",
+            type : "post",
+            data : {'masterUrl': row.masterUrl},
+            dataType : "json",
+            error : function(data) {
+                errorHandle(data);
+            },
+            success : function(data) {
+                console.log("33",data)
+                if(data.code == 200){
+                    layer.msg("测试连接成功", {icon: 1});
+                }else{
+                    layer.msg(data.msg, {icon: 2});
+                }
+            }
+        });
+
+    }else if(obj.event === 'del') {
+        layer.confirm("确认删除吗？", {icon: 3, title: '提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: "[[@{/}]]app/env/k8s/config/delete",
+                type: "post",
+                data : {'masterUrl': row.masterUrl},
+                dataType: "json",
+                error: function (data) {
+                    errorHandle(data);
+                },
+                success: function (data) {
+                    if(data.code == 200){
+                        layer.msg("删除成功", {icon: 1});
+                    }else{
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                    active.reload();
+                }
+            });
+        });
+     }else if(obj.event === 'setEnv') {
+        layer.confirm("确认设置为当前环境吗？", {icon: 3, title: '提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: "[[@{/}]]app/env/k8s/config/setEnv",
+                type: "post",
+                data : {'masterUrl': row.masterUrl},
+                dataType: "json",
+                error: function (data) {
+                    errorHandle(data);
+                },
+                success: function (data) {
+                    if(data.code == 200){
+                        layer.msg("设置成功", {icon: 1});
+                    }else{
+                        layer.msg(data.msg, {icon: 2});
+                    }
+                    active.reload();
+                }
+            });
+        });
+    }
+})
+
+
+//错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

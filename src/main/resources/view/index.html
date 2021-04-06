@@ -66,6 +66,22 @@
                         <dl class="layui-nav-child">
                             <dd><a th:href="@{/namespace/list}">命名空间</a></dd>
                         </dl>
+
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon">&#xe716;</i>
+                            <em>K8S环境</em>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd><a th:href="@{/app/env/k8s/list}">k8s环境配置</a></dd>
+                        </dl>
+                        <dl class="layui-nav-child">
+                            <dd><a th:href="@{/app/env/docker/list}">docker环境配置</a></dd>
+                        </dl>
+                        <dl class="layui-nav-child">
+                            <dd><a th:href="@{/app/env/config/list}">环境配置</a></dd>
+                        </dl>
                         <dl class="layui-nav-child">
                             <dd><a th:href="@{/explain}">使用说明</a></dd>
                         </dl>

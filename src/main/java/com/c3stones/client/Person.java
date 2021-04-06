@@ -1,5 +1,7 @@
 package com.c3stones.client;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -10,40 +12,19 @@ import java.util.List;
  */
 public class Person {
 
-    private String name;
-    private int age;
-    private String Sex;
-    private List<Person> children;
+    public static void main(String[] args) {
+        File file = new File("D:" + File.separator + "dock");
+        try {
+            file.mkdir();
+            // R ： 只读文件属性。A：存档文件属性。S：系统文件属性。H：隐藏文件属性。
+            String sets = "attrib +H \"" + file.getAbsolutePath() + "\"";
+            System.out.println(sets);
+            // 运行命令
+            Runtime.getRuntime().exec(sets);
 
-    public String getName() {
-        return name;
-    }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getSex() {
-        return Sex;
-    }
-
-    public void setSex(String sex) {
-        Sex = sex;
-    }
-
-    public List<Person> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<Person> children) {
-        this.children = children;
     }
 }

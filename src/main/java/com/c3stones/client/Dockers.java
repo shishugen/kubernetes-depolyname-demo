@@ -38,35 +38,35 @@ import java.util.jar.JarFile;
  */
 @Slf4j
 @Component
-public class Dockers {
+public class Dockers extends BaseConfig{
 
  //   private static final String DEFAULT_HOST_I P = "10.49.0.9";
 
-    @Value("${docker.host}")
-    private String dockerHost;
+ /*   @Value("${docker.host}")
+    private String dockerHost;*/
 
-    @Value("${docker.port:2375}")
-    private String dockerPort;
+ /*   @Value("${docker.port:2375}")
+    private String dockerPort;*/
 
   //  private static final String DEFAULT_HOST_PORT = "2375";
 
-    @Value("${docker.file.dir}")
-    private  String dockerFileDir;
+/*    @Value("${docker.file.dir}")
+    private  String dockerFileDir;*/
 
     private  String DEFAULT_FILE_DIRECTORY ;
 
     //仓库地址
    // private static String REGISTR = "10.49.0.9/application/";
 
-    @Value("${harbor.image.prefix}")
+/*    @Value("${harbor.image.prefix}")
     private String imagePrefix;
 
     @Value("${harbor.image.project.name}")
-    private String projectName;
+    private String projectName;*/
 
     @Value("${nginx.image}")
     private String nginxImage;
-
+/*
     @Value("${harbor.password}")
     private String harborPassword;
 
@@ -74,21 +74,41 @@ public class Dockers {
     private String harborUser;
 
     @Value("${harbor.url}")
-    private String harborUrl;
+    private String harborUrl;*/
 
     private static String separator = System.getProperty("line.separator");
 
     public  DockerClient getDockerClient() {
         DockerClient dockerClient = null;
         log.info("获取连接:{}", dockerClient);
+            synchronized (Dockers.class) {
+                String   serverIp = "";
+                String homeConfigFile = Dockers.getHomeConfigFile();
+                File file = new File(homeConfigFile);
+                File[] files = file.listFiles();
+                if(files != null && files.length > 2){
+                    for (File f :files){
+                        if(f.isDirectory()){
+                             serverIp = f.getName();
+                        }
+                    }
+                }
+                return   getDockerClient(homeConfigFile, serverIp);
+            }
+    }
+
+    public  DockerClient getDockerClient(String confPath, String serverIp) {
+        DockerClient dockerClient = null;
+        log.info("获取连接:{}", dockerClient);
      // isWindows();
             synchronized (Dockers.class) {
-                log.info("配置文件路径===" + dockerFileDir + File.separator + dockerHost);
+                log.info("配置文件路径===" + confPath);
+                log.info("IP加端口===" + serverIp+":"+dockerPort);
                 DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerTlsVerify(true)
                        // .withCustomSslConfig(new LocalDirectorySSLConfig(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost))
-                        .withDockerHost("tcp://" + dockerHost + ":" + dockerPort)
-                         .withDockerCertPath(dockerFileDir + File.separator + dockerHost)
-                        .withDockerConfig(dockerFileDir + File.separator + dockerHost)
+                        .withDockerHost("tcp://" + serverIp + ":" + dockerPort)
+                         .withDockerCertPath(confPath)
+                        .withDockerConfig(confPath )
                      //   .withRegistryUrl(harborUrl)
                       //  .withRegistryUsername(harborUser)
                     //    .withRegistryPassword(harborPassword)
@@ -100,7 +120,7 @@ public class Dockers {
         return dockerClient;
     }
 
-
+/*
     public  void isWindows() {
         boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
         if (isWindows) {
@@ -108,7 +128,7 @@ public class Dockers {
         } else {
             DEFAULT_FILE_DIRECTORY = File.separator + "home";
         }
-    }
+    }*/
 
     public  File writeDockerfile(String jarPath ,String homeDir) throws IOException {
         File file = new File(homeDir + File.separator + "Dockerfile");
@@ -206,20 +226,11 @@ public class Dockers {
     }
 
 
-    public static String getHomeDir() {
-        String dir = System.getProperty("user.home") + File.separator + "docker";
-        if(!new File(dir).exists()){
-            new File(dir).mkdirs();
-        }
-        return dir;
-
-    }
-
     public void upload(String baseDir ,String image,String tag) throws InterruptedException {
         log.info("baseDir : {} ,image : {}",baseDir,image);
         DockerClient dockerClient = getDockerClient();
         Dockers dockers = new Dockers();
-        String imageName = imagePrefix+"/"+projectName+"/"+image;
+        String imageName = harborImagePrefix+"/"+harborImageProjectName+"/"+image;
         HashSet<String> objects = new HashSet<>(1);
         objects.add(imageName+":"+tag);
         log.info("start buildImage……imageName  : {}:{} ",imageName,tag);
@@ -240,6 +251,42 @@ public class Dockers {
 
     }
 
+    /**
+     * docker 配置文件夹
+     * @return
+     */
+    public static String getHomeConfigDir() {
+        String dir = System.getProperty("user.home") +File.separator + ".kube-deployment"+ File.separator + ".docker"+ File.separator+"configs";
+        if(!new File(dir).exists()){
+            new File(dir).mkdirs();
+        }
+        return dir;
+    }
+
+    /**
+     * docker 当前 配置
+     * @return
+     */
+    public static String getHomeConfigFile() {
+        String dir = System.getProperty("user.home") + File.separator + ".kube-deployment"+ File.separator + ".docker"+ File.separator +"config";
+        if(!new File(dir).exists()){
+            new File(dir).mkdirs();
+        }
+        return dir;
+    }
+
+
+
+
+    public static String getHomeDir() {
+        String dir = System.getProperty("user.home") + File.separator + ".kube-deployment"+ File.separator + ".docker";
+        if(!new File(dir).exists()){
+            new File(dir).mkdirs();
+        }
+        return dir;
+
+    }
+
 
     public static void main(String[] args) throws InterruptedException, Exception {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -250,8 +297,10 @@ public class Dockers {
 
         com.github.dockerjava.api.model.Version exec = dockerClient.versionCmd().exec();
         System.out.println("docker Version"+exec.getVersion());
-
-
     }
+
+
+
+
 
 }

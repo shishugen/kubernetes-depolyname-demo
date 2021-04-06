@@ -1,5 +1,6 @@
 package com.c3stones.client.pod;
 
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.exception.KubernetesException;
 import io.fabric8.kubernetes.api.model.*;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class FastdfsPod {
+public class FastdfsPod  extends BaseConfig {
 
     /***
      * labels
@@ -29,16 +30,6 @@ public class FastdfsPod {
 
     private  static  String MYSQL_ROOT_PASSWORD = "123456";
 
-    /**
-     * nfs 名称
-     */
-    @Value("${nfs.storage.className}")
-    private String nfsStorageClassName;
-    /**
-     * nfs 存储大小
-     */
-    @Value("${nfs.storage.fdfs.size:10}")
-    private Integer nfsStorageSize;
 
     @Autowired
     private  Kubes kubes;
@@ -54,7 +45,7 @@ public class FastdfsPod {
       //  String image = "";
         // String image = "10.49.0.9/base/ssg-fastdfs:1.0";
         String pvcName =namespace + podName;
-        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsStorageSize);
+        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsFdfsStorageSize);
         Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, podName).endMetadata()
                 .withNewSpec().withContainers(new ContainerBuilder()
                         .withName(podName)

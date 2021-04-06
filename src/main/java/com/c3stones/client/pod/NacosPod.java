@@ -2,6 +2,7 @@ package com.c3stones.client.pod;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.controller.PodController;
 import com.c3stones.entity.NacosEntity;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class NacosPod {
+public class NacosPod extends BaseConfig {
 
     /***
      * labels
@@ -40,16 +41,6 @@ public class NacosPod {
     @Autowired
     private  Kubes kubes;
 
-    /**
-     * nfs 名称
-     */
-    @Value("${nfs.storage.className}")
-    private String nfsStorageClassName;
-    /**
-     * nfs 存储大小
-     */
-    @Value("${nfs.storage.nacos.size:2}")
-    private Integer nfsStorageSize;
 
     @Value("${pod.namespace.prefix}")
     private String podNamespacePrefix;
@@ -71,7 +62,7 @@ public class NacosPod {
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
         try{
             String pvcName =namespace + podName;
-            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsStorageSize);
+            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNacosStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)

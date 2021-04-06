@@ -1,5 +1,6 @@
 package com.c3stones.client.pod;
 
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.exception.KubernetesException;
 import io.fabric8.kubernetes.api.model.*;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class MySQLPod {
+public class MySQLPod extends BaseConfig {
 
     /***
      * labels
@@ -32,16 +33,6 @@ public class MySQLPod {
     @Autowired
     private  Kubes kubes;
 
-    /**
-     * nfs 名称
-     */
-    @Value("${nfs.storage.className}")
-    private String nfsStorageClassName;
-    /**
-     * nfs 存储大小
-     */
-    @Value("${nfs.storage.MySql.size:3}")
-    private Integer nfsStorageSize;
 
     @Value("${pod.env.prefix}")
     private String podEnvPrefix;
@@ -59,7 +50,7 @@ public class MySQLPod {
             MYSQL_ROOT_PASSWORD = password;
         }
             String pvcName =namespace + podName;
-            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsStorageSize);
+            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)

@@ -2,6 +2,7 @@ package com.c3stones.http;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.c3stones.client.BaseConfig;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.HarborTemp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,22 +25,10 @@ import java.util.Map;
  * @Date: 2020/9/4 10:59
  */
 @Component
-public class HttpHarbor {
-
-    @Value("${harbor.user}")
-    private String harborUser;
-
-    @Value("${harbor.password}")
-    private String harborPassword;
-
-    @Value("${harbor.url}")
-    private String harborUrl;
-
+public class HttpHarbor extends BaseConfig {
 
     @Autowired
     private RestTemplate harborClient ;
-
-
 
     public  ResponseEntity<JSONArray> send(String urlName , HttpMethod httpMethod, Map params){
         ResponseEntity<JSONArray> responseEntity = new ResponseEntity(HttpStatus.NOT_FOUND);
