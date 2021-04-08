@@ -17,7 +17,7 @@ import java.util.Properties;
  */
 public class BaseConfig {
 
-    protected static Integer dockerPort;
+    protected static Integer dockerPort=2375;
     protected static String harborUser ;
     protected static String harborPassword ;
     protected static String harborUrl;

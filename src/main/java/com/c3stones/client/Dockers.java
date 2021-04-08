@@ -105,10 +105,10 @@ public class Dockers extends BaseConfig{
                 log.info("配置文件路径===" + confPath);
                 log.info("IP加端口===" + serverIp+":"+dockerPort);
                 DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerTlsVerify(true)
-                       // .withCustomSslConfig(new LocalDirectorySSLConfig(DEFAULT_FILE_DIRECTORY + File.separator + dockerHost))
+                        .withCustomSslConfig(new LocalDirectorySSLConfig(confPath))
                         .withDockerHost("tcp://" + serverIp + ":" + dockerPort)
-                         .withDockerCertPath(confPath)
-                        .withDockerConfig(confPath )
+                      //   .withDockerCertPath(confPath)
+                      //  .withDockerConfig(confPath )
                      //   .withRegistryUrl(harborUrl)
                       //  .withRegistryUsername(harborUser)
                     //    .withRegistryPassword(harborPassword)

@@ -238,7 +238,7 @@ public class AppDockerEnvController {
     @ResponseBody
     public Response<Pages<Config>> k8sVerify(String serverIp) {
         try {
-            DockerClient dockerClient = dockers.getDockerClient(Dockers.getHomeConfigDir(), serverIp);
+            DockerClient dockerClient = dockers.getDockerClient(Dockers.getHomeConfigDir()+File.separator+serverIp, serverIp);
             Version version = dockerClient.versionCmd().exec();
             System.out.println(version.getVersion());
         } catch (Exception e) {
