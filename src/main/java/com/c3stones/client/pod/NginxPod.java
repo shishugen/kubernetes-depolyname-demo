@@ -1,5 +1,6 @@
 package com.c3stones.client.pod;
 
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import io.fabric8.kubernetes.api.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class NginxPod {
+public class NginxPod extends BaseConfig {
 
     /***
      * labels

@@ -111,7 +111,7 @@ public class EnvController extends BaseConfig {
         }
         try {
             if(name.contains("mysql")){
-                mySQLPod.createMySQL(namespace,nodePort);
+                mySQLPod.createMySQL(namespace,MySQLnodePort);
             }else if(name.contains("nacos")){
                 nacosPod.createNacos(namespace);
             }else if(name.contains("redis")){

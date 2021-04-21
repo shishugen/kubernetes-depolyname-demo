@@ -116,7 +116,7 @@ public class MySQLPod extends BaseConfig {
         String labelsName="mysql";
         String portName="mysql";
         kubes.createNamespace(namespace);
-        create(namespace,podName,labelsName,image,3306,portName,"");
+        create(namespace,podName,labelsName,harborImageEnvPrefix+image,3306,portName,"");
         createService(namespace,podName,labelsName,3306,portName,nodePort);
     }
 

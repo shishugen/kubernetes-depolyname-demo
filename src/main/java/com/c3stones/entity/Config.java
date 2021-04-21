@@ -24,8 +24,8 @@ public class Config {
 
     private String nfsMySqlStorageSize ;
     private String nfsNacosStorageSize ;
-    private   String nfsMqStorageSize ;
-    private  String nfsFdfsStorageSize ;
+    private String nfsMqStorageSize ;
+    private String nfsFdfsStorageSize ;
 
 
 

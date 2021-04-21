@@ -220,7 +220,7 @@ public class NacosPod extends BaseConfig {
         String labelsName="nacos";
         String portName="nacos";
         kubes.createNamespace(namespace);
-        create(namespace,podName,labelsName,image,8848,portName);
+        create(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName);
         createService(namespace,podName,labelsName,8848,portName);
     }
 }

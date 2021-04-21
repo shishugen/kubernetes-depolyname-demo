@@ -1,8 +1,10 @@
 package com.c3stones.client.pod;
 
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import io.fabric8.kubernetes.api.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,7 +18,7 @@ import redis.clients.jedis.Jedis;
  */
 @Slf4j
 @Component
-public class LibreofficePod {
+public class LibreofficePod extends BaseConfig {
 
     /***
      * labels
@@ -134,7 +136,7 @@ public class LibreofficePod {
         String labelsName="libreoffice";
         String portName="libreoffice";
        // configMap(namespace,configName,configName);
-        create(namespace,podName,labelsName,image,8100,portName,configName);
+        create(namespace,podName,labelsName,harborImageEnvPrefix+image,8100,portName,configName);
         createService(namespace,podName,labelsName,8100,portName);
     }
 

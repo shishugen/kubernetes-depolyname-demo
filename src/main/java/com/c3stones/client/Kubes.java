@@ -394,13 +394,25 @@ public class Kubes {
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
+
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(1);
+        map.put("memory",new Quantity(String.valueOf(1024),"M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> requests= new HashMap(1);
+        requests.put("memory",new Quantity(String.valueOf(512),"M"));
+
+        resource.setRequests(requests);
+        container.setResources(resource);
+
         Probe probe = new Probe();
         HTTPGetAction httpGetAction = new HTTPGetAction();
         httpGetAction.setPath("/health");
         httpGetAction.setPort(new IntOrStringBuilder().withIntVal(9000).build());
         httpGetAction.setScheme("HTTP");
         probe.setHttpGet(httpGetAction);
-        probe.setInitialDelaySeconds(60);
+        probe.setInitialDelaySeconds(30);
         probe.setTimeoutSeconds(5);
         probe.setSuccessThreshold(1);
         probe.setFailureThreshold(5);
@@ -412,7 +424,7 @@ public class Kubes {
         httpGetAction2.setPort(new IntOrStringBuilder().withIntVal(9000).build());
         httpGetAction2.setScheme("HTTP");
         probe2.setHttpGet(httpGetAction2);
-        probe2.setInitialDelaySeconds(30 );
+        probe2.setInitialDelaySeconds(30);
         probe2.setTimeoutSeconds(5);
         probe2.setSuccessThreshold(1);
         probe2.setFailureThreshold(5);
@@ -432,11 +444,14 @@ public class Kubes {
         container.setName(appName);
         container.setImage(image);
 
-        List<EnvVar> env = new ArrayList<>();
+
+
+        List<EnvVar> env = new ArrayList<>(4);
         EnvVar envVar = new EnvVar();
         envVar.setName("NAMESPACE");
         envVar.setValue(nacosNamespace);
         env.add(envVar);
+
 
         EnvVar envVar2 = new EnvVar();
         envVar2.setName("NACOS_PORT");
@@ -450,6 +465,17 @@ public class Kubes {
         container.setEnv(env);
         container.setImagePullPolicy("Always");
 
+
+       // String cmd = "java -jar -Xms512m  -Xmx1624m  app.jar";
+        List<String> cmdList = new ArrayList<>();
+        cmdList.add("java");
+        cmdList.add("-jar");
+        container.setCommand(cmdList);
+        List<String> arrayList = new ArrayList<>();
+        arrayList.add("-Xms512m");
+        arrayList.add("-Xmx1024m");
+        arrayList.add("/app.jar");
+        container.setArgs(arrayList);
         if(pvcName != null){
             List<VolumeMount> volumeMounts = new ArrayList();
             VolumeMount volumeMount = new VolumeMount();

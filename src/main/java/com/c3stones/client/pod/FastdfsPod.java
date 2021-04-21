@@ -107,7 +107,7 @@ public class FastdfsPod  extends BaseConfig {
     }
 
     public  void  createT(String namespace,Integer nodePort){
-        tracker(namespace,image,nodePort);
+        tracker(namespace,harborImageEnvPrefix+image,nodePort);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.c3stones.client.pod;
 
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import io.fabric8.kubernetes.api.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import redis.clients.jedis.Jedis;
  */
 @Slf4j
 @Component
-public class RedisPod {
+public class RedisPod extends BaseConfig {
 
     /***
      * labels
@@ -131,7 +132,7 @@ public class RedisPod {
         String labelsName="redis";
         String portName="redis";
         configMap(namespace,configName,configName);
-        create(namespace,podName,labelsName,image,6379,portName,configName);
+        create(namespace,podName,labelsName,harborImageEnvPrefix+image,6379,portName,configName);
         createService(namespace,podName,labelsName,6379,portName);
     }
 

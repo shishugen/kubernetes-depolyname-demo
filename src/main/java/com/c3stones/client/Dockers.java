@@ -167,7 +167,16 @@ public class Dockers extends BaseConfig{
         outputStream.write("ENV TZ=Asia/Shanghai".getBytes());
         outputStream.write(separator.getBytes());
 
-        outputStream.write("ENTRYPOINT [\"java\",\"-jar\",\"/app.jar\"]".getBytes());
+        outputStream.write("ENV Jvm_Xms \"-Xms512m\"".getBytes());
+        outputStream.write(separator.getBytes());
+
+        outputStream.write("ENV Jvm_Xmx \"-Xmx1024m\"".getBytes());
+        outputStream.write(separator.getBytes());
+
+       outputStream.write("ENTRYPOINT [\"java\",\"-jar\",\"-Xms512m\",\"-Xmx1024m\", \"/app.jar\"]".getBytes());
+      //  outputStream.write("ENTRYPOINT [\"java\",\"$JVM\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/app.jar\"]".getBytes());
+
+       // outputStream.write("ENTRYPOINT [\"java\",\"-jar\",\"/app.jar\"]".getBytes());
       //  outputStream.write("ENTRYPOINT [\"java\",\"-Dloader.path=libs/\",\"-jar\",\"/app.jar\"]".getBytes());
         return file;
     }
@@ -177,7 +186,7 @@ public class Dockers extends BaseConfig{
 
         FileOutputStream outputStream = new FileOutputStream(file);//形参里面可追加true参数，表示在原有文件末尾追加信息
 
-        outputStream.write(("FROM "+nginxImage).getBytes());
+        outputStream.write(("FROM "+harborImageEnvPrefix+nginxImage).getBytes());
         outputStream.write(separator.getBytes());
 
 

@@ -1,7 +1,7 @@
 package com.c3stones.client;
 
+
 import com.c3stones.entity.Config;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +29,7 @@ public class BaseConfig {
     protected static Integer nfsNacosStorageSize ;
     protected  static Integer nfsMqStorageSize ;
     protected static Integer nfsFdfsStorageSize ;
+    protected static String harborImageEnvPrefix ;
 
     private static void getConfig(){
         Properties pro = new Properties();
@@ -54,8 +55,8 @@ public class BaseConfig {
         }
     }
 
-    public static void setConfig(Properties pro){
-        dockerPort =Integer.valueOf(pro.getProperty("docker.port"));
+    public static Config setConfig(Properties pro){
+         dockerPort =Integer.valueOf(pro.getProperty("docker.port"));
          harborUser =pro.getProperty("harbor.user");
          harborPassword = pro.getProperty("harbor.password");
          harborUrl = pro.getProperty("harbor.url");
@@ -67,6 +68,10 @@ public class BaseConfig {
          nfsNacosStorageSize =Integer.valueOf( pro.getProperty("nfs.storage.nacos.size"));
          nfsMqStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.mq.size"));
          nfsFdfsStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.fdfs.size"));
+         harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
+        return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
+                ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString(),nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString());
+
     }
 
     /**
@@ -76,5 +81,53 @@ public class BaseConfig {
     public static String getHomeConfigFile() {
         return System.getProperty("user.home") + File.separator + ".kube-deployment"+ File.separator +"config";
     }
+
+    public static Config initConfig(){
+        Properties pro = new Properties();
+        InputStream inputStream = null;
+        Config config = null;
+        try {
+            File file = new File(BaseConfig.getHomeConfigFile());
+            if(file.isFile()){
+                //存在
+                inputStream = new FileInputStream(file);
+                pro.load(inputStream);
+                config = setConfig(pro);
+            }else{
+                ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+                inputStream = classloader.getResourceAsStream("application.properties");
+                pro.load(inputStream);
+                config = setConfig(pro);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            try {
+                if(inputStream != null){
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return config;
+    }
+/*
+    private static Config propertiesToConfig(Properties pro){
+        Integer dockerPort =Integer.valueOf(pro.getProperty("docker.port"));
+        String harborUser =pro.getProperty("harbor.user");
+        String harborPassword = pro.getProperty("harbor.password");
+        String harborUrl = pro.getProperty("harbor.url");
+        String harborImagePrefix = pro.getProperty("harbor.image.prefix");
+        String harborImageProjectName = pro.getProperty("harbor.image.project.name");
+        String harborImageEnvProjectName = pro.getProperty("harbor.image.env.project.name");
+        String nfsStorageClassName = pro.getProperty("nfs.storage.className");
+        String nfsMySqlStorageSize = pro.getProperty("nfs.storage.MySql.size");
+        String nfsNacosStorageSize = pro.getProperty("nfs.storage.nacos.size");
+        String nfsMqStorageSize = pro.getProperty("nfs.storage.mq.size");
+        String nfsFdfsStorageSize = pro.getProperty("nfs.storage.fdfs.size");
+        return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
+                ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize,nfsNacosStorageSize,nfsMqStorageSize,nfsFdfsStorageSize);
+    }*/
 
 }

@@ -2,6 +2,7 @@ package com.c3stones.client.pod;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.entity.NacosEntity;
 import com.c3stones.entity.Pods;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class GuacdPod {
+public class GuacdPod extends BaseConfig {
 
     /***
      * labels
@@ -188,7 +189,7 @@ public class GuacdPod {
     public void createGuacamole(String namespace,String podName){
         String labelsName="guacamole";
         String portName=podName;
-        create(namespace,podName,labelsName,image,4822,portName);
+        create(namespace,podName,labelsName,harborImageEnvPrefix+image,4822,portName);
         Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
         if(service == null){
             createService(namespace,labelsName,labelsName,4822,portName);

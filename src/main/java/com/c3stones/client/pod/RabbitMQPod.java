@@ -170,7 +170,7 @@ public class RabbitMQPod extends BaseConfig {
         String portName="rabbitmq";
         kubes.createNamespace(namespace);
      //   configMap(namespace);
-        create(namespace,podName,labelsName,image,15672,portName+1,5672,portName+2);
+        create(namespace,podName,labelsName,harborImageEnvPrefix+image,15672,portName+1,5672,portName+2);
         createService(namespace,podName,labelsName,15672,portName+1,5672,portName+2);
     }
 

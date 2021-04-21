@@ -214,14 +214,18 @@ table.render({
 	id: 'harborTable4'
 	,elem: '#harborDataTable4'
     ,url: '[[@{/deploy/getDeployment}]]'
+    ,height:400
+    ,done : function () {
+        $('.layui-table-fixed-r').removeClass('layui-hide');
+    }
     ,cols: [
     	[
-	      {field:'name', title: '部署名称', align: 'center'}
-	      ,{field:'namespace', title: '命名空间', align: 'center'}
-	      ,{field:'replicas', title: '数量', align: 'center',width:50}
-	      ,{field:'image', title: '镜像', align: 'center'}
-	      ,{field:'date', title: '日期', align: 'center'}
-	      ,{title:'操作', align: 'center', toolbar: '#operation4', width:250}
+	      {field:'name', title: '部署名称', align: 'center',width:300}
+            ,{field:'namespace', title: '命名空间', align: 'center',width:100}
+            ,{field:'replicas', title: '数量', align: 'center',width:40}
+            ,{field:'date', title: '日期', align: 'center'}
+            ,{field:'image', title: '镜像', align: 'center'}
+            ,{fixed: 'right',title:'操作', align: 'center', toolbar: '#operation4', width:300}
     	]
    	]
     ,response: {

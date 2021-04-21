@@ -1,5 +1,6 @@
 package com.c3stones.controller;
 
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Dockers;
 import com.c3stones.client.Kubes;
 import com.c3stones.client.pod.NacosPod;
@@ -42,7 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Controller
 @Slf4j
 @RequestMapping(value = "deploy")
-public class DeployController {
+public class DeployController  extends BaseConfig {
 
 
 	@Autowired
@@ -59,14 +60,14 @@ public class DeployController {
      */
     private  static  String LABELS_KEY = "app";
 
-	@Value("${harbor.image.prefix}")
-      private String imagePrefix;
+	/*@Value("${harbor.image.prefix}")
+      private String imagePrefix;*/
 
 	/**
 	 * nfs 名称
 	 */
-	@Value("${nfs.storage.className}")
-	private String nfsStorageClassName;
+/*	@Value("${nfs.storage.className}")
+	private String nfsStorageClassName;*/
 
 	@Autowired
 	private  NginxPod nginxPod;
@@ -196,7 +197,7 @@ public class DeployController {
 		KubernetesClient kubeclinet = kubes.getKubeclinet();
 		kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).edit()
 				.editSpec().withReplicas(replicas).editTemplate().editSpec().editContainer(0)
-				.withImage(imagePrefix+"/"+image)
+				.withImage(harborImagePrefix+"/"+image)
 				.endContainer().endSpec().endTemplate().endSpec().done();
 		return Response.success(true);
 	}
@@ -259,7 +260,7 @@ public class DeployController {
 			return Response.error("服务已存在");
 		}
 		try {
-		image = imagePrefix + "/"+image;
+		image = harborImagePrefix + "/"+image;
 				if(nfs == 1){
 					kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
 					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace,namespace+podName)){
@@ -313,7 +314,7 @@ public class DeployController {
 		if(kubes.checkdeployname(namespace,podNginxPrefix+podName)){
 			return Response.error("服务已存在");
 		}
-		image = imagePrefix + "/"+image;
+		image = harborImagePrefix + "/"+image;
 		try {
             nginxPod2.configMap(namespace,podName,podName,OpenFileUtils.fileConverString(conf));
 			nginxPod2.createDeployment(namespace,podName,podName,image,port,podName);
