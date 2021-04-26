@@ -96,7 +96,7 @@ public class MySQLPod extends BaseConfig {
                 //内网端口
                 .withPort(port)
                 .withProtocol("TCP")
-               // .withNodePort(nodePort)
+                .withNodePort(nodePort)
                 .endPort()
                 .withType(type)
                 .addToSelector(LABELS_KEY, labelsValue).endSpec()
