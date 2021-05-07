@@ -415,10 +415,10 @@ public class Kubes {
         probe.setInitialDelaySeconds(30);
         probe.setTimeoutSeconds(5);
         probe.setSuccessThreshold(1);
-        probe.setFailureThreshold(5);
+        probe.setFailureThreshold(3);
         container.setLivenessProbe(probe);
-
         Probe probe2 = new Probe();
+
         HTTPGetAction httpGetAction2 = new HTTPGetAction();
         httpGetAction2.setPath("/health");
         httpGetAction2.setPort(new IntOrStringBuilder().withIntVal(9000).build());
@@ -427,7 +427,7 @@ public class Kubes {
         probe2.setInitialDelaySeconds(30);
         probe2.setTimeoutSeconds(5);
         probe2.setSuccessThreshold(1);
-        probe2.setFailureThreshold(5);
+        probe2.setFailureThreshold(3);
         container.setReadinessProbe(probe2);
  /*       Lifecycle lifecycle = new Lifecycle();
         Handler handler = new Handler();

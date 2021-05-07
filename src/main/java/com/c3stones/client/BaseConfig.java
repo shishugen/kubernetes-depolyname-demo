@@ -68,7 +68,8 @@ public class BaseConfig {
          nfsNacosStorageSize =Integer.valueOf( pro.getProperty("nfs.storage.nacos.size"));
          nfsMqStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.mq.size"));
          nfsFdfsStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.fdfs.size"));
-         harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
+         //harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
+         harborImageEnvPrefix = harborImageEnvProjectName;
         return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
                 ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString(),nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString());
 
