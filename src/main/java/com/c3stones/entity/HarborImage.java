@@ -2,6 +2,8 @@ package com.c3stones.entity;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 
  *
@@ -33,6 +35,13 @@ public class HarborImage {
     private String parentName;
 
     private String imageStatus;
+
+
+    private List<String> successData;
+
+    private List<String> errorData;
+
+
 
 
 

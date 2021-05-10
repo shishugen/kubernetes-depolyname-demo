@@ -12,18 +12,21 @@
 <body class="layui-view-body">
 	<div class="layui-content">
 	    <div class="layui-row">
-			<div class="layui-card">
-                <div class="layui-card-header">
-                	<i class="layui-icon mr5">&#xe66f;</i>应用部署
-                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="add"><i class="layui-icon mr5">&#xe654;</i>前端新增</button>&nbsp;&nbsp;
-                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="addNginx"><i class="layui-icon mr5">&#xe654;</i>JAR新增</button>&nbsp;&nbsp;
-                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="deployNginx"><i class="layui-icon mr5">&#xe654;</i>前端部署</button>
-                </div>
-                    项目名称 ：
+
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">镜像名称</label>
                     <div class="layui-inline mr10">
-                        <input class="layui-input" name="projectName" value="appl" autocomplete="off">
+                        <input type="tel" name="projectName" value="appl"  class="layui-input">
                     </div>
-                <button class="layui-btn" id="reload" data-type="reload">查询</button>
+                    <button class="layui-btn" id="reload" data-type="reload">查询</button>
+
+                    <button class="layui-btn layui-btn-normal" data-type="deployMultiPod">批量部署应用</button>
+                    <button class="layui-btn layui-btn-normal" data-type="deployNginx">前端部署</button>
+                    <button class="layui-btn layui-btn-normal" data-type="add">前端新增</button>
+                    <button class="layui-btn layui-btn-normal" data-type="addNginx">批量JAR新增</button>
+                </div>
+
 					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
 					<script type="text/html" id="operation">
 						<a class="layui-btn layui-btn-xs" lay-event="deploy" >部署</a>
@@ -93,6 +96,14 @@ active = {
     		area: ['100%', '80%'],
     		title: '新增',
     		content: '[[@{/}]]deploy/deployNginx'
+    	});
+	},
+    deployMultiPod: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '80%'],
+    		title: '新增',
+    		content: '[[@{/}]]deploy/deployMultiPod'
     	});
 	},
 

@@ -323,8 +323,10 @@ public class Kubes {
 
 
 
-    public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos , String nacosNamespace) {
-        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null);
+    public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
+                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms) {
+        Container container =
+                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms);
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -348,8 +350,9 @@ public class Kubes {
         return true;
     }
 
-    public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos , String nacosNamespace,String pvcName) {
-        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName);
+    public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos ,
+                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms) {
+        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms);
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -388,20 +391,37 @@ public class Kubes {
      *
      * @param appName
      * @param image
+     * @param ports
+     * @param serviceName
+     * @param nacos
+     * @param nacosNamespace
+     * @param pvcName
+     * @param memoryXmx 最大
+     * @param memoryXms 最小
      * @return
      */
-    private  Container createContainer(String appName,String image,Integer ports,String serviceName,String nacos ,String nacosNamespace,String pvcName){
+    private  Container createContainer(String appName,String image,Integer ports,String serviceName,String nacos ,String nacosNamespace,String pvcName
+    ,Integer memoryXmx,Integer memoryXms){
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
+        Map<String,Quantity> requests= new HashMap(1);
+        requests.put("memory",new Quantity(String.valueOf(memoryXms),"M"));
 
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
-        map.put("memory",new Quantity(String.valueOf(1024),"M"));
+        map.put("memory",new Quantity(String.valueOf(memoryXmx),"M"));
         resource.setLimits(map);
 
-        Map<String,Quantity> requests= new HashMap(1);
-        requests.put("memory",new Quantity(String.valueOf(512),"M"));
+        List<String> cmdList = new ArrayList<>();
+        cmdList.add("java");
+        cmdList.add("-jar");
+        container.setCommand(cmdList);
+        List<String> arrayList = new ArrayList<>();
+        arrayList.add("-Xms"+memoryXms+"m");
+        arrayList.add("-Xmx"+memoryXmx+"m");
+        arrayList.add("/app.jar");
+        container.setArgs(arrayList);
 
         resource.setRequests(requests);
         container.setResources(resource);
@@ -467,15 +487,7 @@ public class Kubes {
 
 
        // String cmd = "java -jar -Xms512m  -Xmx1624m  app.jar";
-        List<String> cmdList = new ArrayList<>();
-        cmdList.add("java");
-        cmdList.add("-jar");
-        container.setCommand(cmdList);
-        List<String> arrayList = new ArrayList<>();
-        arrayList.add("-Xms512m");
-        arrayList.add("-Xmx1024m");
-        arrayList.add("/app.jar");
-        container.setArgs(arrayList);
+
         if(pvcName != null){
             List<VolumeMount> volumeMounts = new ArrayList();
             VolumeMount volumeMount = new VolumeMount();
@@ -580,6 +592,10 @@ public class Kubes {
              file = new File(dir + File.separator + "config");
             if (!file.isFile()){
                 file.createNewFile();
+            }
+            if(!System.getProperty("os.name").toLowerCase().contains("win") && !file.exists() && file.length() == 0){
+                File file1 = new File("/root/.kube/config");
+                return file1;
             }
         } catch (IOException e) {
             e.printStackTrace();

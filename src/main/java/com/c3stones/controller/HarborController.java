@@ -1,6 +1,7 @@
 package com.c3stones.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.c3stones.common.Response;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
@@ -16,6 +17,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.json.JsonObject;
 import java.util.List;
 
 /**
@@ -55,6 +57,24 @@ public class HarborController {
     public Response<List<HarborImage>> list(){
          List<HarborImage> harborList = httpHarbor.harborList(projectName);
         return Response.success(harborList);
+    }
+
+    /**
+     * 多选
+     * @return
+     */
+    @RequestMapping(value = "multiList")
+    @ResponseBody
+    public Response<JSONArray> multiList(){
+         List<HarborImage> harborList = httpHarbor.harborList(projectName);
+         JSONArray jsonArray = new JSONArray();
+        harborList.stream().forEach(a->{
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("title", a.getImageName()+":"+a.getVersion());
+            jsonObject.put("value", a.getImageName()+":"+a.getVersion());
+            jsonArray.add(jsonObject);
+        });
+        return Response.success(jsonArray);
     }
 
 

@@ -13,12 +13,31 @@
 	<div class="layui-content">
 	    <div class="layui-row">
 			<div class="layui-card">
-                <div class="layui-card-header">
-                	<i class="layui-icon mr5">&#xe66f;</i>环境部署
-                	<button class="layui-btn layui-btn-xs layui-btn-normal pull-right mt10" data-type="add"><i class="layui-icon mr5">&#xe654;</i>部署</button>
-                </div>
-				<button class="layui-btn" data-type="reload">查询</button>
-					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
+
+                <!--  环境 -->
+
+                    <div class="layui-content">
+                        <div class="layui-row">
+                            <div class="">
+                                命名空间 ：
+                                <div class="layui-inline mr10">
+                                    <input class="layui-input" name="namespace2"  autocomplete="off">
+                                </div>
+
+                                <button class="layui-btn" data-type="reload">查询</button>
+                                <button class="layui-btn layui-btn-normal" data-type="add">部署环境</button>
+
+                                <table class="layui-hide" id="harborDataTable2" lay-filter="config"></table>
+                                <script type="text/html" id="operation2">
+                                    <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
+                                    <a class="layui-btn layui-btn-xs" lay-event="logs">日志</a>
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -29,29 +48,35 @@ var element = layui.element;
 var table = layui.table;
 var layer = layui.layer;
 
-
 table.render({
-	id: 'harborTable'
-	,elem: '#harborDataTable'
-    ,url: '[[@{/env/listData}]]'
+    id: 'harborTable2'
+    ,elem: '#harborDataTable2'
+    ,url: '[[@{/pod/listEnvData}]]'
     ,cols: [
-    	[
-	      ,{field:'imageName', title: '镜像'}
-	      ,{field:'version', title: '版本', align: 'center'}
-    	]
-   	]
+        [
+            {field:'hostIp', title: '容器宿主机IP'}
+            ,{field:'ports', title: '端口'}
+            ,{field:'podName', title: '容器名称', align: 'center'}
+            ,{field:'namespace', title: '命名空间', align: 'center'}
+            ,{field:'podStatus', title: '容器状态', align: 'center'}
+            ,{field:'date', title: '部署时间', align: 'center'}
+            ,{title:'操作', align: 'center', toolbar: '#operation2', width:250}
+        ]
+    ]
     ,response: {
         statusCode: 200
     }
     ,parseData: function(res){
-	    console.log(res)
-    	return {
-    		"code": res.code
+        console.log(res)
+        return {
+            "code": res.code
             ,"msg": res.msg
             ,"count": res.data.total
             ,"data": res.data.records
-    	};
-    }
+        };
+    },
+
+
 });
 
 
@@ -64,10 +89,13 @@ active = {
     		content: '[[@{/}]]env/add'
     	});
 	},
-	reload: function() {
-		table.reload('harborTable', {
-		}, 'data');
-	},
+    reload: function() {
+        table.reload('harborTable2', {
+            where: {
+                namespace : $("input[name='namespace2']").val()
+            }
+        }, 'data');
+    },
 	reset: function() {
 		$(".layui-input").val("");
 	}

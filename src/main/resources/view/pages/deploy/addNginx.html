@@ -36,13 +36,31 @@
 				</div>
 				<div class="layui-form-item">
 					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
-						<legend>拖拽上传，JAR包</legend>
+						<legend>拖拽多个文件上传，JAR包</legend>
 					</fieldset>
 					<div class="layui-upload-drag"  id="test4">
 						<i class="layui-icon"></i>
 						<p>点击上传，或将文件拖拽到此处</p>
 					</div>
 				</div>
+				<div>
+					<div class="layui-form-item" style="width: 300px" >
+						<div class="layui-inline">
+							<div  id="successData" style="color: blue">成功后镜像列表</div>
+						</div>
+
+						<div class="layui-inline">
+							<div id="errorData"  style="color: red;display: none">失败上传镜像</div>
+						</div>
+					</div>
+
+					<div class="layui-form-item" style="width: 300px" >
+
+
+					</div>
+
+				</div>
+
 
 			</form>
 		</div>
@@ -68,21 +86,27 @@ var uploadInst = upload.render({
             return $('#version').val();
         }
 	}
+
     ,before: function(obj){
         $('#test9').addClass("layui-btn-disabled").attr("disabled",true);
         $('#state').val("制作镜像中"); //图片链接（base64）
-       console.log("vv",$("#version").val())
+        console.log("obj",obj)
     }
     ,done: function(res){
         console.log("1111",res)
+
         if(res.code == 200){
+            console.log("html22",res.data.successData)
             $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
             $('#state').val("制作完成"); //图片链接（base64）
-            return layer.msg('制作成功');
+            $("#successData").append ('<p>'+res.data.successData[0]+'</p>')
+             layer.msg('制作成功');
         }else{
             $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
-            $('#state').val("制作失败"); //图片链接（base64）
-            return layer.msg('制作失败');
+           $('#state').val("制作失败"); //图片链接（base64）
+            $("#successData").css("display","block");//显示div
+            $("#successData").append ('<p>'+res.data.errorData[0]+'</p>')
+             layer.msg('制作失败');
         }
     }
 

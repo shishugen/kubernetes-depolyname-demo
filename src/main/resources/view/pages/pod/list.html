@@ -13,7 +13,9 @@
 <div class="layui-tab layui-tab-card" >
     <ul class="layui-tab-title">
         <li class="layui-this">应用管理</li>
+<!--
         <li>环境管理</li>
+-->
         <li>前端管理</li>
         <li>部署管理</li>
     </ul>
@@ -46,8 +48,7 @@
                 </div>
             </div>
         </div>
-        <!--  环境 -->
-        <div class="layui-tab-item">
+        <!--  环境 --><!--       <div class="layui-tab-item">
             <div class="layui-content">
                 <div class="layui-row">
                     <div class="">
@@ -67,7 +68,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
+
 
         <!--  前端 -->
         <div class="layui-tab-item">
@@ -91,15 +93,20 @@
         </div>
 
         <!--  deployment -->
+
+
         <div class="layui-tab-item">
+
             <div class="layui-content">
                 <div class="layui-row">
                     <div class="">
                         命名空间 ：
-                        <div class="layui-inline mr10">
-                            <input class="layui-input" name="namespace4"  autocomplete="off">
+                        <div class="layui-inline ">
+                            <input class="layui-input"  name="namespace4"  autocomplete="off">
                         </div>
-                        <button class="layui-btn" data-type="reload4">查询</button>
+                        <button class="layui-btn"id="namespace4" data-type="reload4">查询</button>
+                        <button class="layui-btn layui-btn-danger" data-type="deleteDeployment">批量删除</button>
+                        <button class="layui-btn layui-btn-danger" data-type="restartDeployment">批量重启</button>
                         <table class="layui-hide" id="harborDataTable4" lay-filter="config"></table>
                         <script type="text/html" id="operation4">
                             <a class="layui-btn layui-btn-xs" lay-event="update">编辑</a>
@@ -220,7 +227,8 @@ table.render({
     }
     ,cols: [
     	[
-	      {field:'name', title: '部署名称', align: 'center',width:300}
+	         {fixed:'left',type:'checkbox'}
+            ,{field:'name', title: '部署名称', align: 'center',width:300}
             ,{field:'namespace', title: '命名空间', align: 'center',width:100}
             ,{field:'replicas', title: '数量', align: 'center',width:40}
             ,{field:'date', title: '日期', align: 'center'}
@@ -294,6 +302,65 @@ active = {
 		$(".layui-input").val("");
 	},
 
+    deleteDeployment: function(){ //获取选中数据
+        var checkStatus = table.checkStatus('harborTable4')
+            ,data = checkStatus.data;
+        var names =''
+        var namespaces =''
+        for (var i = 0 ; i < data.length; i++){
+            names +=data[i].name+",";
+            namespaces +=data[i].namespace+",";
+        }
+        console.log("44444list",names)
+        layer.confirm("确定删除吗？", {icon: 3, title:'提示'}, function(index) {
+            layer.close(index);
+            $.ajax({
+                url : "[[@{/}]]pod/delDeploys",
+                data : {"names":names,"namespaces":namespaces},
+                type : "post",
+                dataType : "json",
+                error : function(data) {
+                    errorHandle(data);
+                },
+                success : function(data) {
+                    console.log(data)
+                    $("#namespace4").click();
+                }
+            });
+        });
+    }  ,
+    restartDeployment : function(){ //获取选中数据
+        var checkStatus = table.checkStatus('harborTable4')
+            ,data = checkStatus.data;
+        var names =''
+        var namespaces =''
+        for (var i = 0 ; i < data.length; i++){
+            names +=data[i].name+",";
+            namespaces +=data[i].namespace+",";
+        }
+        layer.confirm("确定重启吗？", {icon: 3, title:'提示'}, function(index) {
+            layer.close(index);
+            $.ajax({
+                url : "[[@{/}]]pod/restartDeploys",
+                data : {"names":names,"namespaces":namespaces},
+                type : "post",
+                dataType : "json",
+                error : function(data) {
+                    errorHandle(data);
+                },
+                success : function(data) {
+                    console.log(data)
+                    $("#namespace4").click();
+                }
+            });
+        });
+    }
+    ,getCheckLength: function(){ //获取选中数目
+        var checkStatus = table.checkStatus('harborTable4')
+            ,data = checkStatus.data;
+       // layer.msg('选中了：'+ data.length + ' 个');
+    }
+
 };
 
 // 按钮事件
@@ -319,6 +386,9 @@ table.on('tool(config)', function(obj){
                 },
                 success: function (data) {
                     console.log(data)
+                    if(data.code ==200){
+                        layer.msg('删除成功');
+                    }
                     $(".searchTable .layui-btn").eq(0).click();
                 }
             });

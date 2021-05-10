@@ -1,5 +1,7 @@
 package com.c3stones.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Dockers;
 import com.c3stones.client.Kubes;
@@ -31,7 +33,10 @@ import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -44,6 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 @RequestMapping(value = "deploy")
 public class DeployController  extends BaseConfig {
+
 
 
 	@Autowired
@@ -141,6 +147,19 @@ public class DeployController  extends BaseConfig {
         model.addAttribute("namespace", kubes.getNamespace());
         return "pages/deploy/deployPod";
     }
+
+	/**
+	 * 多个部署应用
+	 * @param model
+	 * @param image
+	 * @return
+	 */
+	@RequestMapping(value = "deployMultiPod")
+	public String deployMultiPod( Model model,String image) {
+        model.addAttribute("image", image);
+        model.addAttribute("namespace", kubes.getNamespace());
+        return "pages/deploy/deployMultiPod";
+    }
 		/**
 	 * deployPod
 	 *
@@ -233,7 +252,7 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "pod")
 	@ResponseBody
 	public Response<Boolean> pod(String namespace, String image,String podName,String nacos,Integer port,Integer nodePort,Integer replicas,
-	String nacosNamespace,Integer nfs
+	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms
 	) {
 		System.out.println(namespace);
 		System.out.println(podName);
@@ -251,6 +270,8 @@ public class DeployController  extends BaseConfig {
 		Assert.notNull(image, "image不能为空");
 		Assert.notNull(split[2], "nacos不能为空");
 		Assert.notNull(nfs, "nfs不能为空");
+		Assert.notNull(memoryXmx, "memoryXmx不能为空");
+		Assert.notNull(memoryXms, "memoryXms不能为空");
 		String randomPortName = KubeUtils.randomPortName();
 		if(kubes.checkSvc(nodePort)){
 			return Response.error("端口已存在");
@@ -260,17 +281,18 @@ public class DeployController  extends BaseConfig {
 			return Response.error("服务已存在");
 		}
 		try {
+
 		image = harborImagePrefix + "/"+image;
 				if(nfs == 1){
 					kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
-					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace,namespace+podName)){
+					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace,namespace+podName, memoryXmx, memoryXms)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,randomPortName,port,nodePort);
 						}
 						return Response.success(true);
 					}
 				}else{
-					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace)){
+					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,randomPortName,port,nodePort);
 						}
@@ -285,6 +307,69 @@ public class DeployController  extends BaseConfig {
 		}
 
 		return Response.error("失败");
+	}
+	/**
+	 *  部署多个应用
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "mepoyMultiPod")
+	@ResponseBody
+	public Response<JSONObject> mepoyMultiPod(String namespace, String images,String nacos,Integer replicas,
+	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms
+	) {
+		Assert.notNull(memoryXmx, "memoryXmx不能为空");
+		Assert.notNull(memoryXms, "memoryXms不能为空");
+		System.out.println(namespace);
+		System.out.println(images);
+		String[] split = nacos.split("---");
+		System.out.println(nacos);
+		System.out.println(split[2]);
+		System.out.println(nacosNamespace);
+		System.out.println(replicas);
+		System.out.println("nfs==="+nfs);
+		String randomPortName = KubeUtils.randomPortName();
+		String[] imageList = images.split(",");
+		String podName = null;
+		int exist = 0;
+		int error = 0;
+		int success = 0;
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("exist",0);
+		jsonObject.put("existPod",0);
+		jsonObject.put("error",0);
+		jsonObject.put("success",0);
+		jsonObject.put("errorPod",0);
+		for (int i = 0 ; i < imageList.length ; i++){
+			try {
+				String image = imageList[i];
+				 podName = image.split("/")[1].replace(":", "-").replace(".", "-");
+				if(kubes.checkdeployname(namespace,podAppPrefix+podName)){
+					jsonObject.put("exist",++exist);
+					//jsonObject.put("existPod",podName);
+				}else {
+					image = harborImagePrefix + "/"+image;
+					if(nfs == 1){
+						kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
+						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace,namespace+podName, memoryXmx, memoryXms);
+					}else{
+						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms);
+					}
+					jsonObject.put("success",++success);
+				}
+			}catch (Exception e){
+				jsonObject.put("error",++error);
+				//jsonObject.put("errorPod",podName);
+				kubes.deleteDeployments(namespace,podAppPrefix+podName);
+				kubes.deleteService(namespace,randomPortName);
+				kubes.deletePvc(namespace,namespace+podName);
+				e.printStackTrace();
+			}
+		}
+		System.out.println(jsonObject.get("error"));
+		System.out.println(jsonObject.get("success"));
+		System.out.println(jsonObject.get("exist"));
+		return Response.success(jsonObject);
 	}
 
 
@@ -386,29 +471,46 @@ public class DeployController  extends BaseConfig {
 	 */
 	@RequestMapping("/upload")
 	@ResponseBody
-	public Response<Pages<HarborImage>>upload(MultipartFile file ,String version
+	public Response<HarborImage> upload(MultipartFile[] file ,String version
 	) {
 		Assert.notNull(version, "version不能为空");
 		Assert.notNull(file, "file不能为空");
 		log.info("制作镜像 file :{} , version : {}",file,version);
-		String homeDir = null;
+		//String homeDir = null;
+		List<String> errorList = new ArrayList<>();
+		List<String> successList = new ArrayList<>();
+		HarborImage harborImage = new HarborImage();
 		try {
-			String name = KubeUtils.randomPortName();
-			 homeDir = Dockers.getHomeDir()+File.separator+name;
-			new File(homeDir).mkdirs();
-			log.info("制作目录--> homeDir : {}",homeDir);
-			 multipartFileToFile(file,homeDir);
-			String originalFilename = file.getOriginalFilename();
-			dockers.writeDockerfile(originalFilename,homeDir);
-			dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
+
+					Arrays.stream(file).forEach(f->{
+						String 	homeDir = null;
+						String originalFilename = null;
+						try {
+							originalFilename = f.getOriginalFilename();
+							String name = KubeUtils.randomPortName();
+							homeDir = Dockers.getHomeDir()+File.separator+name;
+							new File(homeDir).mkdirs();
+							log.info("制作目录--> homeDir : {}",homeDir);
+							multipartFileToFile(f,homeDir);
+							dockers.writeDockerfile(originalFilename,homeDir);
+							dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
+							successList.add(originalFilename);
+						} catch (Exception e) {
+							errorList.add(originalFilename);
+							e.printStackTrace();
+						}finally {
+							harborImage.setErrorData(errorList);
+							harborImage.setSuccessData(successList);
+							removeTempFile(homeDir);
+						}
+					});
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.error("失败");
-		}finally {
-			removeTempFile(homeDir);
 		}
 		log.info("制作镜像成功");
-		return Response.success("ok");
+		return Response.success(harborImage);
 
 	}
 	/**

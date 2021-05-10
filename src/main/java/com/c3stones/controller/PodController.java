@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -418,6 +419,43 @@ public class PodController {
         });
         return Response.success(true);
     }
+
+    /** 删除
+     *
+     * @return
+     */
+    @RequestMapping(value = "delDeploys")
+    @ResponseBody
+    public Response<Boolean> delDeploys(String  names,String namespaces) {
+        String[] name = names.split(",");
+        String[] namespace = namespaces.split(",");
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+        for (int i = 0 ; i < name.length; i++){
+            Deployment items = kubeclinet.apps().deployments().inNamespace(namespace[i]).withName((name[i])).get();
+            kubes.deleteService(namespace[i],items.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
+            kubes.deletePvc(namespace[i],name[i]);
+            Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace[i]).withName(name[i]).delete();
+        }
+        return Response.success(true);
+    }
+
+    /** restartDeploys
+     *
+     * @return
+     */
+    @RequestMapping(value = "restartDeploys")
+    @ResponseBody
+    public Response<Boolean> restartDeploys(String  names,String namespaces) {
+        String[] name = names.split(",");
+        String[] namespace = namespaces.split(",");
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+        for (int i = 0 ; i < name.length; i++){
+            Deployment items = kubeclinet.apps().deployments().inNamespace(namespace[i]).withName((name[i])).rolling().restart();
+        }
+        return Response.success(true);
+    }
+
+
 
     /**
      * 重启

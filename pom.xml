@@ -122,6 +122,11 @@
 			<version>0.1.54</version>
 		</dependency>
 
+		<!--监控-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<!-- WebSocket 支持 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

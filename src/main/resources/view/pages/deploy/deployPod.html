@@ -7,7 +7,9 @@
     <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
     <script th:src="@{/layui/layui.all.js}"></script>
     <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
-    <script th:src="@{/jquery/jquery-form.js}"></script>
+	<script th:src="@{/xm-select/xm-select.js}"></script>
+
+	<script th:src="@{/jquery/jquery-form.js}"></script>
     <title></title>
 </head>
 <body class="layui-view-body">
@@ -71,6 +73,19 @@
 					</div>
 
 					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">最小内存</label>
+							<div class="layui-input-inline" style="width: 100px;">
+								<input type="number" name="memoryXms" th:min="256"  placeholder="" value="512" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid">最大内存</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input type="number" name="memoryXmx"  placeholder="30000-32766" th:min="512" th:max="4096"  value="1024" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
 						<label class="layui-form-label" style="width: 200px">是否持久目录</label>
 						<div class="layui-input-block">
 							<input type="radio" name="nfs" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>男</div></div>
@@ -87,8 +102,12 @@
 			</form>
 		</div>
 	</div>
+	<div id="demo1" style="width: 502px;"></div>
+
 </body>
 <script>
+
+
 var form = layui.form;
 var layer = layui.layer;
 
@@ -114,6 +133,9 @@ form.on('select(nacosList)', function(data){
             success : function(data) {
                 $.each(data.data, function (index, item) {
                     $('#nacosNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
+                    if(index == 1){
+                        $('#nacosNamespace').val(item.namespace)
+                    }
                 });
                 layui.form.render("select")
             }
@@ -139,6 +161,9 @@ $.ajax({
     success : function(data) {
         $.each(data, function (index, item) {
              $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            if(index == 0){
+                $('#namespace').val(item.name)
+            }
         });
         layui.form.render("select")
     }
@@ -180,7 +205,32 @@ $.ajax({
         console.log(data)
         $.each(data, function (index, item) {
             $('#nacosList').append(new Option(item.nacosName,item.hostIp+"---"+item.ports+"---"+item.nacosName));// 下拉菜单里添加元素
+
+            if(index == 0){
+                $('#nacosList').val(item.hostIp+"---"+item.ports+"---"+item.nacosName)
+                $.ajax({
+                    url : "[[@{/}]]deploy/getNacosNamespace",
+                    // type : "get",
+                    dataType : "json",
+                    data : {"ip":item.hostIp,"port":item.ports},
+                    error : function(data) {
+                        errorHandle(data);
+                    },
+                    success : function(data) {
+                        $.each(data.data, function (index, item) {
+                            $('#nacosNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
+                            if(index == 1){
+                                $('#nacosNamespace').val(item.namespace)
+                            }
+                        });
+                        layui.form.render("select")
+                    }
+                });
+            }
         });
+
+
+
         layui.form.render("select")
     }
 });
@@ -203,8 +253,10 @@ form.on('submit(*)', function(data){
                 parent.location.reload();
                 var index = parent.layer.getFrameIndex(window.name);
                 parent.layer.close(index);
-                layer.msg("部署成功", {icon: 2});
-			}else{
+                layer.msg("部署成功", {icon: 1});
+
+
+            }else{
                 console.log("data404",data)
                 layer.msg(data.msg, {icon: 2});
 			}

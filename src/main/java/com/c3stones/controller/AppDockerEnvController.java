@@ -82,7 +82,6 @@ public class AppDockerEnvController {
     @RequestMapping(value = "data/list")
     @ResponseBody
     public Response<Pages<DockerConfigs>> List() {
-        TestSetProperties( new Random().nextInt()+"");
         List<DockerConfigs> list = new ArrayList<>();
         try {
             String homeConfigDir = Dockers.getHomeConfigDir();
@@ -294,8 +293,8 @@ public class AppDockerEnvController {
             System.out.println("docker.port==="+property);
 
             pro.setProperty("docker.port", value);
-            pro.store(outputStream, "");
-            outputStream.flush();
+          //  pro.store(outputStream, "test");
+          //  outputStream.flush();
             System.out.println("docker.port==="+property);
         }catch (Exception e){
             e.printStackTrace();
