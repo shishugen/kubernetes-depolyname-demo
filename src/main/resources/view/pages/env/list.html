@@ -23,10 +23,8 @@
                                 <div class="layui-inline mr10">
                                     <input class="layui-input" name="namespace2"  autocomplete="off">
                                 </div>
-
-                                <button class="layui-btn" data-type="reload">查询</button>
+                                <button class="layui-btn" id="reloadName" data-type="reload">查询</button>
                                 <button class="layui-btn layui-btn-normal" data-type="add">部署环境</button>
-
                                 <table class="layui-hide" id="harborDataTable2" lay-filter="config"></table>
                                 <script type="text/html" id="operation2">
                                     <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
@@ -79,6 +77,44 @@ table.render({
 
 });
 
+
+//监听行工具事件
+table.on('tool(config)', function(obj) {
+    var row = obj.data;
+    if (obj.event === 'del') {
+        layer.confirm("确认  "+row.podName+"  删除吗？", {icon: 3, title: '提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: "[[@{/}]]pod/delete",
+                data: {"namespace": row.namespace, 'podName': row.podName},
+                type: "post",
+                dataType: "json",
+                error: function (data) {
+                    errorHandle(data);
+                },
+                success: function (data) {
+                    console.log(data)
+                    if (data.code == 200) {
+                        $("#reloadName").click();
+                        layer.msg('删除成功');
+                    }
+                }
+            });
+        });
+    }if(obj.event === "open") {
+        var list = obj.data.ports.split(",");
+        for (var i = 0; i < list.length; i++) {
+            if (obj.data.podName == "env-nacos") {
+                window.open("http://" + obj.data.hostIp + ":" + list[i].split(":")[1] + "/nacos");
+            } else {
+                window.open("http://" + obj.data.hostIp + ":" + list[i].split(":")[1]);
+            }
+        }
+    }  else if(obj.event ==='logs') {
+        console.log(obj.data.namespace)
+        window.open('[[@{/}]]pod/logs?namespace=' + obj.data.namespace + '&podName=' + obj.data.podName)
+    }
+})
 
 active = {
 	add: function() {

@@ -14,9 +14,7 @@
 	    <div class="layui-row">
 			<div class="layui-card">
 				<button class="layui-btn" data-type="reload">查询</button>
-                <button class="layui-btn layui-btn-normal" data-type="add">新增</button>
-
-                <table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
+					<table class="layui-hide" id="dataTable" lay-filter="config"></table>
                 <script type="text/html" id="operation">
                     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
                 </script>
@@ -32,12 +30,14 @@ var layer = layui.layer;
 
 
 table.render({
-	id: 'harborTable'
-	,elem: '#harborDataTable'
-    ,url: '[[@{/namespace/listData}]]'
+	id: 'table'
+	,elem: '#dataTable'
+    ,url: '[[@{/pvc/listData}]]'
     ,cols: [
     	[
-	      ,{field:'name', title: '命名空间'}
+	       {field:'name', title: '名称'}
+	      ,{field:'namespace', title: '命名空间'}
+	      ,{field:'storage', title: '存储大小'}
 	      ,{field:'data', title: '创建时间'}
 	      ,{title:'操作', align: 'center', toolbar: '#operation', width:150}
     	]
@@ -58,16 +58,8 @@ table.render({
 
 
 active = {
-	add: function() {
-		layer.open({
-    		type: 2,
-    		area: ['80%', '50%'],
-    		title: '新增',
-    		content: '[[@{/}]]namespace/add'
-    	});
-	},
 	reload: function() {
-		table.reload('harborTable', {
+		table.reload('table', {
 		}, 'data');
 	},
 	reset: function() {
@@ -87,18 +79,15 @@ table.on('tool(config)', function(obj){
 
     var row = obj.data;
     if(obj.event === 'del') {
-
         layer.prompt({title: '输入任何口令，并确认', formType: 1}, function(pass, index){
             layer.close(index);
               if(pass === "654321"){
-
                   console.log("正确")
-
-                  layer.confirm("确认删除吗？", {icon: 3, title: '提示'}, function (index) {
+                  layer.confirm("确认删除   "+ row.name+"   吗？", {icon: 3, title: '提示'}, function (index) {
                       layer.close(index);
                       $.ajax({
-                          url: "[[@{/}]]namespace/delete",
-                          data: {'namespace': row.name},
+                          url: "[[@{/}]]pvc/delete",
+                          data: {'namespace': row.namespace,"pvcName":row.name},
                           type: "post",
                           dataType: "json",
                           error: function (data) {

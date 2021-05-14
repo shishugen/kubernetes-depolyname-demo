@@ -1,160 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="c754761e-40fd-4b5d-a60f-99a4cdb361c7" name="Default" comment="添加数据库端口开放">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_actuator_2_2_8_RELEASE.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/admin.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/layui.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/layui.mobile.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/code.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/laydate/default/laydate.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/layer/default/icon-ext.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/layer/default/icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/layer/default/layer.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/layer/default/loading-0.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/layer/default/loading-1.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/modules/layer/default/loading-2.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/view.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/iconfont.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/iconfont.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/iconfont.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/iconfont.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/js/home.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/js/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/layui.all.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/static/2.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/static/3.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/static/docs.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/static/element-icons.535877f.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/static/element-icons.732389d.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/static/wx.b556b2e.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/xm-select/xm-select.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod2.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_actuator_2_1_3_RELEASE.xml" beforeDir="false" />
+    <list default="true" readonly="true" id="c754761e-40fd-4b5d-a60f-99a4cdb361c7" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PvcController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pvc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/view/pages/pvc/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hs_err_pid38864.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spring-boot-layui-demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-boot-layui-demo.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppDockerEnvController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppDockerEnvController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/HarborController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/HarborController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/entity/HarborImage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/entity/HarborImage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/css/layui.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/css/layui.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/css/login.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/css/login.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/css/modules/code.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/css/modules/code.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/css/modules/laydate/default/laydate.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/css/modules/laydate/default/laydate.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/css/modules/layer/default/layer.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/css/modules/layer/default/layer.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/ai.eot" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/ai.eot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/ai.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/ai.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/ai.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/ai.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/ai.woff" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/font/ai.woff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.eot" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.eot" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.woff" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/font/iconfont.woff" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/0.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/0.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/1.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/1.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/10.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/10.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/11.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/11.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/12.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/12.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/13.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/13.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/14.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/14.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/15.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/15.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/16.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/16.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/17.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/17.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/18.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/18.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/19.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/19.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/2.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/2.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/20.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/20.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/21.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/21.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/22.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/22.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/23.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/23.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/24.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/24.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/25.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/25.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/26.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/26.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/27.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/27.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/28.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/28.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/29.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/29.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/3.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/3.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/30.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/30.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/31.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/31.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/32.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/32.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/33.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/33.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/34.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/34.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/35.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/35.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/36.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/36.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/37.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/37.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/38.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/38.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/39.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/39.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/4.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/4.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/40.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/40.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/41.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/41.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/42.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/42.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/43.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/43.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/44.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/44.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/45.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/45.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/46.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/46.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/47.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/47.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/48.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/48.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/49.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/49.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/5.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/5.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/50.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/50.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/51.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/51.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/52.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/52.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/53.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/53.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/54.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/54.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/55.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/55.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/56.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/56.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/57.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/57.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/58.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/58.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/59.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/59.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/6.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/6.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/60.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/60.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/61.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/61.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/62.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/62.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/63.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/63.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/64.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/64.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/65.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/65.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/66.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/66.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/67.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/67.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/68.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/68.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/69.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/69.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/7.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/7.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/70.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/70.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/71.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/71.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/8.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/8.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/images/face/9.gif" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/images/face/9.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/carousel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/carousel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/code.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/code.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/colorpicker.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/colorpicker.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/element.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/element.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/excel.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/excel.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/flow.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/flow.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/form.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/form.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/jquery.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/jquery.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/laydate.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/laydate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/layedit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/layedit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/layer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/layer.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/laypage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/laypage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/laytpl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/laytpl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/mobile.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/mobile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/rate.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/rate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/slider.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/slider.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/table.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/table.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/tree.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/tree.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/upload.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/upload.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/lay/modules/util.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/lay/modules/util.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/layui.all.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui/layui.all.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/layui/layui.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/layui-2/layui.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/favicon.ico" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/logo.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/images/logo.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/addNginx.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/addNginx.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/app/k8s/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/app/k8s/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/env/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/env/add.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/env/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/env/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" afterDir="false" />
@@ -187,11 +51,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Kubes.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java">
+      <file leaf-file-name="DeployController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="602" column="20" lean-forward="true" selection-start-line="602" selection-start-column="20" selection-end-line="602" selection-end-column="20" />
+            <state relative-caret-position="105">
+              <caret line="347" column="17" selection-start-line="347" selection-start-column="17" selection-end-line="347" selection-end-column="17" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -199,51 +63,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AppEnvController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppEnvController.java">
+      <file leaf-file-name="HttpHarbor.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/http/HttpHarbor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="245">
-              <caret line="65" column="52" selection-start-line="65" selection-start-column="52" selection-end-line="65" selection-end-column="52" />
+            <state relative-caret-position="204">
+              <caret line="66" column="44" selection-start-line="66" selection-start-column="44" selection-end-line="66" selection-end-column="44" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="application.yml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/application.yml">
+      <file leaf-file-name="Kubes.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="File.java" pinned="false" current-in-tab="false">
-        <entry file="jar://D:/java/app/jdk1.8.0_111/src.zip!/java/io/File.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="161">
-              <caret line="510" column="18" selection-start-line="510" selection-start-column="18" selection-end-line="510" selection-end-column="18" />
+            <state relative-caret-position="140">
+              <caret line="325" column="30" selection-start-line="325" selection-start-column="30" selection-end-line="325" selection-end-column="30" />
               <folding>
-                <element signature="e#21135#21136#0" expanded="true" />
-                <element signature="e#21162#21163#0" expanded="true" />
+                <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="application.properties" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="78">
-              <caret line="15" column="30" lean-forward="true" selection-start-line="15" selection-start-column="30" selection-end-line="15" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="list.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="18" column="56" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -251,53 +87,53 @@
       <file leaf-file-name="deployPod.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="83">
-              <caret line="203" column="30" selection-start-line="203" selection-start-column="30" selection-end-line="203" selection-end-column="30" />
-              <folding>
-                <element signature="n#style#0;n#input#0;n#div#1;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#0;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#0;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#3;n#div#0;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#1;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#2;n#div#1;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#label#0;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#label#0;n#div#1;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="360">
+              <caret line="257" selection-start-line="257" selection-end-line="257" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AppDockerEnvController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppDockerEnvController.java">
+      <file leaf-file-name="VolumeFluent.java" pinned="false" current-in-tab="false">
+        <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/VolumeFluent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="142" column="32" selection-start-line="142" selection-start-column="32" selection-end-line="142" selection-end-column="32" />
+            <state relative-caret-position="157">
+              <caret line="291" column="13" selection-start-line="291" selection-start-column="13" selection-end-line="291" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DeployController.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java">
+      <file leaf-file-name="PersistentVolumeClaim.java" pinned="false" current-in-tab="false">
+        <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/PersistentVolumeClaim.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
-              <caret line="263" column="37" selection-start-line="263" selection-start-column="37" selection-end-line="263" selection-end-column="37" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="163">
+              <caret line="48" column="13" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="deployMultiPod.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/view/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="214" column="38" selection-start-line="214" selection-start-column="38" selection-end-line="214" selection-end-column="38" />
-              <folding>
-                <element signature="n#style#0;n#div#1;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#3;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="192">
+              <caret line="102" column="40" selection-start-line="102" selection-start-column="40" selection-end-line="102" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="list.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="141">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="list.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/docker/list.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="182">
+              <caret line="16" column="75" selection-start-line="16" selection-end-line="17" />
             </state>
           </provider>
         </entry>
@@ -316,13 +152,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>nacosNamespace</find>
-      <find>harbor.image.env.project.name</find>
-      <find>demo1</find>
-      <find>render</find>
-      <find>transfer</find>
-      <find>multiList</find>
-      <find>319</find>
       <find>harbor.image.env.project.nam</find>
       <find>harborImageEnvPrefix</find>
       <find>image</find>
@@ -346,6 +175,13 @@
       <find>harborTable</find>
       <find>getNacosNamespace</find>
       <find>getNamespace</find>
+      <find>del</find>
+      <find>logs</find>
+      <find>config</find>
+      <find>delete</find>
+      <find>open</find>
+      <find>favi</find>
+      <find>https://www.cnblogs.com/cao-lei/</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -365,17 +201,11 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/exception/KubernetesException.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/env/add.html" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/util/FileUtils.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/K8sConfig.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/k8s/list.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/add.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/addConfigFileView.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/util/OpenFileUtils.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/addConfigFile.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/k8s/add.html" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/list.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/DockerConfigs.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/addServer.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppEnvController.java" />
@@ -394,28 +224,34 @@
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Config.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/ConfigController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/config/ApplicationRunnerImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/MySQLPod.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/config/list.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/BaseConfig.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.yml" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/add.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/HarborImage.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/addNginx.html" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/index.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/HarborController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/env/list.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/list.html" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppDockerEnvController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/env/list.html" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/pvc/list.html" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pvc.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PvcController.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/docker/list.html" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/k8s/list.html" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/env/add.html" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/index.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" />
       </list>
     </option>
   </component>
@@ -437,11 +273,11 @@
       <expand>
         <path>
           <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="kubernetes-deployment-demo" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="kubernetes-deployment" type="9519ce18:MavenProjectsStructure$ProjectNode" />
         </path>
         <path>
           <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
-          <item name="kubernetes-deployment-demo" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="kubernetes-deployment" type="9519ce18:MavenProjectsStructure$ProjectNode" />
           <item name="Lifecycle" type="58874e2:MavenProjectsStructure$LifecycleNode" />
         </path>
       </expand>
@@ -511,15 +347,17 @@
               <item name="spring-boot-layui-demo" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="c3stones" type="462c0819:PsiDirectoryNode" />
+              <item name="http" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="PackagesPane" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -535,29 +373,29 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RebelAgentSelection">
     <selection>jr</selection>
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\app" />
-      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\deploy" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.c3stones.client.pod" />
-      <recent name="com.c3stones.socket.interceptor" />
-      <recent name="com.c3stones.socket.constant" />
-      <recent name="com.c3stones.socket.websocket" />
-      <recent name="com.c3stones.socket.config" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\pvc" />
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\deploy" />
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\static\layui\css" />
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\static\layui" />
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\static\xm-select" />
-      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\app\config" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.c3stones.controller" />
+      <recent name="com.c3stones.client.pod" />
+      <recent name="com.c3stones.socket.interceptor" />
+      <recent name="com.c3stones.socket.constant" />
+      <recent name="com.c3stones.socket.websocket" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\app" />
+      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\deploy" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -718,7 +556,9 @@
       <workItem from="1619411015731" duration="2301000" />
       <workItem from="1619487738017" duration="9934000" />
       <workItem from="1619747863406" duration="9930000" />
-      <workItem from="1620263537147" duration="48991000" />
+      <workItem from="1620263537147" duration="50201000" />
+      <workItem from="1620632848419" duration="2599000" />
+      <workItem from="1620694416603" duration="29525000" />
     </task>
     <task id="LOCAL-00001" summary="修改判断问题">
       <created>1615864721264</created>
@@ -811,11 +651,18 @@
       <option name="project" value="LOCAL" />
       <updated>1620379844548</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="更新">
+      <created>1620630045762</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1620630045762</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="824575000" />
+    <option name="totallyTimeSpent" value="857909000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -827,13 +674,13 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50075644" side_tool="true" weight="0.36573312" />
       <window_info anchor="bottom" id="JRebel Console" order="7" side_tool="true" />
       <window_info anchor="right" id="Redis Servers" order="3" weight="0.32980332" />
-      <window_info anchor="right" id="Maven Projects" order="3" visible="true" weight="0.23600605" />
+      <window_info anchor="right" id="Maven Projects" order="3" visible="true" weight="0.21785174" />
       <window_info anchor="bottom" id="JRebel Executor" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="CDI" order="4" />
@@ -844,19 +691,19 @@
       <window_info anchor="right" id="JSF" order="4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49924356" weight="0.35478547" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49924356" weight="0.48844886" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.28217822" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.34818482" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.4339934" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="bottom" id="Java Enterprise" order="7" weight="0.5231023" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="7" visible="true" weight="0.33663365" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.5759076" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.31683168" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.59570956" />
       <window_info anchor="bottom" id="Spring" order="7" weight="0.27227724" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.17298187" />
       <window_info anchor="right" id="Jenkins" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4989011" visible="true" weight="0.21255673" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4989011" visible="true" weight="0.20272315" />
       <window_info anchor="right" id="Bean Validation" order="3" />
       <window_info id="Web" order="2" sideWeight="0.50109893" side_tool="true" weight="0.25567323" />
       <window_info anchor="bottom" id="Apicloud Log" order="7" weight="0.3294893" />
@@ -924,7 +771,8 @@
     <MESSAGE value="修改镜像" />
     <MESSAGE value="修改配置" />
     <MESSAGE value="优化配置添加虚拟机内存限制" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化配置添加虚拟机内存限制" />
+    <MESSAGE value="更新" />
+    <option name="LAST_COMMIT_MESSAGE" value="更新" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -936,177 +784,25 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java</url>
-          <line>595</line>
+          <url>file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java</url>
+          <line>287</line>
           <properties />
-          <option name="timeStamp" value="124" />
+          <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java</url>
+          <line>507</line>
+          <properties />
+          <option name="timeStamp" value="129" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="125" />
+      <option name="time" value="131" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2695">
-          <caret line="39" column="25" selection-start-line="39" selection-start-column="25" selection-end-line="39" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RabbitMQPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="176" selection-start-line="176" selection-end-line="176" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2350">
-          <caret line="113" column="31" selection-start-line="113" selection-start-column="25" selection-end-line="113" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/http/HttpHarbor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="79" column="60" selection-start-line="79" selection-start-column="57" selection-end-line="79" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/java/app/jdk1.8.0_111/src.zip!/java/util/Properties.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="131">
-          <caret line="814" column="16" selection-start-line="814" selection-start-column="16" selection-end-line="814" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/config/BeanConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/ConfigController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="32" column="53" lean-forward="true" selection-start-line="32" selection-start-column="53" selection-end-line="32" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/config/ApplicationRunnerImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="331">
-          <caret line="25" column="32" lean-forward="true" selection-start-line="25" selection-start-column="32" selection-end-line="25" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/Probe.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="210" column="16" selection-start-line="210" selection-start-column="16" selection-end-line="210" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/java/app/jdk1.8.0_111/src.zip!/java/util/Arrays.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="3798" column="30" selection-start-line="3798" selection-start-column="30" selection-end-line="3798" selection-end-column="30" />
-          <folding>
-            <element signature="e#177013#177014#0" expanded="true" />
-            <element signature="e#177054#177055#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RedisPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1025">
-          <caret line="48" column="58" selection-start-line="48" selection-start-column="58" selection-end-line="48" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/Config.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="28" selection-start-line="28" selection-end-line="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/MySQLPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2575">
-          <caret line="111" column="33" selection-start-line="111" selection-start-column="33" selection-end-line="111" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/GuacdPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4400">
-          <caret line="191" column="61" selection-start-line="191" selection-start-column="61" selection-end-line="191" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="128" column="21" selection-start-line="128" selection-start-column="21" selection-end-line="128" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/FastdfsPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="51" column="41" lean-forward="true" selection-start-line="51" selection-start-column="41" selection-end-line="51" selection-end-column="41" />
-          <folding>
-            <element signature="e#4390#4391#0" expanded="true" />
-            <element signature="e#4460#4461#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/config/list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
-          <caret line="84" column="22" lean-forward="true" selection-start-line="84" selection-start-column="22" selection-end-line="84" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="132" column="17" selection-start-line="132" selection-start-column="17" selection-end-line="132" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2151#2167#1" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/util/KubeUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="50" column="28" selection-start-line="50" selection-start-column="28" selection-end-line="50" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/add.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="37" column="26" selection-start-line="37" selection-start-column="26" selection-end-line="37" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/static/xm-select/xm-select.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/HarborImage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="143">
@@ -1141,9 +837,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="25">
           <caret line="1" column="39" selection-start-line="1" selection-start-column="39" selection-end-line="1" selection-end-column="39" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1151,29 +844,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-4800">
           <caret line="1" column="913" selection-start-line="1" selection-start-column="913" selection-end-line="1" selection-end-column="913" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#td#0;n#tr#0;n#tbody#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#ul#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#li#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#ul#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#textarea#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#li#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#button#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1192,22 +862,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/static/layui/css/layui.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#68719#68858#2" expanded="true" />
-            <element signature="e#70290#70429#2" expanded="true" />
-            <element signature="e#70955#71094#2" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="13" column="32" lean-forward="true" selection-start-line="13" selection-start-column="32" selection-end-line="13" selection-end-column="32" />
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NacosPod.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -1216,39 +871,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/BaseConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="76" lean-forward="true" selection-start-line="76" selection-end-line="76" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/HarborController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="71" column="53" lean-forward="true" selection-start-line="71" selection-start-column="11" selection-end-line="71" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod2.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="511">
           <caret line="121" column="40" lean-forward="true" selection-start-line="121" selection-start-column="40" selection-end-line="121" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/addNginx.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="102" column="22" selection-start-line="102" selection-start-column="19" selection-end-line="102" selection-end-column="22" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1266,84 +892,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="441" column="22" lean-forward="true" selection-start-line="441" selection-start-column="22" selection-end-line="441" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="106" column="63" selection-start-line="106" selection-start-column="53" selection-end-line="106" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/env/list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="97" column="6" lean-forward="true" selection-start-line="97" selection-start-column="6" selection-end-line="97" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="18" column="51" lean-forward="true" selection-start-line="18" selection-start-column="51" selection-end-line="18" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppDockerEnvController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
           <caret line="142" column="32" selection-start-line="142" selection-start-column="32" selection-end-line="142" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
-          <caret line="263" column="37" selection-start-line="263" selection-start-column="37" selection-end-line="263" selection-end-column="37" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="18" column="56" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="214" column="38" selection-start-line="214" selection-start-column="38" selection-end-line="214" selection-end-column="38" />
-          <folding>
-            <element signature="n#style#0;n#div#1;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="203" column="30" selection-start-line="203" selection-start-column="30" selection-end-line="203" selection-end-column="30" />
-          <folding>
-            <element signature="n#style#0;n#input#0;n#div#1;n#div#1;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#0;n#div#3;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#2;n#div#1;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#0;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#0;n#div#1;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1372,20 +924,260 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/ConfigController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="602" column="20" lean-forward="true" selection-start-line="602" selection-start-column="20" selection-end-line="602" selection-end-column="20" />
+        <state relative-caret-position="575">
+          <caret line="33" column="39" selection-start-line="33" selection-start-column="39" selection-end-line="33" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6400">
+          <caret line="256" column="42" selection-start-line="256" selection-start-column="38" selection-end-line="256" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="12" column="30" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="925">
+          <caret line="37" column="26" selection-start-line="37" selection-start-column="26" selection-end-line="37" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/addNginx.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2575">
+          <caret line="103" column="14" selection-start-line="103" selection-start-column="14" selection-end-line="103" selection-end-column="14" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/HarborController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1200">
+          <caret line="66" column="17" selection-start-line="66" selection-start-column="17" selection-end-line="66" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/BaseConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="21" column="42" selection-start-line="21" selection-start-column="28" selection-end-line="21" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/env/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="421">
+          <caret line="37" lean-forward="true" selection-start-line="37" selection-end-line="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2275">
+          <caret line="113" column="31" selection-start-line="113" selection-start-column="25" selection-end-line="113" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="247" column="39" lean-forward="true" selection-start-line="247" selection-start-column="39" selection-end-line="247" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/NamespaceController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="87" column="37" lean-forward="true" selection-start-line="87" selection-start-column="37" selection-end-line="87" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/Namespaces.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="12" column="23" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pvc.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="14" column="27" lean-forward="true" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/pvc/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="97" column="73" lean-forward="true" selection-start-line="97" selection-start-column="73" selection-end-line="97" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="15" column="30" lean-forward="true" selection-start-line="15" selection-start-column="30" selection-end-line="15" selection-end-column="30" />
+        <state relative-caret-position="98">
+          <caret line="15" column="30" selection-start-line="15" selection-start-column="30" selection-end-line="15" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9775">
+          <caret line="409" column="98" selection-start-line="407" selection-start-column="5" selection-end-line="409" selection-end-column="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/config/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1534">
+          <caret line="84" column="22" selection-start-line="84" selection-start-column="22" selection-end-line="84" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/k8s/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="91">
+          <caret line="20" column="82" selection-start-line="20" selection-start-column="82" selection-end-line="20" selection-end-column="82" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/static/images/logo.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/static/images/favicon.ico">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/env/add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="60" column="14" selection-start-line="60" selection-start-column="14" selection-end-line="60" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PvcController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1718">
+          <caret line="99" selection-start-line="99" selection-end-line="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1470">
+          <caret line="264" selection-start-line="264" selection-end-line="264" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3075">
+          <caret line="12" column="40" selection-start-line="12" selection-start-column="40" selection-end-line="12" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/PersistentVolumeClaim.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="48" column="13" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/VolumeFluent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="157">
+          <caret line="291" column="13" selection-start-line="291" selection-start-column="13" selection-end-line="291" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/docker/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="16" column="75" selection-start-line="16" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/namespace/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="102" column="40" selection-start-line="102" selection-start-column="40" selection-end-line="102" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="257" selection-start-line="257" selection-end-line="257" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="325" column="30" selection-start-line="325" selection-start-column="30" selection-end-line="325" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="347" column="17" selection-start-line="347" selection-start-column="17" selection-end-line="347" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/org/springframework/spring-web/5.2.7.RELEASE/spring-web-5.2.7.RELEASE.jar!/org/springframework/http/HttpStatus.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="283">
+          <caret line="15" column="239" selection-start-line="15" selection-start-column="239" selection-end-line="15" selection-end-column="239" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/http/HttpHarbor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="66" column="44" selection-start-line="66" selection-start-column="44" selection-end-line="66" selection-end-column="44" />
         </state>
       </provider>
     </entry>

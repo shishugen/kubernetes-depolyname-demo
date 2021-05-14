@@ -66,7 +66,9 @@
                         <dl class="layui-nav-child">
                             <dd><a th:href="@{/namespace/list}">命名空间</a></dd>
                         </dl>
-
+                        <dl class="layui-nav-child">
+                            <dd><a th:href="@{/pvc/list}">数据管理</a></dd>
+                        </dl>
                     </li>
                     <li class="layui-nav-item">
                         <a href="javascript:;">
@@ -77,7 +79,7 @@
                             <dd><a th:href="@{/app/env/k8s/list}">k8s环境配置</a></dd>
                         </dl>
                         <dl class="layui-nav-child">
-                            <dd><a th:href="@{/app/env/docker/list}">docker环境配置</a></dd>
+                            <dd><a th:href="@{/app/env/docker/list}">harbor环境配置</a></dd>
                         </dl>
                         <dl class="layui-nav-child">
                             <dd><a th:href="@{/app/env/config/list}">环境配置</a></dd>
@@ -98,9 +100,11 @@
             </div>
         </div>
 
-        <div class="layui-footer">
-            <p>© 2020 - C3Stones Blog : <a href="https://www.cnblogs.com/cao-lei/" target="_blank">https://www.cnblogs.com/cao-lei/</a></p>
-        </div>
+        <!--  <div class="layui-footer">
+
+              <p>© 2020 - C3Stones Blog : <a href="https://www.cnblogs.com/cao-lei/" target="_blank">https://www.cnblogs.com/cao-lei/</a></p>
+
+        </div>  -->
         <div class="mobile-mask"></div>
     </div>
 </body>

@@ -115,7 +115,9 @@ public class Dockers extends BaseConfig{
                         .build();
                 dockerClient = DockerClientBuilder.getInstance(config).build();
                 Version exec = dockerClient.versionCmd().exec();
+                int size = dockerClient.listImagesCmd().exec().size();
                 System.out.println("docker Version"+exec.getVersion());
+                System.out.println("docker images size : "+size);
             }
         return dockerClient;
     }
@@ -251,6 +253,7 @@ public class Dockers extends BaseConfig{
         authConfig.withUsername(harborUser);
         authConfig.withPassword(harborPassword);
         authConfig.withRegistryAddress(harborUrl);
+        log.info("harborUrl ……harborUser……harborPassword …… :{} {}:{} ",harborUrl,harborUser,harborPassword);
         dockerClient.pushImageCmd(imageName).withAuthConfig(authConfig)
                 .withTag(tag)
                 .exec(new PushImageResultCallback())

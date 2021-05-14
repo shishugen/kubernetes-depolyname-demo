@@ -423,7 +423,7 @@ table.on('tool(config)', function(obj){
         });*/
     }else if(obj.event ==='restart'){
         console.log(obj.data.namespace)
-        layer.confirm("确认重启吗？", {icon: 3, title:'提示'}, function(index) {
+        layer.confirm("确认  "+obj.data.name+"  重启吗？", {icon: 3, title:'提示'}, function(index) {
             layer.close(index);
             $.ajax({
                 url : "[[@{/}]]pod/restart",
@@ -441,7 +441,7 @@ table.on('tool(config)', function(obj){
         });
        }else if(obj.event ==='rollback'){
         console.log(obj.data.namespace)
-        layer.confirm("确认回滚吗？", {icon: 3, title:'提示'}, function(index) {
+        layer.confirm("确认   "+obj.data.name+"  回滚吗？", {icon: 3, title:'提示'}, function(index) {
             layer.close(index);
             $.ajax({
                 url : "[[@{/}]]pod/rollback",
@@ -461,7 +461,7 @@ table.on('tool(config)', function(obj){
         //delDeploy
     }else if(obj.event ==='delDeploy'){
         console.log(obj.data.namespace)
-        layer.confirm("确定删除吗？", {icon: 3, title:'提示'}, function(index) {
+        layer.confirm("确定  "+obj.data.name+ "   删除吗？", {icon: 3, title:'提示'}, function(index) {
             layer.close(index);
             $.ajax({
                 url : "[[@{/}]]pod/delDeploy",
@@ -479,7 +479,7 @@ table.on('tool(config)', function(obj){
         });
     }else if(obj.event ==='delDeployment'){
         console.log(obj.data.namespace)
-        layer.confirm("确定删除吗？", {icon: 3, title:'提示'}, function(index) {
+        layer.confirm("确定  "+obj.data.name+"   删除吗？", {icon: 3, title:'提示'}, function(index) {
             layer.close(index);
             $.ajax({
                 url : "[[@{/}]]deploy/delDeployment",

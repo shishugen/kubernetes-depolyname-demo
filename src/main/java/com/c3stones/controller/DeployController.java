@@ -283,16 +283,20 @@ public class DeployController  extends BaseConfig {
 		try {
 
 		image = harborImagePrefix + "/"+image;
-				if(nfs == 1){
+		String pvcLogs = namespace+podName+"-logs";
+			kubes.createPVC(pvcLogs,namespace,nfsStorageClassName,12);
+			if(nfs == 1){
 					kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
-					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace,namespace+podName, memoryXmx, memoryXms)){
+					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],
+							nacosNamespace,namespace+podName, memoryXmx, memoryXms,pvcLogs)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,randomPortName,port,nodePort);
 						}
 						return Response.success(true);
 					}
 				}else{
-					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms)){
+					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,randomPortName,split[2],
+							nacosNamespace, memoryXmx, memoryXms,pvcLogs)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,randomPortName,port,nodePort);
 						}
@@ -344,6 +348,8 @@ public class DeployController  extends BaseConfig {
 			try {
 				String image = imageList[i];
 				 podName = image.split("/")[1].replace(":", "-").replace(".", "-");
+				String pvcLogs = namespace+podName+"-logs";
+				kubes.createPVC(pvcLogs,namespace,nfsStorageClassName,12);
 				if(kubes.checkdeployname(namespace,podAppPrefix+podName)){
 					jsonObject.put("exist",++exist);
 					//jsonObject.put("existPod",podName);
@@ -351,9 +357,10 @@ public class DeployController  extends BaseConfig {
 					image = harborImagePrefix + "/"+image;
 					if(nfs == 1){
 						kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
-						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace,namespace+podName, memoryXmx, memoryXms);
+						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace,
+								namespace+podName, memoryXmx, memoryXms,pvcLogs);
 					}else{
-						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms);
+						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms,pvcLogs);
 					}
 					jsonObject.put("success",++success);
 				}

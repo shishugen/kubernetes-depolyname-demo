@@ -324,9 +324,9 @@ public class Kubes {
 
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
-                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms) {
+                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs) {
         Container container =
-                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms);
+                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs);
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -343,6 +343,10 @@ public class Kubes {
                 .endMetadata()
                 .withNewSpec()
                 .withContainers(container)
+                .addNewVolume()
+                .withName(pvcLogs)
+                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build())
+                .endVolume()
                // .addNewVolume()
                // .endVolume()
                 .endSpec().endTemplate().endSpec().build();
@@ -351,8 +355,8 @@ public class Kubes {
     }
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos ,
-                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms) {
-        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms);
+                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs) {
+        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs);
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -381,6 +385,12 @@ public class Kubes {
                 .withName(pvcName)
                 .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build())
                 .endVolume()
+
+                .addNewVolume()
+                .withName(pvcLogs)
+                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build())
+                .endVolume()
+
                 .endSpec().endTemplate().endSpec().build();
         getKubeclinet().apps().deployments().createOrReplace(newDeployment);
         return true;
@@ -401,7 +411,7 @@ public class Kubes {
      * @return
      */
     private  Container createContainer(String appName,String image,Integer ports,String serviceName,String nacos ,String nacosNamespace,String pvcName
-    ,Integer memoryXmx,Integer memoryXms){
+    ,Integer memoryXmx,Integer memoryXms,String pvcLogs){
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
@@ -487,15 +497,21 @@ public class Kubes {
 
 
        // String cmd = "java -jar -Xms512m  -Xmx1624m  app.jar";
-
+        List<VolumeMount> volumeMounts = new ArrayList();
         if(pvcName != null){
-            List<VolumeMount> volumeMounts = new ArrayList();
             VolumeMount volumeMount = new VolumeMount();
             volumeMount.setName(pvcName);
             volumeMount.setMountPath("/tmp/");
             volumeMounts.add(volumeMount);
-            container.setVolumeMounts(volumeMounts);
         }
+
+        VolumeMount volumeLogs = new VolumeMount();
+        volumeLogs.setName(pvcLogs);
+        volumeLogs.setMountPath("/logs/");
+        volumeMounts.add(volumeLogs);
+
+        container.setVolumeMounts(volumeMounts);
+
 
 
         SecurityContext securityContext = new SecurityContext();

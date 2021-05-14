@@ -3,10 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.c3stones</groupId>
-	<artifactId>kubernetes-deployment-demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>kubernetes-deployment-demo</name>
-	<description>kubernetes-deployment-demo Demo</description>
+	<artifactId>kubernetes-deployment</artifactId>
+	<version>1.0.0</version>
+	<name>kubernetes-deployment</name>
+	<description>kubernetes-deployment-demo</description>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>

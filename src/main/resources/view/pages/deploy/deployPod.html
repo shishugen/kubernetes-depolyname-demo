@@ -250,9 +250,9 @@ form.on('submit(*)', function(data){
         },
         success: function(data) {
             if(data.code == 200){
-                parent.location.reload();
-                var index = parent.layer.getFrameIndex(window.name);
-                parent.layer.close(index);
+               // parent.location.reload();
+               // var index = parent.layer.getFrameIndex(window.name);
+               // parent.layer.close(index);
                 layer.msg("部署成功", {icon: 1});
 
 
