@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane" enctype='multipart/form-data' method="post" th:action="@{/deploy/pod/python}">
+				<div class="layui-form-item">
+<!--
+                    <input name="conf" id="conf" hidden />
+-->
+					<div class="layui-form-item">
+						<label class="layui-form-label">命名空间</label>
+						<div class="layui-input-block">
+							<select id="namespace" lay-verify="required" name="namespace">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">镜像</label>
+						<div class="layui-input-block">
+							<select id="image"  lay-verify="required" lay-search="" name="image">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">neo4j环境</label>
+						<div class="layui-input-inline">
+							<select id="env" lay-verify="required" name="env">
+								<option value="">请选择</option>
+							</select>
+						</div>
+						<label class="layui-form-label">帐号</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="userName" lay-verify="required" value="neo4j" autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label">密码</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="password"   id="password" value="123456"  autocomplete="off" class="layui-input">
+						</div>
+
+					</div>
+
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">内端口</label>
+							<div class="layui-input-inline" style="width: 100px;">
+								<input type="number" name="port" id="port" th:min="0" value="5000" placeholder="" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid">外</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input type="number" name="nodePort" id="nodePort" value="31234" placeholder="30000-32767" th:min="30000" th:max="32767"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="layui-form-item">
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+
+layui.use('upload', function(){
+    var $ = layui.jquery
+        ,upload = layui.upload;
+});
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.render();
+});
+
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+$.ajax({
+    url : "[[@{/}]]pod/listEnvData",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        data = data.data.records;
+        $.each(data, function (index, item) {
+            $('#env').append(new Option(item.namespace+"."+item.podName, item.podName+"."+item.namespace));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+$.ajax({
+    url : "[[@{/}]]harbor/list",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data.data, function (index, item) {
+            $('#image').append(new Option(item.imageName+":"+item.version, item.imageName+":"+item.version));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+
+//自定义验证规则
+form.verify({
+
+});
+
+// 提交表单
+form.on('submit(*)', function(data){
+    $(".layui-form").ajaxForm({
+        error: function(data){
+            errorHandle(data);
+        },
+        success: function(data) {
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("部署成功", {icon: 2});
+            }else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+            }
+        }
+    });
+});
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

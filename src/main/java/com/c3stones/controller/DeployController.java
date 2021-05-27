@@ -120,9 +120,9 @@ public class DeployController  extends BaseConfig {
 	 *
 	 * @return
 	 */
-	@RequestMapping(value = "add")
+	@RequestMapping(value = "addNginx")
 	public String add() {
-		return "pages/deploy/add";
+		return "pages/deploy/addNginx";
 	}
 
 
@@ -131,9 +131,20 @@ public class DeployController  extends BaseConfig {
 	 *
 	 * @return
 	 */
-	@RequestMapping(value = "addNginx")
+	@RequestMapping(value = "addJar")
 	public String addNginx() {
-		return "pages/deploy/addNginx";
+		return "pages/deploy/addJar";
+	}
+
+
+	/**
+	 * python页面
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "addPythonForm")
+	public String addPythonForm( Model model) {
+		return "pages/deploy/addPython";
 	}
 
 	/**
@@ -170,6 +181,17 @@ public class DeployController  extends BaseConfig {
 		model.addAttribute("namespace",kubes.getNamespace());
 		return "pages/deploy/deployNginx";
 	}
+	/**
+	 * deployPod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "deployPython")
+	public String deployPython( Model model) {
+		model.addAttribute("namespace",kubes.getNamespace());
+		return "pages/deploy/deployPython";
+	}
+
 
 	@RequestMapping(value = "updatePage")
 	public String update(String deployname,String replicas,String image,String namespace, Model model) {
@@ -418,6 +440,45 @@ public class DeployController  extends BaseConfig {
         }
 		return Response.success("OK");
 	}
+	/**
+	 * pod
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = "pod/python")
+	@ResponseBody
+	public Response<Boolean> python(String namespace, String image,Integer port,Integer nodePort,
+	String env,String userName , String password) {
+		System.out.println("namespace=="+namespace);
+		System.out.println("image=="+image);
+		System.out.println("port=="+port);
+		System.out.println("nodePort=="+nodePort);
+		log.info("部署  namespace : {},image:{},port:{},nodePort:{}",namespace,image,port,nodePort);
+		Assert.notNull(namespace, "namespace不能为空");
+		Assert.notNull(image, "image不能为空");
+		String podName =image.substring(image.lastIndexOf("/")+1,image.length()).replaceAll(":","-").replaceAll("\\.","-");
+		System.out.println("podName="+podName);
+		if(kubes.checkSvc(nodePort)){
+			return Response.error("端口已存在");
+		}
+		if(kubes.checkdeployname(namespace,podAppPrefix+podName)){
+			return Response.error("服务已存在");
+		}
+		image = harborImagePrefix + "/"+image;
+		try {
+			String randomPortName = KubeUtils.randomPortName();
+			kubes.createDeploymentPython(namespace,namespace,podName,1,image,port,randomPortName,
+					env,userName,password);
+			if(nodePort != null  && port != null) {
+				kubes.createService(namespace,randomPortName,port,nodePort);
+			}
+        }catch (Exception e){
+		    e.printStackTrace();
+            nginxPod.delete(namespace,podName);
+			return Response.error("失败");
+        }
+		return Response.success("OK");
+	}
 
 	/**
 	 * pod
@@ -542,6 +603,43 @@ public class DeployController  extends BaseConfig {
 		    multipartFileToFile(file,homeDir);
 			String originalFilename = file.getOriginalFilename();
 			dockers.writeNginxDockerfile(originalFilename,homeDir);
+			dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
+		} catch (Exception e) {
+			e.printStackTrace();
+            return Response.error("失败");
+        }finally {
+			try {
+				removeTempFile(homeDir);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		log.info("制作镜像成功");
+		return Response.success("OK");
+
+	}
+	/**
+	 * 上传文件
+	 *
+	 * @param file
+	 * @return
+	 */
+	@RequestMapping("/upload/addPython")
+	@ResponseBody
+	public Response<Pages<HarborImage>>addPython(MultipartFile file ,String version
+	) {
+		log.info("制作Python镜像 file :{} , version : {}",file,version);
+		Assert.notNull(version, "version不能为空");
+		Assert.notNull(file, "file不能为空");
+		String homeDir = null;
+		try {
+			String name = KubeUtils.randomPortName();
+			 homeDir = Dockers.getHomeDir()+File.separator+name;
+			 new File(homeDir).mkdirs();
+			log.info("制作目录--> homeDir : {}",homeDir);
+		    multipartFileToFile(file,homeDir);
+			String originalFilename = file.getOriginalFilename();
+			dockers.writePythonDockerfile(originalFilename,homeDir);
 			dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
 		} catch (Exception e) {
 			e.printStackTrace();

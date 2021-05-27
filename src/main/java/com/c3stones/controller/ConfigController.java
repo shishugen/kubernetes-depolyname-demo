@@ -64,7 +64,7 @@ public class ConfigController {
             pro.setProperty("nfs.storage.nacos.size",config.getNfsNacosStorageSize());
             pro.setProperty("nfs.storage.mq.size",config.getNfsMqStorageSize());
             pro.setProperty("nfs.storage.fdfs.size",config.getNfsFdfsStorageSize());
-
+            pro.setProperty("nfs.storage.neo4j.size",config.getNfsNeo4jStorageSize());
             pro.store(outputStream,"保存");
             BaseConfig.setConfig(pro);
         } catch (Exception e) {

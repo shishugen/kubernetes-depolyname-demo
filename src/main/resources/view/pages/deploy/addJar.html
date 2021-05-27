@@ -13,30 +13,55 @@
 <body class="layui-view-body">
 	<div class="layui-row">
     	<div class="layui-card">
-        	<form class="layui-form layui-card-body layui-form-pane" method="post">
+        	<form class="layui-form layui-card-body layui-form-pane" method="post" th:action="@{/user/save}">
 				<div class="layui-form-item">
 					<label class="layui-form-label">状态</label>
 					<div class="layui-input-inline">
 						<input type="tel" name="phone" disabled id="state" value="请选择文件" autocomplete="off" class="layui-input">
 					</div>
+
 					<label class="layui-form-label">版本</label>
 					<div class="layui-input-inline">
 						<input type="tel" name="version"  id="version" value="1.0"  autocomplete="off" class="layui-input">
 					</div>
-					<button type="button" class="layui-btn" id="test9">开始制作</button>
+					<button type="button"  class="layui-btn" id="test9">开始制作</button>
+
+<!--
+					<button type="button" class="layui-btn layui-btn-primary" id="test4"><i class="layui-icon"></i>只允许JAR文件</button>
+-->
+				</div>
+
+				<div class="layui-form-item">
+
 				</div>
 				<div class="layui-form-item">
 					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
-						<legend>拖拽上传，zip压缩包</legend>
+						<legend>拖拽多个文件上传，JAR包</legend>
 					</fieldset>
-<!--
-					<label class="layui-form-label"><i>*</i>zip名称</label>
--->
 					<div class="layui-upload-drag"  id="test4">
 						<i class="layui-icon"></i>
 						<p>点击上传，或将文件拖拽到此处</p>
 					</div>
 				</div>
+				<div>
+					<div class="layui-form-item" style="width: 300px" >
+						<div class="layui-inline">
+							<div  id="successData" style="color: blue">成功后镜像列表</div>
+						</div>
+
+						<div class="layui-inline">
+							<div id="errorData"  style="color: red;display: none">失败上传镜像</div>
+						</div>
+					</div>
+
+					<div class="layui-form-item" style="width: 300px" >
+
+
+					</div>
+
+				</div>
+
+
 			</form>
 		</div>
 	</div>
@@ -49,34 +74,40 @@ layui.use('upload', function(){
     var $ = layui.jquery
         ,upload = layui.upload;
 //普通图片上传
-
 var uploadInst = upload.render({
     elem: '#test4'
-    ,url: '[[@{/}]]deploy/upload/nginx' //改成您自己的上传接口
+    ,url: '[[@{/}]]deploy/upload' //改成您自己的上传接口
     ,accept: 'file' //普通文件
     ,auto: false
     ,bindAction: '#test9'
-    ,exts: 'zip' //只允许上传压缩文件
-    ,data:{
+    ,exts: 'jar' //只允许上传压缩文件
+	,data:{
         version: function(){
             return $('#version').val();
         }
-    }
+	}
+
     ,before: function(obj){
         $('#test9').addClass("layui-btn-disabled").attr("disabled",true);
         $('#state').val("制作镜像中"); //图片链接（base64）
+        console.log("obj",obj)
     }
     ,done: function(res){
         console.log("1111",res)
+
         if(res.code == 200){
+            console.log("html22",res.data.successData)
+            $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
             $('#state').val("制作完成"); //图片链接（base64）
-            $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
-            return layer.msg('制作成功');
+            $("#successData").append ('<p>'+res.data.successData[0]+'</p>')
+             layer.msg('制作成功');
         }else{
-            $('#state').val("制作失败"); //图片链接（base64）
             $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
-            return layer.msg('制作失败');
-		}
+           $('#state').val("制作失败"); //图片链接（base64）
+            $("#successData").css("display","block");//显示div
+            $("#successData").append ('<p>'+res.data.errorData[0]+'</p>')
+             layer.msg('制作失败');
+        }
     }
 
   });

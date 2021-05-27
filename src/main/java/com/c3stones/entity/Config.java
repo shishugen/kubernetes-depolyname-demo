@@ -26,10 +26,14 @@ public class Config {
     private String nfsNacosStorageSize ;
     private String nfsMqStorageSize ;
     private String nfsFdfsStorageSize ;
+    private String nfsNeo4jStorageSize ;
 
 
 
-    public Config(Integer dockerPort, String harborUser, String harborPassword, String harborUrl, String harborImagePrefix, String harborImageProjectName, String harborImageEnvProjectName, String nfsStorageClassName, String nfsMySqlStorageSize, String nfsNacosStorageSize, String nfsMqStorageSize, String nfsFdfsStorageSize) {
+    public Config(Integer dockerPort, String harborUser, String harborPassword, String harborUrl,
+                  String harborImagePrefix, String harborImageProjectName, String harborImageEnvProjectName,
+                  String nfsStorageClassName, String nfsMySqlStorageSize, String nfsNacosStorageSize,
+                  String nfsMqStorageSize, String nfsFdfsStorageSize,String nfsNeo4jStorageSize) {
         this.dockerPort = dockerPort;
         this.harborUser = harborUser;
         this.harborPassword = harborPassword;
@@ -42,5 +46,6 @@ public class Config {
         this.nfsNacosStorageSize = nfsNacosStorageSize;
         this.nfsMqStorageSize = nfsMqStorageSize;
         this.nfsFdfsStorageSize = nfsFdfsStorageSize;
+        this.nfsNeo4jStorageSize = nfsNeo4jStorageSize;
     }
 }

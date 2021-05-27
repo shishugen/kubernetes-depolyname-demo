@@ -1,5 +1,6 @@
 package com.c3stones.client;
 
+import com.c3stones.entity.Config;
 import com.c3stones.util.UnRar;
 import com.c3stones.util.XYFileUtils;
 import com.github.dockerjava.api.DockerClient;
@@ -7,6 +8,8 @@ import com.github.dockerjava.api.command.BuildImageCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.DockerCmdExecFactory;
 import com.github.dockerjava.api.model.AuthConfig;
+import com.github.dockerjava.api.model.Image;
+import com.github.dockerjava.api.model.SearchItem;
 import com.github.dockerjava.api.model.Version;
 import com.github.dockerjava.core.*;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
@@ -18,6 +21,7 @@ import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.StringUtils;
 import org.ho.yaml.Yaml;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +32,9 @@ import sun.tools.jar.resources.jar;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: Dockers
@@ -66,6 +72,9 @@ public class Dockers extends BaseConfig{
 
     @Value("${nginx.image}")
     private String nginxImage;
+
+    @Value("${python.image}")
+    private String pythonImage;
 /*
     @Value("${harbor.password}")
     private String harborPassword;
@@ -211,6 +220,50 @@ public class Dockers extends BaseConfig{
         return file;
     }
 
+    /**
+     *
+     * @param fileName
+     * @param homeDir
+     * @return
+     * @throws Exception
+     */
+    public  File writePythonDockerfile(String fileName,String homeDir) throws Exception {
+        File file = new File(homeDir + File.separator + "Dockerfile");
+        file.createNewFile();
+
+        FileOutputStream outputStream = new FileOutputStream(file);//形参里面可追加true参数，表示在原有文件末尾追加信息
+
+
+        outputStream.write(("FROM "+harborImageEnvPrefix+pythonImage).getBytes());
+        outputStream.write(separator.getBytes());
+
+
+        outputStream.write(("RUN pip install Flask py2neo==2021.1.1 jieba sklearn gunicorn gevent").getBytes());
+        outputStream.write(separator.getBytes());
+
+        String s1 = "COPY " + fileName + "  /"+fileName;
+        outputStream.write(s1.getBytes());
+        outputStream.write(separator.getBytes());
+
+       outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
+        outputStream.write(separator.getBytes());
+
+        String unzip = "RUN unzip  "+fileName;
+        outputStream.write(unzip.getBytes());
+        outputStream.write(separator.getBytes());
+
+        String name = fileName.substring(0, fileName.lastIndexOf("."));
+        String s = "CMD [\"gunicorn\",\"--chdir\",\""+name+"\", \"app:app\", \"-c\", \"./" + name + "/gunicorn.conf.py\"," +
+                "\"--log-level=debug\",\"--access-logfile=-\",\"--error-logfile=-\"]";
+        outputStream.write(s.getBytes());
+        outputStream.write(separator.getBytes());
+        return file;
+    }
+
+
+
+
+
     public  File writeNacosConfFile(String conifName, String homeDir ) throws IOException {
         File file = new File(homeDir + File.separator + conifName);
         file.createNewFile();
@@ -302,14 +355,42 @@ public class Dockers extends BaseConfig{
 
     public static void main(String[] args) throws InterruptedException, Exception {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://10.49.0.9:2375")
-                .withCustomSslConfig(new LocalDirectorySSLConfig("E:\\dockerfile\\10.49.0.9"))
+                .withDockerHost("tcp://192.168.103.236:2375")
+                .withCustomSslConfig(new LocalDirectorySSLConfig("E:\\dockerfile\\192.168.103.236"))
                 .build();
         DockerClient dockerClient = DockerClientBuilder.getInstance(config).build();
+        List<Image> exec = dockerClient.listImagesCmd().exec();
+    /*    List<SearchItem> exec1 = dockerClient.searchImagesCmd("ssgssg").exec();
+        exec1.stream().forEach(a->{
+            System.out.println("1==="+a);
+            System.out.println("2=="+a.getDescription());
+            System.out.println("3==="+a.getName());
+            System.out.println("4==="+a.getStarCount());
+        });*/
+        exec.stream().skip(4).limit(1).filter(a->a.getRepoTags() != null && a.getRepoTags().length > 0)
+                 .filter(new Predicate<Image>() {
+                     @Override
+                     public boolean test(Image test) {
+                       //  String gender = test.getGender();
+                         return "".equals("");
+                     }
+                 }).collect(Collectors.toList());
 
-        com.github.dockerjava.api.model.Version exec = dockerClient.versionCmd().exec();
-        System.out.println("docker Version"+exec.getVersion());
+          /*      .forEach(a->{
+            System.out.println(a.getId());
+            Arrays.stream(a.getRepoTags()).forEach(t->{
+                String projectName = "";
+                if(t.contains("/")){
+                     projectName = t.split("/")[0];
+                }else{
+                     projectName = t.split(":")[0];
+                }
+             //   System.out.println(t +"    "+projectName);
+            });
+        });*/
+      //  dockerClient.removeImageCmd("ade6db6b752468088e729846a4fb7707a2611a91c6521d2f5802dce82d8e8974").exec();
     }
+
 
 
 

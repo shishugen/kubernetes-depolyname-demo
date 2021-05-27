@@ -528,6 +528,98 @@ public class Kubes {
         return container;
     }
 
+
+    /**
+     *
+     * @param appName
+     * @param image
+     * @param ports
+     * @param serviceName
+     * @param userName
+     * @param password
+     * @return
+     */
+    private  Container createContainerPython(String appName,String image,Integer ports,String serviceName,
+                                             String envNeo4j,String userName , String password){
+        log.info("ports :  {},serviceName  : {}",ports,serviceName);
+
+        Container container = new  Container();
+        container.setName(appName);
+        container.setImage(image);
+
+        List<EnvVar> env = new ArrayList<>(4);
+        EnvVar envVar = new EnvVar();
+        envVar.setName("NEO4J_IP");
+        envVar.setValue("http://"+envNeo4j+":7474");
+        env.add(envVar);
+
+
+        EnvVar envVar2 = new EnvVar();
+        envVar2.setName("NEO4J_USER_NAME");
+        envVar2.setValue(userName);
+        env.add(envVar2);
+
+        EnvVar envVar3 = new EnvVar();
+        envVar3.setName("NEO4J_PASSWORD");
+        envVar3.setValue(password);
+        env.add(envVar3);
+
+        container.setEnv(env);
+        container.setImagePullPolicy("Always");
+        SecurityContext securityContext = new SecurityContext();
+        securityContext.setPrivileged(true);
+        container.setSecurityContext(securityContext);
+        if(ports != null ){
+            List<ContainerPort> portslist = new ArrayList<>();
+            ContainerPort containerPort = new ContainerPort();
+            containerPort.setName(serviceName);
+            containerPort.setContainerPort(ports);
+            portslist.add(containerPort);
+            container.setPorts(portslist);
+        }
+        return container;
+    }
+
+
+    /**
+     *
+     * @param namespace
+     * @param deploymentName
+     * @param appName
+     * @param replicas
+     * @param image
+     * @param port
+     * @param randomPortName
+     * @param userName
+     * @param password
+     * @return
+     */
+    public  boolean createDeploymentPython(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
+                                           String env,String userName , String password) {
+        Container container = createContainerPython(appName, image,port,randomPortName,env , userName,password);
+        Deployment newDeployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName(podAppPrefix+appName)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withNewSelector()
+                .addToMatchLabels(LABELS_KEY, randomPortName)
+                .endSelector()
+                .withReplicas(replicas)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels(LABELS_KEY, randomPortName)
+                .endMetadata()
+                .withNewSpec()
+                .withTerminationGracePeriodSeconds(60L)
+                .withContainers(container)
+                .endSpec().endTemplate().endSpec().build();
+        getKubeclinet().apps().deployments().createOrReplace(newDeployment);
+        return true;
+    }
+
+
     @SneakyThrows
     public static void main(String[] args) {
       //  String homeConfigFile = getHomeConfigFile();

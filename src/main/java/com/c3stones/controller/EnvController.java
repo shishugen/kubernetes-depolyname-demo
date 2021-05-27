@@ -40,6 +40,9 @@ public class EnvController extends BaseConfig {
     private NacosPod nacosPod ;
 
     @Autowired
+    private Neo4JPod neo4JPod ;
+
+    @Autowired
     private RabbitMQPod rabbitMQPod ;
 
     @Autowired
@@ -110,20 +113,31 @@ public class EnvController extends BaseConfig {
             return Response.error("端口已存在");
         }
         try {
-            if(name.contains("mysql")){
-                mySQLPod.createMySQL(namespace,MySQLnodePort);
-            }else if(name.contains("nacos")){
-                nacosPod.createNacos(namespace);
-            }else if(name.contains("redis")){
-                redisPod.createRedis(namespace);
-            }else if(name.contains("rabbit")){
-                rabbitMQPod.createRabbitmq(namespace);
-            }else if(name.contains("fdfs")){
-                fastdfsPod.createT(namespace,nodePort);
-            }else if(name.contains("libreoffice")){
-                libreofficePod.createlibreoffice(namespace);
-            }else if(name.contains("guacamole")){
-                guacdPod.createGuacamole(namespace,guacamoleName);
+            switch (name){
+                case "mysql":
+                    mySQLPod.createMySQL(namespace,MySQLnodePort);
+                    break;
+                case "nacos":
+                    nacosPod.createNacos(namespace);
+                    break;
+                case "redis":
+                    redisPod.createRedis(namespace);
+                    break;
+                case "rabbit":
+                    rabbitMQPod.createRabbitmq(namespace);
+                    break;
+                case "fdfs":
+                    fastdfsPod.createT(namespace,nodePort);
+                    break;
+                case "libreoffice":
+                    libreofficePod.createlibreoffice(namespace);
+                    break;
+                case "guacamole":
+                    guacdPod.createGuacamole(namespace,guacamoleName);
+                    break;
+                case "neo4j":
+                    neo4JPod.create(namespace);
+                    break;
             }
         }catch (Exception e){
             e.printStackTrace();

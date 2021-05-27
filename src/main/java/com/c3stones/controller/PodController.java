@@ -294,6 +294,7 @@ public class PodController {
         pod.setHostIp(hostIp);
         pod.setPodName(metadata.getName());
         pod.setPodStatus(getPodStatus(kubePod).getReason());
+
         pod.setNamespace(metadata.getNamespace());
         pod.setDate(KubeUtils.StringFormatDate(status.getStartTime()));
 

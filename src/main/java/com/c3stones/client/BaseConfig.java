@@ -29,6 +29,7 @@ public class BaseConfig {
     protected static Integer nfsNacosStorageSize ;
     protected  static Integer nfsMqStorageSize ;
     protected static Integer nfsFdfsStorageSize ;
+    protected static Integer nfsNeo4jStorageSize ;
     protected static String harborImageEnvPrefix ;
 
     private static void getConfig(){
@@ -68,10 +69,11 @@ public class BaseConfig {
          nfsNacosStorageSize =Integer.valueOf( pro.getProperty("nfs.storage.nacos.size"));
          nfsMqStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.mq.size"));
          nfsFdfsStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.fdfs.size"));
+         nfsNeo4jStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.neo4j.size"));
          //harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
          harborImageEnvPrefix = harborImageEnvProjectName;
         return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
-                ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString(),nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString());
+                ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString(),nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString());
 
     }
 

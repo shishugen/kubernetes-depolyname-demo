@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.HarborTemp;
+import com.c3stones.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -90,6 +91,7 @@ public class HttpHarbor extends BaseConfig {
                     JSONObject harborVersionObject = harborVersionAarry.getJSONObject(k);
                     HarborTemp harborVersion = harborVersionObject.toJavaObject(HarborTemp.class);
                     HarborImage harbor = new HarborImage();
+                    harbor.setCreated(DateUtils.StringFormat(harborVersion.getCreated()));
                     harbor.setImageName(harborRepositories.getName());
                     harbor.setVersion(harborVersion.getName());
                     harborList.add(harbor);

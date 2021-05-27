@@ -79,7 +79,7 @@ table.on('tool(config)', function(obj){
 
     var row = obj.data;
     if(obj.event === 'del') {
-        layer.prompt({title: '输入任何口令，并确认', formType: 1}, function(pass, index){
+        layer.prompt({title: '输入删除密码，并确认', formType: 1}, function(pass, index){
             layer.close(index);
               if(pass === "654321"){
                   console.log("正确")

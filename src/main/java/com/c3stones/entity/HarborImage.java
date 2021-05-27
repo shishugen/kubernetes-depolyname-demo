@@ -28,6 +28,7 @@ public class HarborImage {
 
     private String version;
 
+    private String created;
 
 
     private String harborDomain;

@@ -23,8 +23,10 @@
 
                     <button class="layui-btn layui-btn-normal" data-type="deployMultiPod">批量部署应用</button>
                     <button class="layui-btn layui-btn-normal" data-type="deployNginx">前端部署</button>
-                    <button class="layui-btn layui-btn-normal" data-type="add">前端新增</button>
-                    <button class="layui-btn layui-btn-normal" data-type="addNginx">批量JAR新增</button>
+                    <button class="layui-btn layui-btn-normal" data-type="deployPython">Python部署</button>
+                    <button class="layui-btn layui-btn-normal" data-type="addNginx">前端新增</button>
+                    <button class="layui-btn layui-btn-normal" data-type="addJar">JAR新增</button>
+                    <button class="layui-btn layui-btn-normal" data-type="addPython">Python新增</button>
                 </div>
 
 					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
@@ -53,9 +55,10 @@ table.render({
     ,url: '[[@{/harbor/listData}]]'
     ,cols: [
     	[
-	      ,{field:'imageName', title: '镜像'}
-	      ,{field:'version', title: '版本', align: 'center'}
-	      ,{title:'操作', align: 'center', toolbar: '#operation', width:150}
+            ,{field:'imageName', title: '镜像'}
+            ,{field:'version', title: '版本', align: 'center'}
+            ,{field:'created', title: '日期'}
+            ,{title:'操作', align: 'center', toolbar: '#operation', width:150}
     	]
    	]
     ,response: {
@@ -74,27 +77,27 @@ table.render({
 
 
 active = {
-	add: function() {
-		layer.open({
-    		type: 2,
-    		area: ['100%', '80%'],
-    		title: '新增',
-    		content: '[[@{/}]]deploy/add'
-    	});
-	},
     addNginx: function() {
 		layer.open({
     		type: 2,
     		area: ['100%', '80%'],
-    		title: '新增',
+    		title: '前端新增',
     		content: '[[@{/}]]deploy/addNginx'
+    	});
+	},
+    addJar: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '80%'],
+    		title: 'Jar新增',
+    		content: '[[@{/}]]deploy/addJar'
     	});
 	},
     deployNginx: function() {
 		layer.open({
     		type: 2,
     		area: ['100%', '80%'],
-    		title: '新增',
+    		title: '部署前端',
     		content: '[[@{/}]]deploy/deployNginx'
     	});
 	},
@@ -102,8 +105,24 @@ active = {
 		layer.open({
     		type: 2,
     		area: ['100%', '80%'],
-    		title: '新增',
+    		title: 'jar部署',
     		content: '[[@{/}]]deploy/deployMultiPod'
+    	});
+	},
+    addPython: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '80%'],
+    		title: 'python制作镜像',
+    		content: '[[@{/}]]deploy/addPythonForm'
+    	});
+	},
+    deployPython: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '80%'],
+    		title: 'python部署',
+    		content: '[[@{/}]]deploy/deployPython'
     	});
 	},
 
