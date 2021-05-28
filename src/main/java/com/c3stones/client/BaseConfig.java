@@ -31,6 +31,7 @@ public class BaseConfig {
     protected static Integer nfsFdfsStorageSize ;
     protected static Integer nfsNeo4jStorageSize ;
     protected static String harborImageEnvPrefix ;
+    protected static String pythonRely ;
 
     private static void getConfig(){
         Properties pro = new Properties();
@@ -70,10 +71,12 @@ public class BaseConfig {
          nfsMqStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.mq.size"));
          nfsFdfsStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.fdfs.size"));
          nfsNeo4jStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.neo4j.size"));
+         pythonRely = pro.getProperty("python.rely");
          //harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
          harborImageEnvPrefix = harborImageEnvProjectName;
         return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
-                ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString(),nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString());
+                ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString()
+                ,nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString(),pythonRely);
 
     }
 

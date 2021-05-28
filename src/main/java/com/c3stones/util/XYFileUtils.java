@@ -1,8 +1,11 @@
 package com.c3stones.util;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * @ClassName: XYFileUtils
@@ -67,12 +70,27 @@ public class XYFileUtils {
         }
     }
 
+    public static String readZipFileName(String path) throws IOException {
+        ZipEntry zipEntry = null;
+        File file = new File(path);
+        if(file.exists()){
+            //解决包内文件存在中文时的中文乱码问题
+            ZipInputStream zipInputStream = new ZipInputStream( new FileInputStream(path), Charset.forName("GBK"));
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                if(zipEntry.isDirectory()) {
+                    System.out.println(zipEntry.getName());
+                    return zipEntry.getName();
+                }
+            }
+        }
+        return  null;
+    }
+
     public static void main(String[] args) {
-        String path = "E:\\dockerfile\\dockerfile\\Dockerfile";
-        List<LineReplaceEntity> list = new ArrayList<>();
-        //将第二行替换为你想要的内容
-        list.add(new LineReplaceEntity(2,"test"));
-       // rpFileContentByLineNo(path,list);
+        String zipFileName = "testt/";
+        String name = zipFileName.substring(0,zipFileName.lastIndexOf("/"));
+        System.out.println(name);
+
     }
 
 

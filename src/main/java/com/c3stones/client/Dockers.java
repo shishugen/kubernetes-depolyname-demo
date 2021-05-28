@@ -231,28 +231,39 @@ public class Dockers extends BaseConfig{
         File file = new File(homeDir + File.separator + "Dockerfile");
         file.createNewFile();
 
-        FileOutputStream outputStream = new FileOutputStream(file);//形参里面可追加true参数，表示在原有文件末尾追加信息
 
+        FileOutputStream outputStream = new FileOutputStream(file);//形参里面可追加true参数，表示在原有文件末尾追加信息
 
         outputStream.write(("FROM "+harborImageEnvPrefix+pythonImage).getBytes());
         outputStream.write(separator.getBytes());
 
+        String pythonRelys = pythonRely.replaceAll(",", " ");
+        System.out.println(pythonRelys);
 
-        outputStream.write(("RUN pip install Flask py2neo==2021.1.1 jieba sklearn gunicorn gevent").getBytes());
+        //outputStream.write(("RUN pip install Flask py2neo==2021.1.1 jieba sklearn  gunicorn  gevent xlrd==1.2.0").getBytes());
+        outputStream.write(("RUN pip install  "+pythonRelys).getBytes());
         outputStream.write(separator.getBytes());
 
         String s1 = "COPY " + fileName + "  /"+fileName;
         outputStream.write(s1.getBytes());
         outputStream.write(separator.getBytes());
 
-       outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
+        outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
         outputStream.write(separator.getBytes());
 
-        String unzip = "RUN unzip  "+fileName;
-        outputStream.write(unzip.getBytes());
+        String zipFileName = XYFileUtils.readZipFileName(homeDir + File.separator + fileName);
+
+       /* String filePath = "RUN mkdir /"+zipFileName;
+        outputStream.write(filePath.getBytes());
+        outputStream.write(separator.getBytes());*/
+
+        String workdir = "RUN unzip  "+fileName;
+        outputStream.write(workdir.getBytes());
         outputStream.write(separator.getBytes());
 
-        String name = fileName.substring(0, fileName.lastIndexOf("."));
+       // String name = fileName.substring(0, fileName.lastIndexOf("."));
+        String name = zipFileName.substring(0,zipFileName.lastIndexOf("/"));
+
         String s = "CMD [\"gunicorn\",\"--chdir\",\""+name+"\", \"app:app\", \"-c\", \"./" + name + "/gunicorn.conf.py\"," +
                 "\"--log-level=debug\",\"--access-logfile=-\",\"--error-logfile=-\"]";
         outputStream.write(s.getBytes());
@@ -298,21 +309,25 @@ public class Dockers extends BaseConfig{
         HashSet<String> objects = new HashSet<>(1);
         objects.add(imageName+":"+tag);
         log.info("start buildImage……imageName  : {}:{} ",imageName,tag);
-        dockerClient.buildImageCmd(new File(baseDir)).withNoCache(true)
-                .withTags(objects).exec(new BuildImageResultCallback()).awaitImageId(8, TimeUnit.MINUTES);
+        String awaitImageId = dockerClient.buildImageCmd(new File(baseDir)).withNoCache(true)
+                .withTags(objects).exec(new BuildImageResultCallback()).awaitImageId(30, TimeUnit.MINUTES);
         log.info("end buildImage……imageName  : {}:{} ",imageName,tag);
-
         AuthConfig authConfig = new AuthConfig();
         authConfig.withUsername(harborUser);
         authConfig.withPassword(harborPassword);
         authConfig.withRegistryAddress(harborUrl);
         log.info("harborUrl ……harborUser……harborPassword …… :{} {}:{} ",harborUrl,harborUser,harborPassword);
-        dockerClient.pushImageCmd(imageName).withAuthConfig(authConfig)
-                .withTag(tag)
-                .exec(new PushImageResultCallback())
-                .awaitCompletion(3, TimeUnit.MINUTES);
-        log.info("pushImage……imageName  : {}:{} ",imageName,tag);
-        log.info("imageName : {}","上传完成 "+imageName);
+        try {
+            dockerClient.pushImageCmd(imageName)
+                    .withTag(tag)
+                    .withAuthConfig(authConfig)
+                    .exec(new PushImageResultCallback())
+                    .awaitCompletion(5, TimeUnit.MINUTES);
+            log.info("pushImage……imageName  : {}:{} ",imageName,tag);
+            log.info("imageName : {}","上传完成 "+imageName);
+        }finally {
+            dockerClient.removeImageCmd(awaitImageId);
+        }
 
     }
 

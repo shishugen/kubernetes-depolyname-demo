@@ -26,19 +26,19 @@
                 <div class="layui-inline">
                     <div class="layui-form-label" style="width: 125px">地址</div>
                     <div class="layui-input-inline" style="width: 180px;">
-                        <input  type="text" name="harborUrl"lay-verify="required"  th:value="${config.harborUrl}" autocomplete="off" class="layui-input">
+                        <input  type="text" name="harborUrl" id="harborUrl" lay-verify="required"  th:value="${config.harborUrl}" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <div class="layui-form-label" style="width: 125px">用户名</div>
                     <div class="layui-input-inline" style="width: 180px;">
-                        <input  type="text" name="harborUser" lay-verify="required" th:value="${config.harborUser}" autocomplete="off" class="layui-input">
+                        <input  type="text" name="harborUser" id="harborUser" lay-verify="required" th:value="${config.harborUser}" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <div class="layui-form-label" style="width: 125px">用户密码</div>
                     <div class="layui-input-inline" style="width: 180px;">
-                        <input  type="text" name="harborPassword"lay-verify="required"  th:value="${config.harborPassword}" autocomplete="off" class="layui-input">
+                        <input  type="text" name="harborPassword" id="harborPassword" lay-verify="required"  th:value="${config.harborPassword}" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
@@ -51,19 +51,19 @@
                 <div class="layui-inline">
                     <div class="layui-form-label" style="width: 125px">仓库地址</div>
                     <div class="layui-input-inline" style="width: 180px;">
-                        <input  type="text" name="harborImagePrefix" lay-verify="required"  th:value="${config.harborImagePrefix}" autocomplete="off" class="layui-input">
+                        <input  type="text" name="harborImagePrefix" id="harborImagePrefix" lay-verify="required"  th:value="${config.harborImagePrefix}" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <div class="layui-form-label" style="width: 125px">项目镜像前缀</div>
                     <div class="layui-input-inline" style="width: 180px;">
-                        <input  type="text" name="harborImageProjectName"lay-verify="required"  th:value="${config.harborImageProjectName}" autocomplete="off" class="layui-input">
+                        <input  type="text" name="harborImageProjectName" id="harborImageProjectName" lay-verify="required"  th:value="${config.harborImageProjectName}" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
                     <div class="layui-form-label" style="width: 125px">环境镜像前缘</div>
                     <div class="layui-input-inline" style="width: 180px;">
-                        <input  type="text" name="harborImageEnvProjectName"lay-verify="required"  th:value="${config.harborImageEnvProjectName}" autocomplete="off" class="layui-input">
+                        <input  type="text" name="harborImageEnvProjectName" id="harborImageEnvProjectName" lay-verify="required"  th:value="${config.harborImageEnvProjectName}" autocomplete="off" class="layui-input">
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                 <div class="layui-inline">
                     <div class="layui-form-label" style="width: 125px">NFS名称</div>
                     <div class="layui-input-inline" style="width: 180px;">
-                        <input  type="text" name="nfsStorageClassName"lay-verify="required"  th:value="${config.nfsStorageClassName}" autocomplete="off" class="layui-input">
+                        <input  type="text" name="nfsStorageClassName" id="nfsStorageClassName" lay-verify="required"  th:value="${config.nfsStorageClassName}" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -111,6 +111,19 @@
                 </div>
 
             </div>
+
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
+                    <legend>python依赖 多个用 , 隔开</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">python依赖</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pythonRely" id="pythonRely" lay-verify="required" th:value="${config.pythonRely}"  autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
             <div class="layui-form-item">
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
                     <legend>docker配置</legend>
@@ -123,10 +136,14 @@
                     </div>
                 <div class="layui-form-item">
                     <button type="submit" class="layui-btn" lay-submit lay-filter="*">保存</button>
+                    <button type="button" class="layui-btn layui-btn-danger" id="restart">重置</button>
+
                 </div>
             </div>
 
         </form>
+
+
     </div>
 </div>
 </body>
@@ -136,8 +153,42 @@
 var element = layui.element;
 var table = layui.table;
 var layer = layui.layer;
+var $ = layui.jquery
+//表单取值
+layui.$('#restart').on('click', function(){
+    layer.confirm("确认重置吗？", {icon: 3, title:'提示'}, function(index) {
+        layer.close(index);
+        $.ajax({
+            url : "[[@{/}]]app/env/config/restart",
+            type : "post",
+            dataType : "json",
+            error : function(data) {
+                errorHandle(data);
+            },
+            success : function(data) {
+                data=data.data
+                layer.msg('重置成功');
+                $("#harborUrl").val(data.harborUrl)
+                $("#harborUser").val(data.harborUser)
+                $("#harborPassword").val(data.harborPassword)
+                $("#harborImagePrefix").val(data.harborImagePrefix)
+                $("#harborImageProjectName").val(data.harborImageProjectName)
+                $("#harborImageEnvProjectName").val(data.harborImageEnvProjectName)
+                $("#nfsStorageClassName").val(data.nfsStorageClassName)
+                $("#nfsMySqlStorageSize").val(data.nfsMySqlStorageSize)
+                $("#nfsNacosStorageSize").val(data.nfsNacosStorageSize)
+                $("#nfsMqStorageSize").val(data.nfsMqStorageSize)
+                $("#nfsFdfsStorageSize").val(data.nfsFdfsStorageSize)
+                $("#nfsNeo4jStorageSize").val(data.nfsNeo4jStorageSize)
+                $("#dockerPort").val(data.dockerPort)
+                $("#pythonRely").val(data.pythonRely)
+              console.log(data)
+              console.log(data.harborImageEnvProjectName)
 
-
+            }
+        });
+    });
+});
 
 
 // 按钮事件
@@ -168,6 +219,21 @@ form.on('submit(*)', function(data){
         });
     })
 });
+
+
+// 按钮事件
+$('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+});
+
+active = {
+    restart: function() {
+
+        console.log("3333")
+    },
+
+};
 
 //错误处理
 function errorHandle(data) {

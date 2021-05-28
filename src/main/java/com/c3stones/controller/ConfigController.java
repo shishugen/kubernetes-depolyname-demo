@@ -33,6 +33,19 @@ public class ConfigController {
         model.addAttribute("config",BaseConfig.initConfig());
         return "pages/app/config/list";
     }
+    /**
+     * 环境   restart
+     *
+     * @return
+     */
+
+    @RequestMapping(value = "restart")
+    @ResponseBody
+    public Response<Config>   restart(Model model) {
+        new File(BaseConfig.getHomeConfigFile()).delete();
+      //  model.addAttribute("config",BaseConfig.initConfig());
+        return Response.success(BaseConfig.initConfig());
+    }
 
 
 
@@ -65,6 +78,7 @@ public class ConfigController {
             pro.setProperty("nfs.storage.mq.size",config.getNfsMqStorageSize());
             pro.setProperty("nfs.storage.fdfs.size",config.getNfsFdfsStorageSize());
             pro.setProperty("nfs.storage.neo4j.size",config.getNfsNeo4jStorageSize());
+            pro.setProperty("python.rely",config.getPythonRely());
             pro.store(outputStream,"保存");
             BaseConfig.setConfig(pro);
         } catch (Exception e) {
@@ -87,6 +101,7 @@ public class ConfigController {
         model.addAttribute("config",config);
         return "pages/app/config/list";
     }
+
 
 
 
