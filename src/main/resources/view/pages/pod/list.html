@@ -130,11 +130,12 @@
 var element = layui.element;
 var table = layui.table;
 var layer = layui.layer;
-
+var tableHeight2 =  $(window).height() - 180;
 
 table.render({
 	id: 'harborTable'
 	,elem: '#harborDataTable'
+    ,height:tableHeight2
     ,url: '[[@{/pod/listAppData}]]'
     ,cols: [  //      <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
 
@@ -217,11 +218,12 @@ table.render({
     	};
     }
 });
+
 table.render({
 	id: 'harborTable4'
 	,elem: '#harborDataTable4'
     ,url: '[[@{/deploy/getDeployment}]]'
-    ,height:400
+    ,height:tableHeight2
     ,done : function () {
         $('.layui-table-fixed-r').removeClass('layui-hide');
     }
