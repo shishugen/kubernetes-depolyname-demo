@@ -123,7 +123,7 @@ public class EnvController extends BaseConfig {
                 case "redis":
                     redisPod.createRedis(namespace);
                     break;
-                case "rabbit":
+                case "rabbitMq":
                     rabbitMQPod.createRabbitmq(namespace);
                     break;
                 case "fdfs":
