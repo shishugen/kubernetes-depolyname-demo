@@ -454,9 +454,15 @@ public class Kubes {
         httpGetAction2.setPort(new IntOrStringBuilder().withIntVal(9000).build());
         httpGetAction2.setScheme("HTTP");
         probe2.setHttpGet(httpGetAction2);
+        //容器启动后多久开始探测
         probe2.setInitialDelaySeconds(30);
+        //表示容器必须在2s内做出相应反馈给probe，否则视为探测失败
         probe2.setTimeoutSeconds(5);
+        // 探测周期，每30s探测一次
+        probe2.setPeriodSeconds(20);
+        // 连续探测1次成功表示成功
         probe2.setSuccessThreshold(1);
+        //连续探测3次失败表示失败
         probe2.setFailureThreshold(3);
         container.setReadinessProbe(probe2);
  /*       Lifecycle lifecycle = new Lifecycle();

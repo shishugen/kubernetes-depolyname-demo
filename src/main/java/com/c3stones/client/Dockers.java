@@ -236,15 +236,18 @@ public class Dockers extends BaseConfig{
 
         outputStream.write(("FROM "+harborImageEnvPrefix+pythonImage).getBytes());
         outputStream.write(separator.getBytes());
-
-        String pythonRelys = pythonRely.replaceAll(",", " ");
+        String pythonRelys = null;
+        if(StringUtils.isNotBlank(pythonRely)){
+             pythonRelys = pythonRely.replaceAll(",", " ");
+        }
         System.out.println(pythonRelys);
+       // outputStream.write(("RUN pip install Flask py2neo==2021.1.1 jieba sklearn  gunicorn  gevent xlrd==1.2.0").getBytes());
+       if(StringUtils.isNotBlank(pythonRelys)){
+           outputStream.write(("RUN pip install  "+pythonRelys).getBytes());
+           outputStream.write(separator.getBytes());
+       }
 
-        //outputStream.write(("RUN pip install Flask py2neo==2021.1.1 jieba sklearn  gunicorn  gevent xlrd==1.2.0").getBytes());
-        outputStream.write(("RUN pip install  "+pythonRelys).getBytes());
-        outputStream.write(separator.getBytes());
-
-        String s1 = "COPY " + fileName + "  /"+fileName;
+        String s1 = "COPY " + fileName + "  "+fileName;
         outputStream.write(s1.getBytes());
         outputStream.write(separator.getBytes());
 
@@ -326,7 +329,7 @@ public class Dockers extends BaseConfig{
             log.info("pushImage……imageName  : {}:{} ",imageName,tag);
             log.info("imageName : {}","上传完成 "+imageName);
         }finally {
-            dockerClient.removeImageCmd(awaitImageId);
+         //   dockerClient.removeImageCmd(awaitImageId);
         }
 
     }
