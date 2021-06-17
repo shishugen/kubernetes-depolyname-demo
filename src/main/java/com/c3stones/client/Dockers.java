@@ -329,7 +329,7 @@ public class Dockers extends BaseConfig{
             log.info("pushImage……imageName  : {}:{} ",imageName,tag);
             log.info("imageName : {}","上传完成 "+imageName);
         }finally {
-         //   dockerClient.removeImageCmd(awaitImageId);
+            dockerClient.removeImageCmd(awaitImageId);
         }
 
     }
