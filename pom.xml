@@ -64,12 +64,26 @@
 			<version>2.1.3.RELEASE</version>
 		</dependency>
 
+
 		<!--  k8s  -->
+	<!--	<dependency>
+			<groupId>io.fabric8</groupId>
+			<artifactId>kubernetes-client</artifactId>
+&lt;!&ndash;
+			<version>4.11.0</version>
+&ndash;&gt;
+			<version>5.4.1</version>
+
+		</dependency>-->
+
+		<!-- https://mvnrepository.com/artifact/io.fabric8/kubernetes-client -->
 		<dependency>
 			<groupId>io.fabric8</groupId>
 			<artifactId>kubernetes-client</artifactId>
-			<version>4.11.0</version>
+			<version>5.4.1</version>
 		</dependency>
+
+
 		<!--  docker  -->
 		<dependency>
 			<groupId>com.github.docker-java</groupId>

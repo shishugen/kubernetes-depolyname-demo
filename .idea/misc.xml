@@ -15,4 +15,22 @@
       </set>
     </option>
   </component>
+  <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$/../portal">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://121.8.157.138:8000/svn/%E8%BD%AF%E4%BB%B6%E6%8A%80%E6%9C%AF%E4%B8%AD%E5%BF%83/%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6/%E5%BC%80%E5%8F%91%E5%BA%93/040%E5%AE%9E%E7%8E%B0%E4%B8%8E%E9%9B%86%E6%88%90/010%E7%BC%96%E7%A0%81%E5%AE%9E%E7%8E%B0/branch" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://121.8.157.138:8000/svn/软件技术中心/开发框架/开发库/040实现与集成/010编码实现/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
 </project>

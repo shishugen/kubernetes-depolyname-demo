@@ -54,6 +54,12 @@
 							<input  type="text" name="guacamoleName" value="guacamole" autocomplete="off" class="layui-input">
 						</div>
 					</div>
+					<div class="layui-inline" id="nacosNodePort">
+						<div class="layui-form-mid">pod名称</div>
+						<div class="layui-input-inline" style="width: 180px;">
+							<input  type="text" name="nacosNodePort"  placeholder="30848"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
 				<div class="layui-form-item">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
 				</div>
@@ -70,8 +76,9 @@ layui.use('form', function(){
     var form = layui.form;
     form.render();
 });
-$("#nodePort").attr("style","display:none;");//显示div
-$("#guacamoleName").attr("style","display:none;");//显示div
+$("#nodePort").attr("style","display:none;");//隐藏div
+$("#guacamoleName").attr("style","display:none;");//隐藏div
+$("#nacosNodePort").attr("style","display:none;");//隐藏div
 
 form.on('select(image)', function(data){
     console.log(data);
@@ -79,18 +86,27 @@ form.on('select(image)', function(data){
         $("#nodePort").attr("style","display:block;");//显示div
         $("#guacamoleName").attr("style","display:none;");//隐藏div
         $("#mysqlNodePort").attr("style","display:none;");//隐藏div
+        $("#nacosNodePort").attr("style","display:none;");//隐藏div
 	}else if(data.value == 'guacamole'){
         $("#guacamoleName").attr("style","display:block;");//显示div
         $("#nodePort").attr("style","display:none;");//隐藏div
         $("#mysqlNodePort").attr("style","display:none;");//隐藏div
-	}else if(data.value == 'mysql'){
-        $("#mysqlNodePort").attr("style","display:block;");//显示div
-        $("#guacamoleName").attr("style","display:none;");//隐藏div
-        $("#nodePort").attr("style","display:none;");//隐藏div
+        $("#nacosNodePort").attr("style","display:none;");//隐藏div
+	}else if(data.value == 'mysql') {
+        $("#mysqlNodePort").attr("style", "display:block;");//显示div
+        $("#guacamoleName").attr("style", "display:none;");//隐藏div
+        $("#nodePort").attr("style", "display:none;");//隐藏div
+        $("#nacosNodePort").attr("style", "display:none;");//隐藏div
+    }else if(data.value == 'nacos'){
+        $("#nacosNodePort").attr("style", "display:block;");//显示div
+        $("#guacamoleName").attr("style", "display:none;");//隐藏div
+        $("#nodePort").attr("style", "display:none;");//隐藏div
+        $("#mysqlNodePort").attr("style", "display:none;");//隐藏div
 	}else{
         $("#guacamoleName").attr("style","display:none;");//隐藏div
         $("#nodePort").attr("style","display:none;");//隐藏div
         $("#mysqlNodePort").attr("style","display:none;");//隐藏div
+        $("#nacosNodePort").attr("style","display:none;");//隐藏div
 	}
 
 

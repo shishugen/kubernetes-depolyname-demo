@@ -102,15 +102,18 @@ public class EnvController extends BaseConfig {
      */
     @RequestMapping(value = "create")
     @ResponseBody
-    public Response<Boolean> create(String name,String namespace,Integer nodePort,String guacamoleName,Integer MySQLnodePort) {
+    public Response<Boolean> create(String name,String namespace,Integer nodePort,String guacamoleName,Integer MySQLnodePort,Integer nacosNodePort) {
         System.out.println("创建 名称为 : "+name+namespace);
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(name, "name不能为空");
         if(kubes.checkSvc(nodePort)){
-            return Response.error("端口已存在");
+            return Response.error("端口已存在"+nodePort);
         }
         if(kubes.checkSvc(MySQLnodePort)){
-            return Response.error("端口已存在");
+            return Response.error("端口已存在"+MySQLnodePort);
+        }
+        if(kubes.checkSvc(nacosNodePort)){
+            return Response.error("端口已存在"+nacosNodePort);
         }
         try {
             switch (name){
@@ -118,7 +121,7 @@ public class EnvController extends BaseConfig {
                     mySQLPod.createMySQL(namespace,MySQLnodePort);
                     break;
                 case "nacos":
-                    nacosPod.createNacos(namespace);
+                    nacosPod.createNacos(namespace,nacosNodePort);
                     break;
                 case "redis":
                     redisPod.createRedis(namespace);

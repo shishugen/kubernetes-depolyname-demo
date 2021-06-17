@@ -166,7 +166,7 @@ public class NacosPod extends BaseConfig {
      * @param portName
      * @param nodePort 30000-32767
      */
-    public  Service createService(String namespace, String serviceName,  String labelsValue , Integer port,String portName ){
+    public  Service createService(String namespace, String serviceName,  String labelsValue , Integer port,Integer nodePort,String portName){
         String type = "NodePort";
         Service build = new ServiceBuilder()
                 .withNewMetadata()
@@ -178,7 +178,7 @@ public class NacosPod extends BaseConfig {
                 //内网端口
                 .withPort(port)
                 .withProtocol("TCP")
-               // .withNodePort(nodePort)
+                .withNodePort(nodePort)
                 .endPort()
                 .withType(type)
                 .addToSelector(LABELS_KEY, labelsValue).endSpec()
@@ -215,12 +215,12 @@ public class NacosPod extends BaseConfig {
     }
 
 
-    public void createNacos(String namespace){
+    public void createNacos(String namespace,Integer nodePort){
         String podName="nacos";
         String labelsName="nacos";
         String portName="nacos";
         kubes.createNamespace(namespace);
         create(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName);
-        createService(namespace,podName,labelsName,8848,portName);
+        createService(namespace,podName,labelsName,8848,nodePort,portName);
     }
 }
