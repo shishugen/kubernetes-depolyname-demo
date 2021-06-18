@@ -204,7 +204,7 @@ $.ajax({
     success : function(data) {
         console.log(data)
         $.each(data, function (index, item) {
-            $('#nacosList').append(new Option(item.nacosName,item.hostIp+"---"+item.ports+"---"+item.nacosName));// 下拉菜单里添加元素
+            $('#nacosList').append(new Option(item.nacosName,item.bindK8sIP+"---"+item.ports+"---"+item.nacosName));// 下拉菜单里添加元素
 
             if(index == 0){
                 $('#nacosList').val(item.hostIp+"---"+item.ports+"---"+item.nacosName)

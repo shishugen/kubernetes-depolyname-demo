@@ -28,14 +28,17 @@ public class Config {
     private String nfsFdfsStorageSize ;
     private String nfsNeo4jStorageSize ;
     private String pythonRely ;
-
+    /**
+     * 集群外网IP
+     */
+    private String bindK8sIP ;
 
 
     public Config(Integer dockerPort, String harborUser, String harborPassword, String harborUrl,
                   String harborImagePrefix, String harborImageProjectName, String harborImageEnvProjectName,
                   String nfsStorageClassName, String nfsMySqlStorageSize, String nfsNacosStorageSize,
                   String nfsMqStorageSize, String nfsFdfsStorageSize,String nfsNeo4jStorageSize,
-                  String pythonRely) {
+                  String pythonRely,String bindK8sIP) {
         this.dockerPort = dockerPort;
         this.harborUser = harborUser;
         this.harborPassword = harborPassword;
@@ -50,5 +53,6 @@ public class Config {
         this.nfsFdfsStorageSize = nfsFdfsStorageSize;
         this.nfsNeo4jStorageSize = nfsNeo4jStorageSize;
         this.pythonRely = pythonRely;
+        this.bindK8sIP = bindK8sIP;
     }
 }

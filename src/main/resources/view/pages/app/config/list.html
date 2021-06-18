@@ -126,6 +126,18 @@
 
             <div class="layui-form-item">
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
+                    <legend>集群外网</legend>
+                </fieldset>
+                <div class="layui-form-item">
+                    <div class="layui-form-label" style="width: 125px">集群外网</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input type="text" name="bindK8sIP" id="bindK8sIP"  th:value="${config.bindK8sIP}"  autocomplete="off" placeholder="可为空" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
                     <legend>docker配置</legend>
                 </fieldset>
                    <div class="layui-inline">
@@ -137,7 +149,6 @@
                 <div class="layui-form-item">
                     <button type="submit" class="layui-btn" lay-submit lay-filter="*">保存</button>
                     <button type="button" class="layui-btn layui-btn-danger" id="restart">重置</button>
-
                 </div>
             </div>
 

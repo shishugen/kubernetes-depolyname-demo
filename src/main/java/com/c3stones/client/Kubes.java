@@ -555,10 +555,9 @@ public class Kubes {
 
         List<EnvVar> env = new ArrayList<>(4);
         EnvVar envVar = new EnvVar();
-        envVar.setName("NEO4J_IP");
-        envVar.setValue("http://"+envNeo4j+":7474");
+        envVar.setName("NEO4J_BOLT_IP");
+        envVar.setValue("bolt://"+envNeo4j+":7687");
         env.add(envVar);
-
 
         EnvVar envVar2 = new EnvVar();
         envVar2.setName("NEO4J_USER_NAME");
