@@ -56,7 +56,6 @@
 						</div>
 					</div>
 					<div class="layui-form-item">
-
 						<div class="layui-inline">
 							<label class="layui-form-label">服务数量</label>
 							<div class="layui-input-inline" style="width: 100px;">
@@ -76,13 +75,25 @@
 						</div>
 					</div>
 
+
 					<div class="layui-form-item">
-						<label class="layui-form-label" style="width: 200px">是否持久目录</label>
-						<div class="layui-input-block">
-							<input type="radio" name="nfs" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>男</div></div>
-							<input type="radio" name="nfs" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>女</div></div>
+						<div class="layui-inline">
+							<label class="layui-form-label" style="width: 200px">是否持久目录</label>
+							<div class="layui-input-inline">
+								<input type="radio" name="nfs" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="nfs" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+							</div>
+						</div>
+
+						<div class="layui-inline">
+							<label class="layui-form-label" style="width: 200px">是否健康检查 /health</label>
+							<div class="layui-input-inline">
+								<input type="radio" name="health" value="0" title="否"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="1" title="是"  checked=""><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+							</div>
 						</div>
 					</div>
+
 				</div>
 				<div class="layui-form-item">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>

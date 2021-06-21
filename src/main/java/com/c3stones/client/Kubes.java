@@ -324,9 +324,9 @@ public class Kubes {
 
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
-                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs) {
+                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth) {
         Container container =
-                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs);
+                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs,isHealth);
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -355,8 +355,8 @@ public class Kubes {
     }
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos ,
-                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs) {
-        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs);
+                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth) {
+        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth);
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -408,10 +408,11 @@ public class Kubes {
      * @param pvcName
      * @param memoryXmx 最大
      * @param memoryXms 最小
+     * @param isHealth 是否健康
      * @return
      */
     private  Container createContainer(String appName,String image,Integer ports,String serviceName,String nacos ,String nacosNamespace,String pvcName
-    ,Integer memoryXmx,Integer memoryXms,String pvcLogs){
+    ,Integer memoryXmx,Integer memoryXms,String pvcLogs, boolean isHealth){
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
@@ -446,9 +447,7 @@ public class Kubes {
         probe.setTimeoutSeconds(5);
         probe.setSuccessThreshold(1);
         probe.setFailureThreshold(3);
-        container.setLivenessProbe(probe);
         Probe probe2 = new Probe();
-
         HTTPGetAction httpGetAction2 = new HTTPGetAction();
         httpGetAction2.setPath("/health");
         httpGetAction2.setPort(new IntOrStringBuilder().withIntVal(9000).build());
@@ -464,7 +463,10 @@ public class Kubes {
         probe2.setSuccessThreshold(1);
         //连续探测3次失败表示失败
         probe2.setFailureThreshold(3);
-        container.setReadinessProbe(probe2);
+        if(isHealth){
+            container.setReadinessProbe(probe2);
+            container.setLivenessProbe(probe);
+        }
  /*       Lifecycle lifecycle = new Lifecycle();
         Handler handler = new Handler();
         ExecAction execAction = new ExecAction();

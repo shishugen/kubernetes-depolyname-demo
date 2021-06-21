@@ -86,12 +86,24 @@
 					</div>
 
 					<div class="layui-form-item">
-						<label class="layui-form-label" style="width: 200px">是否持久目录</label>
-						<div class="layui-input-block">
-							<input type="radio" name="nfs" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i><div>男</div></div>
-							<input type="radio" name="nfs" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i><div>女</div></div>
+						<div class="layui-inline">
+							<label class="layui-form-label" style="width: 200px">是否持久目录</label>
+							<div class="layui-input-inline">
+								<input type="radio" name="nfs" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="nfs" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+							</div>
+						</div>
+
+						<div class="layui-inline">
+							<label class="layui-form-label" style="width: 200px">是否健康检查 /health </label>
+							<div class="layui-input-inline">
+								<input type="radio" name="health" value="0" title="否"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="1" title="是"  checked=""><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+							</div>
 						</div>
 					</div>
+
+
 				</div>
                 <div class="layui-form-item">
                     <label style="width: 560px" class="layui-form-label">网关8888,终端服务9096，其它一至不开放  8888->30888 ; 9096->30987; </label>
