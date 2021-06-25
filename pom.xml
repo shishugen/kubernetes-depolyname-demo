@@ -204,6 +204,13 @@
 			<!-- jdk版本 -->
 		</dependency>
 		<!-- Json依赖架包下载结束 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.76</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

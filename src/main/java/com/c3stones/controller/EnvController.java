@@ -15,6 +15,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -81,13 +82,22 @@ public class EnvController extends BaseConfig {
     public String add() {
         return "pages/env/add";
     }
+    /**
+     * 批量
+     *
+     * @return
+     */
+    @RequestMapping(value = "addMulti")
+    public String addMulti() {
+        return "pages/env/addMulti";
+    }
 
 
 
     @RequestMapping(value = "listData")
     @ResponseBody
     public Response<Pages<HarborImage>> listData() {
-        List<HarborImage> harborList = httpHarbor.harborList(harborImageEnvProjectName);
+        List<HarborImage> harborList = httpHarbor.harborList(harborImageEnvProjectName,null);
         Pages page = new Pages();
         page.setRecords(harborList);
         page.setTotal(harborList.size());
@@ -148,6 +158,65 @@ public class EnvController extends BaseConfig {
             kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+name).delete();
         }
 
+        return Response.success(true);
+    }
+    /**
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping(value = "createMulti")
+    @ResponseBody
+    public Response<Boolean> createMulti(String envList , String namespace,Integer fdfsPort,String guacamoleName,Integer mysqlNodePort,Integer nacosNodePort) {
+        Assert.notNull(namespace, "name不能为空");
+        Assert.notNull(envList, "envList不能为空");
+
+        if(kubes.checkSvc(fdfsPort)){
+            return Response.error("端口已存在"+fdfsPort);
+        }
+        if(kubes.checkSvc(mysqlNodePort)){
+            return Response.error("端口已存在"+mysqlNodePort);
+        }
+        if(kubes.checkSvc(nacosNodePort)){
+            return Response.error("端口已存在"+nacosNodePort);
+        }
+
+        Arrays.stream(envList.split(",")).forEach(name->{
+            switch (name){
+                case "mysql":
+                    mySQLPod.createMySQL(namespace,mysqlNodePort);
+                    break;
+                case "nacos":
+                    nacosPod.createNacos(namespace,nacosNodePort);
+                    break;
+                case "redis":
+                    redisPod.createRedis(namespace);
+                    break;
+                case "rabbitMq":
+                    rabbitMQPod.createRabbitmq(namespace);
+                    break;
+                case "fdfs":
+                    fastdfsPod.createT(namespace,fdfsPort);
+                    break;
+                case "libreoffice":
+                    libreofficePod.createlibreoffice(namespace);
+                    break;
+                case "guacamole":
+                    guacdPod.createGuacamole(namespace,guacamoleName);
+                    break;
+                case "neo4j":
+                    neo4JPod.create(namespace);
+                    break;
+            }
+        });
+           /* mySQLPod.createMySQL(namespace,MySQLnodePort);
+            nacosPod.createNacos(namespace,nacosNodePort);
+            redisPod.createRedis(namespace);
+            rabbitMQPod.createRabbitmq(namespace);
+            fastdfsPod.createT(namespace,fdfsPort);
+            libreofficePod.createlibreoffice(namespace);
+            guacdPod.createGuacamole(namespace,guacamoleName);
+            neo4JPod.create(namespace);*/
         return Response.success(true);
     }
 

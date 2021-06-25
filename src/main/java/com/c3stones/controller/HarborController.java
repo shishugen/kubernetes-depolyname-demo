@@ -2,6 +2,7 @@ package com.c3stones.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.c3stones.client.BaseConfig;
 import com.c3stones.common.Response;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
@@ -42,20 +43,18 @@ public class HarborController {
 
     @RequestMapping(value = "listData")
     @ResponseBody
-    public Response<Pages<HarborImage>> listData(String projectName){
+    public Response<Pages<HarborImage>> listData(String projectName,String version){
         Pages page = new Pages();
-        if(StringUtils.isNotBlank(projectName)){
-            List<HarborImage> harborList = httpHarbor.harborList(projectName);
-            page.setRecords(harborList);
-            page.setTotal(harborList.size());
-        }
+        List<HarborImage> harborList = httpHarbor.harborList(projectName,version);
+        page.setRecords(harborList);
+        page.setTotal(harborList.size());
         return Response.success(page);
     }
 
     @RequestMapping(value = "list")
     @ResponseBody
     public Response<List<HarborImage>> list(){
-         List<HarborImage> harborList = httpHarbor.harborList(projectName);
+         List<HarborImage> harborList = httpHarbor.harborList( BaseConfig.initConfig().getHarborImageProjectName(),null);
         return Response.success(harborList);
     }
 
@@ -65,8 +64,8 @@ public class HarborController {
      */
     @RequestMapping(value = "multiList")
     @ResponseBody
-    public Response<JSONArray> multiList(){
-         List<HarborImage> harborList = httpHarbor.harborList(projectName);
+    public Response<JSONArray> multiList(String projectName,String version){
+         List<HarborImage> harborList = httpHarbor.harborList(projectName,version);
          JSONArray jsonArray = new JSONArray();
         harborList.stream().forEach(a->{
             JSONObject jsonObject = new JSONObject();

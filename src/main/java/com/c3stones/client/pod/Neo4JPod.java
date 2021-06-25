@@ -55,7 +55,8 @@ public class Neo4JPod extends BaseConfig {
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
-                            .withImagePullPolicy("Always")
+                           // .withImagePullPolicy("Always")
+                            .withImagePullPolicy("IfNotPresent")
                             .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/data/").build())
                             .withCommand("/sbin/tini","-g")
                             .addToArgs("/docker-entrypoint.sh","neo4j")
@@ -122,10 +123,16 @@ public class Neo4JPod extends BaseConfig {
         String portName="neo4j";
         String podName="neo4j";
         Integer port=7687;
-        create(namespace,podName,labelsName,harborImageEnvPrefix+image,port,portName);
-        Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
-        if(service == null){
-            createService(namespace,labelsName,labelsName,port);
+        try {
+            create(namespace,podName,labelsName,harborImageEnvPrefix+image,port,portName);
+            Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
+            if(service == null){
+                createService(namespace,labelsName,labelsName,port);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
         }
     }
 }

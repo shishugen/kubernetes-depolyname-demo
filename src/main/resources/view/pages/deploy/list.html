@@ -15,18 +15,24 @@
 
 
                 <div class="layui-inline">
-                    <label class="layui-form-label">镜像名称</label>
+                    <label class="layui-form-label" style="width: 60px">镜像前缀</label>
                     <div class="layui-inline mr10">
-                        <input type="tel" name="projectName" value="appl"  class="layui-input">
+                        <input type="tel" id="projectName" name="projectName" value="appl"  class="layui-input">
                     </div>
-                    <button class="layui-btn" id="reload" data-type="reload">查询</button>
 
-                    <button class="layui-btn layui-btn-normal" data-type="deployMultiPod">批量部署应用</button>
-                    <button class="layui-btn layui-btn-normal" data-type="deployNginx">前端部署</button>
-                    <button class="layui-btn layui-btn-normal" data-type="deployPython">Python部署</button>
-                    <button class="layui-btn layui-btn-normal" data-type="addNginx">前端新增</button>
-                    <button class="layui-btn layui-btn-normal" data-type="addJar">JAR新增</button>
-                    <button class="layui-btn layui-btn-normal" data-type="addPython">Python新增</button>
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 40px; padding-left: 0px">版本</label>
+                        <div class="layui-input-inline">
+                            <input type="text"  id="version" name="version"style="width: 80px;" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <button class="layui-btn layui-btn-sm" id="reload" data-type="reload">查询</button>
+                    <button class="layui-btn layui-btn-warm layui-btn-sm " data-type="deployMultiPod">批量部署应用</button>
+                    <button class="layui-btn layui-btn-warm layui-btn-sm" data-type="deployNginx">前端部署</button>
+                    <button class="layui-btn layui-btn-warm layui-btn-sm" data-type="deployPython">Python部署</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-sm" data-type="addNginx">前端新增</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-sm"  data-type="addJar">JAR新增</button>
+                    <button class="layui-btn layui-btn-normal layui-btn-sm" data-type="addPython">Python新增</button>
                 </div>
 
 					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
@@ -49,15 +55,14 @@ var layer = layui.layer;
 
 
 table.render({
-
 	id: 'harborTable'
 	,elem: '#harborDataTable'
     ,url: '[[@{/harbor/listData}]]'
     ,cols: [
     	[
             ,{field:'imageName', title: '镜像'}
-            ,{field:'version', title: '版本', align: 'center'}
-            ,{field:'created', title: '日期'}
+            ,{field:'version', title: '版本', align: 'center',sort: true}
+            ,{field:'created', title: '日期',sort: true}
             ,{title:'操作', align: 'center', toolbar: '#operation', width:150}
     	]
    	]
@@ -132,7 +137,8 @@ active = {
 	reload: function() {
 		table.reload('harborTable', {
             where: {
-                projectName : $("input[name='projectName']").val()
+                projectName : $("input[name='projectName']").val(),
+                version : $("input[name='version']").val()
         }
 		}, 'data');
 	},
@@ -196,14 +202,15 @@ table.on('tool(config)', function(obj){
     }
 });
 $("#reload").click();
-//错误处理
+
+// 错误处理
 function errorHandle(data) {
-	if (data.status == 404) {
-		layer.msg("请求资源不存在", {icon: 2});
-	} else {
-		layer.msg("服务端异常", {icon: 2});
-	}
-	return;
+    if (data.status == 404) {
+        layer.msg("请求资源不存在", {icon: 2});
+    } else {
+        layer.msg("服务端异常", {icon: 2});
+    }
+    return;
 }
 </script>
 </html>

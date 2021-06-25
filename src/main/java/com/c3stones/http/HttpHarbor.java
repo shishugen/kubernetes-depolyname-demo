@@ -6,6 +6,7 @@ import com.c3stones.client.BaseConfig;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.HarborTemp;
 import com.c3stones.util.DateUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -76,9 +77,10 @@ public class HttpHarbor extends BaseConfig {
         return responseEntity;
     }
 
-    public List<HarborImage> harborList(String harborProjectName){
+    public List<HarborImage> harborList(String harborProjectName ,String version){
+
         List<HarborImage> harborList = new ArrayList();
-        JSONArray jsonObject = harborClient.getForObject(harborUrl+"/api/projects?name="+harborProjectName, JSONArray.class);
+        JSONArray jsonObject = harborClient.getForObject(harborUrl+"/api/projects?name="+ BaseConfig.initConfig().getHarborImageProjectName(), JSONArray.class);
         if(jsonObject != null && jsonObject.size() > 0){
             JSONObject objectJSONObject = jsonObject.getJSONObject(0);
             HarborTemp harborProject = objectJSONObject.toJavaObject(HarborTemp.class);
@@ -86,15 +88,40 @@ public class HttpHarbor extends BaseConfig {
             for (int j = 0 ; j < repositoriesArray.size(); j++){
                 JSONObject repositories = repositoriesArray.getJSONObject(j);
                 HarborTemp harborRepositories = repositories.toJavaObject(HarborTemp.class);
-                JSONArray harborVersionAarry = harborClient.getForObject( harborUrl+"/api/repositories/"+harborRepositories.getName()+"/tags", JSONArray.class);
+                String name = harborRepositories.getName();
+                JSONArray harborVersionAarry = harborClient.getForObject( harborUrl+"/api/repositories/"+ name +"/tags", JSONArray.class);
                 for (int k = 0 ; k < harborVersionAarry.size(); k++){
                     JSONObject harborVersionObject = harborVersionAarry.getJSONObject(k);
                     HarborTemp harborVersion = harborVersionObject.toJavaObject(HarborTemp.class);
                     HarborImage harbor = new HarborImage();
                     harbor.setCreated(DateUtils.StringFormat(harborVersion.getCreated()));
-                    harbor.setImageName(harborRepositories.getName());
+                    harbor.setImageName(name);
                     harbor.setVersion(harborVersion.getName());
-                    harborList.add(harbor);
+                     if(StringUtils.isNotBlank(harborProjectName) && StringUtils.isNotBlank(version)){
+                         if(name.contains(harborProjectName)&&harborVersion.getName().contains(version)){
+                             harborList.add(harbor);
+                         }
+                     }else if(StringUtils.isNotBlank(harborProjectName) ){
+                         if(name.contains(harborProjectName)){
+                             harborList.add(harbor);
+                         }
+                     }else if(StringUtils.isNotBlank(version)){
+                         if( harborVersion.getName().contains(version)){
+                             harborList.add(harbor);
+                         }
+                     } else{
+                         harborList.add(harbor);
+                     }
+
+
+
+                   /* if(StringUtils.isNotBlank(version)){
+                        if (harborVersion.getName().equals(version)){
+                            harborList.add(harbor);
+                        }
+                    }else{
+                        harborList.add(harbor);
+                    }*/
                 }
             }
         }

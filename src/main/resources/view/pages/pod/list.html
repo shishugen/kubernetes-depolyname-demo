@@ -142,9 +142,9 @@ table.render({
         [
 	      {field:'podName', title: '容器名称', align: 'center'}
             ,{field:'namespace', title: '命名空间', align: 'center',width:200}
-	      ,{field:'podStatus', title: '容器状态', align: 'center',width:80}
-	      ,{field:'date', title: '部署时间', align: 'center',width:180}
-	      ,{field:'ports', title: '端口', width:120}
+	      ,{field:'podStatus', title: '容器状态', align: 'center',width:80,sort: true}
+	      ,{field:'date', title: '部署时间', align: 'center',width:180,sort: true}
+	      ,{field:'ports', title: '端口', width:120,sort: true}
 	      ,{title:'操作', align: 'center', toolbar: '#operation', width:140}
     	]
    	]
@@ -173,8 +173,8 @@ table.render({
 	      ,{field:'ports', title: '端口'}
 	      ,{field:'podName', title: '容器名称', align: 'center'}
 	      ,{field:'namespace', title: '命名空间', align: 'center'}
-	      ,{field:'podStatus', title: '容器状态', align: 'center'}
-	      ,{field:'date', title: '部署时间', align: 'center'}
+	      ,{field:'podStatus', title: '容器状态', align: 'center',sort: true}
+	      ,{field:'date', title: '部署时间', align: 'center',sort: true}
 	      ,{title:'操作', align: 'center', toolbar: '#operation2', width:250}
     	]
    	]
@@ -201,8 +201,8 @@ table.render({
 	      ,{field:'ports', title: '端口'}
 	      ,{field:'podName', title: '容器名称', align: 'center'}
 	      ,{field:'namespace', title: '命名空间', align: 'center'}
-	      ,{field:'podStatus', title: '容器状态', align: 'center'}
-	      ,{field:'date', title: '部署时间', align: 'center'}
+	      ,{field:'podStatus', title: '容器状态', align: 'center',sort: true}
+	      ,{field:'date', title: '部署时间', align: 'center',sort: true}
 	      ,{title:'操作', align: 'center', toolbar: '#operation3', width:250}
     	]
    	]
@@ -233,8 +233,8 @@ table.render({
 	         {fixed:'left',type:'checkbox'}
             ,{field:'name', title: '部署名称', align: 'center',width:300}
             ,{field:'namespace', title: '命名空间', align: 'center',width:100}
-            ,{field:'replicas', title: '数量', align: 'center',width:40}
-            ,{field:'date', title: '日期', align: 'center'}
+            ,{field:'replicas', title: '数量', align: 'center',width:40,sort: true}
+            ,{field:'date', title: '日期', align: 'center',sort: true}
             ,{field:'image', title: '镜像', align: 'center'}
             ,{fixed: 'right',title:'操作', align: 'center', toolbar: '#operation4', width:300}
     	]

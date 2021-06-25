@@ -25,8 +25,8 @@
 								<option value="">请选择</option>
 							</select>-->
 							<input hidden id="image"name="images">
-							<div id="demo2" class="xm-select-demo" th:width="100"></div>
 
+							<div id="demo2" class="xm-select-demo" th:width="100"></div>
 						</div>
 					</div>
 
@@ -110,7 +110,7 @@
 
 var form = layui.form;
 var layer = layui.layer;
-
+var transfer = layui.transfer;
 layui.use('form', function(){
     var form = layui.form;
     form.render();
@@ -140,7 +140,7 @@ form.on('select(nacosList)', function(data){
         });
     }
 })
-var transfer = layui.transfer;
+
 var demo2=[]
 
 $.ajax({
@@ -164,6 +164,7 @@ $.ajax({
 $.ajax({
     url : "[[@{/}]]harbor/multiList",
     type : "get",
+    data : {"projectName":parent.$("#projectName").val(),"version":parent.$("#version").val()},
     dataType : "json",
     error : function(data) {
         errorHandle(data);
@@ -272,15 +273,15 @@ form.on('submit(*)', function(data){
     });
 });
 
+
 // 错误处理
 function errorHandle(data) {
-	if (data.status == 404) {
-		layer.msg("请求资源不存在", {icon: 2});
-	} else {
-		layer.msg("服务端异常", {icon: 2});
-	}
-	return;
+    if (data.status == 404) {
+        layer.msg("请求资源不存在", {icon: 2});
+    } else {
+        layer.msg("服务端异常", {icon: 2});
+    }
+    return;
 }
 </script>
-
 </html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+	<script th:src="@{/xm-select/xm-select.js}"></script>
+	<link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane" method="post" th:action="@{/env/createMulti}">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">命名空间</label>
+					<div class="layui-input-block">
+						<select id="namespace" lay-verify="required" name="namespace">
+							<option value="">请选择</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">环境</label>
+					<div class="layui-input-block">
+						<input hidden id="envList"name="envList">
+						<div id="demo1" class="xm-select-demo"></div>
+					</div>
+				</div>
+
+
+				<div class="layui-form-item">
+
+
+<!--
+					<label style="width: 560px" class="layui-form-label">部署环境  :  mysql、nacos、redis、rabbitMq、fdfs、libreoffice、guacamole、neo4j</label>
+-->
+				</div>
+				<div class="layui-form-item">
+
+					<div class="layui-form-item">
+						<div class="layui-inline" style="display:none" id="fdfsPort">
+							<div class="layui-form-label" style="width: 170px">文件服务器端口</div>
+							<div class="layui-input-inline" >
+								<input  type="number" name="fdfsPort"  placeholder="30000-32766"  th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline" style="display:none" id="mysqlNodePort">
+							<div class="layui-form-label" style="width: 170px">MySQL访问端口</div>
+							<div class="layui-input-inline" >
+								<input  type="number" name="mysqlNodePort"  placeholder="30000-32766"  th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<div class="layui-inline" style="display:none" id="guacamoleName">
+							<div class="layui-form-label" style="width: 170px">guacamole名称</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input  type="text" name="guacamoleName" autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline" style="display:none" id="nacosNodePort">
+							<div class="layui-form-label" style="width: 170px">Nacos端口</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input  type="number" name="nacosNodePort"   placeholder="30848"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+				<div class="layui-form-item">
+					<button type="submit" class="layui-btn" lay-submit lay-filter="*">开始部署</button>
+				</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+layui.use('form', function(){
+    var form = layui.form;
+    form.render();
+});
+
+var demo1 = xmSelect.render({
+    el: '#demo1',
+    toolbar: {
+        show: true
+    },
+    on: function(data){
+        //arr:  当前多选已选中的数据
+        var arr = data.arr;
+        //change, 此次选择变化的数据,数组
+        var change = data.change;
+        //isAdd, 此次操作是新增还是删除
+        var isAdd = data.isAdd;
+        console.log(arr)
+        console.log(change)
+        console.log(isAdd)
+		var inputEnvList =[]
+
+		for (var i = 0 ; i < arr.length; i ++){
+            inputEnvList.push(arr[i].value)
+		}
+        $("#envList").val(inputEnvList)
+		//选中
+		if(isAdd){
+            for (var i = 0 ; i < change.length; i++){
+                console.log("my",change[i])
+				 if('mysql'== change[i].value){
+					 $("#mysqlNodePort").attr("style","display:block;");//隐藏div
+                     $("input[name='mysqlNodePort']").val(30306);//
+				 }else if ('guacamole'== change[i].value){
+                     $("#guacamoleName").attr("style","display:block;");//隐藏div
+                     $("input[name='guacamoleName']").val("guacamole");//
+                 }else if ('nacos'== change[i].value){
+                     $("#nacosNodePort").attr("style","display:block;");//隐藏div
+                     $("input[name='nacosNodePort']").val(30848);//
+                 }else if ('fdfs'== change[i].value){
+                     $("#fdfsPort").attr("style","display:block;");//隐藏div
+                     $("input[name='fdfsPort']").val(30380);//
+                 }
+			}
+        //取消
+		}else{
+            for (var i = 0 ; i < change.length; i++){
+                if('mysql'== change[i].value){
+                    $("#mysqlNodePort").attr("style", "display:none;");//显示div
+                    $("input[name='mysqlNodePort']").val("");//
+                }else if ('guacamole'== change[i].value){
+                    $("#guacamoleName").attr("style","display:none;");//隐藏div
+                    $("input[name='guacamoleName']").val("");//
+                }else if ('nacos'== change[i].value){
+                    $("#nacosNodePort").attr("style","display:none;");//隐藏div
+                    $("input[name='nacosNodePort']").val("");//
+                }else if ('fdfs'== change[i].value){
+                    $("#fdfsPort").attr("style","display:none;");//隐藏div
+                     $("input[name='fdfsPort']").val("");//
+                }
+            }
+        }
+        if(arr.length == 0){
+            $("#envList").val('')
+            $("#mysqlNodePort").attr("style", "display:none;");//显示div
+            $("#guacamoleName").attr("style","display:none;");//隐藏div
+            $("#nacosNodePort").attr("style","display:none;");//隐藏div
+            $("#fdfsPort").attr("style","display:none;");//隐藏div
+            $("#fdfsPort").val("");//
+            $("#nacosNodePort").val("");//
+            $("#guacamoleName").val("");//
+            $("#mysqlNodePort").val("");//
+		}
+
+      //  alert('已有: '+arr.length+' 变化: '+change.length+', 状态: ' + isAdd)
+    },
+    data: [
+        {name: 'mysql', value: 'mysql'},
+        {name: 'nacos', value: 'nacos'},
+        {name: 'redis', value: 'redis'},
+        {name: 'rabbitMq', value: 'rabbitMq'},
+        {name: 'fdfs', value: 'fdfs'},
+        {name: 'libreoffice', value: 'libreoffice'},
+        {name: 'guacamole', value: 'guacamole'},
+        {name: 'neo4j', value: 'neo4j'},
+    ]
+})
+form.render();
+
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+
+    }
+});
+
+// 提交表单
+form.on('submit(*)', function(data){
+
+
+
+    $(".layui-form").ajaxForm({
+        error: function(data){
+            errorHandle(data);
+        },
+        success: function(data) {
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("部署成功", {icon: 2});
+            }else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+            }
+        }
+    });
+});
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

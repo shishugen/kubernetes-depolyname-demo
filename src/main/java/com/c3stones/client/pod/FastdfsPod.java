@@ -40,8 +40,7 @@ public class FastdfsPod  extends BaseConfig {
     @Value("${pod.env.prefix}")
     private String podEnvPrefix;
 
-    public  void tracker(String namespace , String image,Integer nodePort){
-        String podName = "fdfs";
+    public  void tracker(String namespace , String image,Integer nodePort ,String podName){
       //  String image = "";
         // String image = "10.49.0.9/base/ssg-fastdfs:1.0";
         String pvcName =namespace + podName;
@@ -50,7 +49,8 @@ public class FastdfsPod  extends BaseConfig {
                 .withNewSpec().withContainers(new ContainerBuilder()
                         .withName(podName)
                         .withImage(image)
-                        .withImagePullPolicy("Always")
+                       // .withImagePullPolicy("Always")
+                        .withImagePullPolicy("IfNotPresent")
                         .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/fdfs_storage/").build())
                         .withCommand("/home/start2.sh")
                         //    .withCommand("/usr/sbin/init")
@@ -107,7 +107,15 @@ public class FastdfsPod  extends BaseConfig {
     }
 
     public  void  createT(String namespace,Integer nodePort){
-        tracker(namespace,harborImageEnvPrefix+image,nodePort);
+        String podName = "fdfs";
+        try {
+            tracker(namespace,harborImageEnvPrefix+image,nodePort,podName);
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+        }
+
     }
 
 }

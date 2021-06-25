@@ -51,6 +51,7 @@ public class LibreofficePod extends BaseConfig {
                             .withName(labelsName)
                             .withImage(image)
                             .withImagePullPolicy("Always")
+                           // .withImagePullPolicy("IfNotPresent")
                             .withCommand("/bin/sh","-c")
                             .addToArgs("/usr/bin/soffice --headless --accept=\"socket,host=0,port=8100;urp;\" --nofirststartwizard --invisible")
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
@@ -136,8 +137,15 @@ public class LibreofficePod extends BaseConfig {
         String labelsName="libreoffice";
         String portName="libreoffice";
        // configMap(namespace,configName,configName);
-        create(namespace,podName,labelsName,harborImageEnvPrefix+image,8100,portName,configName);
-        createService(namespace,podName,labelsName,8100,portName);
+
+        try {
+            create(namespace,podName,labelsName,harborImageEnvPrefix+image,8100,portName,configName);
+            createService(namespace,podName,labelsName,8100,portName);
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+        }
     }
 
     public  void delete(String namesapce,String podName){

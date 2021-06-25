@@ -67,6 +67,7 @@ public class NacosPod extends BaseConfig {
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
+                            .withImagePullPolicy("IfNotPresent")
                             .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/nacos/data/").build())
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToEnv(new EnvVarBuilder().withName("MODE").withValue(MODE).build())
@@ -219,8 +220,14 @@ public class NacosPod extends BaseConfig {
         String podName="nacos";
         String labelsName="nacos";
         String portName="nacos";
-        kubes.createNamespace(namespace);
-        create(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName);
-        createService(namespace,podName,labelsName,8848,nodePort,portName);
+        try {
+            kubes.createNamespace(namespace);
+            create(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName);
+            createService(namespace,podName,labelsName,8848,nodePort,portName);
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+        }
     }
 }

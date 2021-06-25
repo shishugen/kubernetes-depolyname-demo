@@ -61,7 +61,8 @@ public class GuacdPod extends BaseConfig {
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
-                            .withImagePullPolicy("Always")
+                           // .withImagePullPolicy("Always")
+                            .withImagePullPolicy("IfNotPresent")
                             .withCommand("/bin/sh","-c")
                             .addToArgs("/usr/local/guacamole/sbin/guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f")
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
@@ -189,10 +190,17 @@ public class GuacdPod extends BaseConfig {
     public void createGuacamole(String namespace,String podName){
         String labelsName="guacamole";
         String portName=podName;
-        create(namespace,podName,labelsName,harborImageEnvPrefix+image,4822,portName);
-        Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
-        if(service == null){
-            createService(namespace,labelsName,labelsName,4822,portName);
+
+        try {
+            create(namespace,podName,labelsName,harborImageEnvPrefix+image,4822,portName);
+            Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
+            if(service == null){
+                createService(namespace,labelsName,labelsName,4822,portName);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
         }
     }
 }

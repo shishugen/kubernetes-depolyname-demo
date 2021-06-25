@@ -24,7 +24,8 @@
                                     <input class="layui-input" name="namespace2"  autocomplete="off">
                                 </div>
                                 <button class="layui-btn" id="reloadName" data-type="reload">查询</button>
-                                <button class="layui-btn layui-btn-normal" data-type="add">部署环境</button>
+                                <button class="layui-btn layui-btn-normal" data-type="add">单个部署环境</button>
+                                <button class="layui-btn layui-btn-warm" data-type="addMulti">批量部署环境</button>
                                 <table class="layui-hide" id="harborDataTable2" lay-filter="config"></table>
                                 <script type="text/html" id="operation2">
                                     <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
@@ -52,12 +53,12 @@ table.render({
     ,url: '[[@{/pod/listEnvData}]]'
     ,cols: [
         [
-            {field:'hostIp', title: '容器宿主机IP'}
-            ,{field:'ports', title: '端口'}
-            ,{field:'podName', title: '容器名称', align: 'center'}
-            ,{field:'namespace', title: '命名空间', align: 'center'}
-            ,{field:'podStatus', title: '容器状态', align: 'center'}
-            ,{field:'date', title: '部署时间', align: 'center'}
+            {field:'hostIp', title: '容器宿主机IP',sort: true}
+            ,{field:'ports', title: '端口',sort: true}
+            ,{field:'podName', title: '容器名称', align: 'center',sort: true}
+            ,{field:'namespace', title: '命名空间', align: 'center',sort: true}
+            ,{field:'podStatus', title: '容器状态', align: 'center',sort: true}
+            ,{field:'date', title: '部署时间', align: 'center',sort: true}
             ,{title:'操作', align: 'center', toolbar: '#operation2', width:250}
         ]
     ]
@@ -121,8 +122,16 @@ active = {
 		layer.open({
     		type: 2,
     		area: ['80%', '80%'],
-    		title: '新增',
+    		title: '单个部署',
     		content: '[[@{/}]]env/add'
+    	});
+	},
+    addMulti: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '80%'],
+    		title: '批量部署',
+    		content: '[[@{/}]]env/addMulti'
     	});
 	},
     reload: function() {

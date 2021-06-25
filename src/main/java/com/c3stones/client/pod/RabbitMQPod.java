@@ -77,7 +77,8 @@ public class RabbitMQPod extends BaseConfig {
                          .withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
-                                 .withImagePullPolicy("Always")
+                                // .withImagePullPolicy("Always")
+                                 .withImagePullPolicy("IfNotPresent")
                                  .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/bitnami").build())
                                //  .withVolumeMounts(new VolumeMountBuilder().withName("rabbitmq-config").withMountPath("/opt/bitnami/rabbitmq/etc/rabbitmq/").build())
                                  .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
@@ -170,8 +171,14 @@ public class RabbitMQPod extends BaseConfig {
         String portName="rabbitmq";
         kubes.createNamespace(namespace);
      //   configMap(namespace);
-        create(namespace,podName,labelsName,harborImageEnvPrefix+image,15672,portName+1,5672,portName+2);
-        createService(namespace,podName,labelsName,15672,portName+1,5672,portName+2);
+        try {
+            create(namespace,podName,labelsName,harborImageEnvPrefix+image,15672,portName+1,5672,portName+2);
+            createService(namespace,podName,labelsName,15672,portName+1,5672,portName+2);
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+        }
     }
 
 

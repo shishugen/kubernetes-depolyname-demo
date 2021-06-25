@@ -46,7 +46,8 @@ public class RedisPod extends BaseConfig {
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
-                            .withImagePullPolicy("Always")
+                           // .withImagePullPolicy("Always")
+                            .withImagePullPolicy("IfNotPresent")
                             .withCommand("sh","-c","exec redis-server")
                             .addToArgs("/data/middleware-data/redis/conf/redis.conf")
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
@@ -126,14 +127,21 @@ public class RedisPod extends BaseConfig {
 
 
     public void createRedis(String namespace){
-        kubes.createNamespace(namespace);
         String podName="redis";
         String configName="redis";
         String labelsName="redis";
         String portName="redis";
-        configMap(namespace,configName,configName);
-        create(namespace,podName,labelsName,harborImageEnvPrefix+image,6379,portName,configName);
-        createService(namespace,podName,labelsName,6379,portName);
+        try {
+            kubes.createNamespace(namespace);
+            configMap(namespace,configName,configName);
+            create(namespace,podName,labelsName,harborImageEnvPrefix+image,6379,portName,configName);
+            createService(namespace,podName,labelsName,6379,portName);
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().configMaps().inNamespace(namespace).withName(configName).delete();
+        }
     }
 
     public  void delete(String namesapce,String podName){

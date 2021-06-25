@@ -55,7 +55,8 @@ public class MySQLPod extends BaseConfig {
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
-                            .withImagePullPolicy("Always")
+                           // .withImagePullPolicy("Always")
+                            .withImagePullPolicy("IfNotPresent")
                             .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/var/lib/mysql/").build())
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToEnv(new EnvVarBuilder().withName("MYSQL_ROOT_PASSWORD").withValue(MYSQL_ROOT_PASSWORD).build())
@@ -115,9 +116,16 @@ public class MySQLPod extends BaseConfig {
         String podName="mysql";
         String labelsName="mysql";
         String portName="mysql";
-        kubes.createNamespace(namespace);
-        create(namespace,podName,labelsName,harborImageEnvPrefix+image,3306,portName,"");
-        createService(namespace,podName,labelsName,3306,portName,nodePort);
+        try {
+            kubes.createNamespace(namespace);
+            create(namespace,podName,labelsName,harborImageEnvPrefix+image,3306,portName,"");
+            createService(namespace,podName,labelsName,3306,portName,nodePort);
+        }catch (Exception e){
+            e.printStackTrace();
+            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+        }
+
     }
 
 }
