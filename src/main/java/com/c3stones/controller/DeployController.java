@@ -542,43 +542,31 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping("/upload")
 	@ResponseBody
 	public Response<HarborImage> upload(MultipartFile[] file ,String version
-	) {
+	) throws Exception {
 		Assert.notNull(version, "version不能为空");
 		Assert.notNull(file, "file不能为空");
 		log.info("制作镜像 file :{} , version : {}",file,version);
-		//String homeDir = null;
 		List<String> errorList = new ArrayList<>();
 		List<String> successList = new ArrayList<>();
 		HarborImage harborImage = new HarborImage();
-		try {
-
-					Arrays.stream(file).forEach(f->{
-						String 	homeDir = null;
-						String originalFilename = null;
-						try {
-							originalFilename = f.getOriginalFilename();
-							String name = KubeUtils.randomPortName();
-							homeDir = Dockers.getHomeDir()+File.separator+name;
-							new File(homeDir).mkdirs();
-							log.info("制作目录--> homeDir : {}",homeDir);
-							multipartFileToFile(f,homeDir);
-							dockers.writeDockerfile(originalFilename,homeDir);
-							dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
-							successList.add(originalFilename);
-						} catch (Exception e) {
-							errorList.add(originalFilename);
-							e.printStackTrace();
-						}finally {
-							harborImage.setErrorData(errorList);
-							harborImage.setSuccessData(successList);
-							removeTempFile(homeDir);
-						}
-					});
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return Response.error("失败");
-		}
+        for (int i = 0; i < file.length; i++){
+            String 	homeDir = null;
+            String originalFilename = null;
+            try {
+                originalFilename = file[i].getOriginalFilename();
+                String name = KubeUtils.randomPortName();
+                homeDir = Dockers.getHomeDir()+File.separator+name;
+                new File(homeDir).mkdirs();
+                multipartFileToFile(file[i],homeDir);
+                log.info("制作目录--> homeDir : {}",homeDir);
+                dockers.writeDockerfile(originalFilename,homeDir);
+                dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
+            }finally {
+                successList.add(originalFilename);
+                harborImage.setSuccessData(successList);
+                removeTempFile(homeDir);
+            }
+        }
 		log.info("制作镜像成功");
 		return Response.success(harborImage);
 
@@ -602,9 +590,9 @@ public class DeployController  extends BaseConfig {
 			 homeDir = Dockers.getHomeDir()+File.separator+name;
 			 new File(homeDir).mkdirs();
 			log.info("制作目录--> homeDir : {}",homeDir);
-		    multipartFileToFile(file,homeDir);
 			String originalFilename = file.getOriginalFilename();
-			dockers.writeNginxDockerfile(originalFilename,homeDir);
+            multipartFileToFile(file,homeDir);
+            dockers.writeNginxDockerfile(originalFilename,homeDir);
 			dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
 		} catch (Exception e) {
 			e.printStackTrace();

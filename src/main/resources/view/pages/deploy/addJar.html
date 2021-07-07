@@ -19,17 +19,13 @@
 					<div class="layui-input-inline">
 						<input type="tel" name="phone" disabled id="state" value="请选择文件" autocomplete="off" class="layui-input">
 					</div>
-
 					<label class="layui-form-label">版本</label>
 					<div class="layui-input-inline">
 						<input type="tel" name="version"  id="version" value="1.0"  autocomplete="off" class="layui-input">
 					</div>
 					<button type="button"  class="layui-btn" id="test9">开始制作</button>
-
-<!--
-					<button type="button" class="layui-btn layui-btn-primary" id="test4"><i class="layui-icon"></i>只允许JAR文件</button>
--->
 				</div>
+
 
 				<div class="layui-form-item">
 
@@ -43,6 +39,8 @@
 						<p>点击上传，或将文件拖拽到此处</p>
 					</div>
 				</div>
+
+
 				<div>
 					<div class="layui-form-item" style="width: 300px" >
 						<div class="layui-inline">
@@ -80,36 +78,36 @@ var uploadInst = upload.render({
     ,accept: 'file' //普通文件
     ,auto: false
     ,bindAction: '#test9'
+    ,multiple: true
     ,exts: 'jar' //只允许上传压缩文件
 	,data:{
         version: function(){
             return $('#version').val();
         }
 	}
-
+    ,allDone: function(obj){ //当文件全部被提交后，才触发
+        $('#state').val("总 : "+obj.total+"  成功 : "+obj.successful+"  失败 : "+obj.aborted); //图片链接（base64）
+        $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
+    }
     ,before: function(obj){
         $('#test9').addClass("layui-btn-disabled").attr("disabled",true);
         $('#state').val("制作镜像中"); //图片链接（base64）
-        console.log("obj",obj)
+        $("#successData").html("成功后镜像列表");
     }
-    ,done: function(res){
-        console.log("1111",res)
+    ,error: function(index, upload){
 
+    }
+    ,done: function(res,index, upload){
         if(res.code == 200){
-            console.log("html22",res.data.successData)
-            $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
-            $('#state').val("制作完成"); //图片链接（base64）
+           // $('#state').val("制作完成"); //图片链接（base64）
             $("#successData").append ('<p>'+res.data.successData[0]+'</p>')
              layer.msg('制作成功');
         }else{
-            $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
-           $('#state').val("制作失败"); //图片链接（base64）
             $("#successData").css("display","block");//显示div
             $("#successData").append ('<p>'+res.data.errorData[0]+'</p>')
-             layer.msg('制作失败');
+           //  layer.msg('制作失败');
         }
     }
-
   });
 });
 
