@@ -50,9 +50,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequestMapping(value = "deploy")
 public class DeployController  extends BaseConfig {
 
-
-
-	@Autowired
+    @Autowired
 	private Kubes kubes;
 
 	@Autowired
@@ -555,16 +553,16 @@ public class DeployController  extends BaseConfig {
             try {
                 originalFilename = file[i].getOriginalFilename();
                 String name = KubeUtils.randomPortName();
-                homeDir = Dockers.getHomeDir()+File.separator+name;
+                homeDir = Dockers.getHomeImagesDir()+File.separator+name;
                 new File(homeDir).mkdirs();
-                multipartFileToFile(file[i],homeDir);
                 log.info("制作目录--> homeDir : {}",homeDir);
-                dockers.writeDockerfile(originalFilename,homeDir);
-                dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
-            }finally {
+                  multipartFileToFile(file[i],homeDir);
+                 dockers.writeDockerfile(originalFilename,homeDir);
+                 dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
                 successList.add(originalFilename);
                 harborImage.setSuccessData(successList);
-                removeTempFile(homeDir);
+            }finally {
+                OpenFileUtils.removeTempFile(homeDir);
             }
         }
 		log.info("制作镜像成功");
@@ -587,7 +585,7 @@ public class DeployController  extends BaseConfig {
 		String homeDir = null;
 		try {
 			String name = KubeUtils.randomPortName();
-			 homeDir = Dockers.getHomeDir()+File.separator+name;
+			 homeDir = Dockers.getHomeImagesDir()+File.separator+name;
 			 new File(homeDir).mkdirs();
 			log.info("制作目录--> homeDir : {}",homeDir);
 			String originalFilename = file.getOriginalFilename();
@@ -599,7 +597,7 @@ public class DeployController  extends BaseConfig {
             return Response.error("失败");
         }finally {
 			try {
-				removeTempFile(homeDir);
+                OpenFileUtils.removeTempFile(homeDir);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -624,7 +622,7 @@ public class DeployController  extends BaseConfig {
 		String homeDir = null;
 		try {
 			String name = KubeUtils.randomPortName();
-			 homeDir = Dockers.getHomeDir()+File.separator+name;
+			 homeDir = Dockers.getHomeImagesDir()+File.separator+name;
 			 new File(homeDir).mkdirs();
 			log.info("制作目录--> homeDir : {}",homeDir);
 		    multipartFileToFile(file,homeDir);
@@ -636,7 +634,7 @@ public class DeployController  extends BaseConfig {
             return Response.error("失败");
         }finally {
 			try {
-				removeTempFile(homeDir);
+                OpenFileUtils.removeTempFile(homeDir);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -696,34 +694,8 @@ public class DeployController  extends BaseConfig {
 
 	}
 
-	/**
-	 * 删除文件与目录
-	 * @param filePath
-	 */
-	public static void removeTempFile(String... filePath) {
-		if(filePath.length > 0){
-			for (int i = 0; i < filePath.length; i++){
-				log.info("删除目录 : {} "+filePath[i]);
-				File tempFilePath=new File(filePath[i]);
-				if(tempFilePath.exists() && tempFilePath.isDirectory()){
-					for (File chunk : tempFilePath.listFiles()) {
-						if(chunk.isDirectory()){
-							removeTempFile(chunk.getPath());
-						}else{
-							System.gc();//启动jvm垃圾回收
-							chunk.delete();
-						}
-					}
-				}
-				System.gc();//启动jvm垃圾回收
-				tempFilePath.delete();
 
-			}
-		}
-	}
 
-	public static void main(String[] args) {
-         removeTempFile("C:\\Users\\Administrator\\.kube-deployment\\.docker\\pod-380347");
-	}
+
 
 }

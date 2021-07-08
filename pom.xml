@@ -90,13 +90,6 @@
 			<artifactId>docker-java</artifactId>
 			<version>3.1.0</version>
 		</dependency>
-		<!-- fastdfs-client -->
-		<!-- https://mvnrepository.com/artifact/org.csource/fastdfs-client-java -->
-		<dependency>
-			<groupId>org.csource</groupId>
-			<artifactId>fastdfs-client-java</artifactId>
-			<version>1.27-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>

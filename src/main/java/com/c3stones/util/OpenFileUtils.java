@@ -1,5 +1,6 @@
 package com.c3stones.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -11,6 +12,7 @@ import java.nio.charset.StandardCharsets;
  * @Author: stone
  * @Date: 2021/4/1 10:04
  */
+@Slf4j
 public class OpenFileUtils {
 
     public static String fileConverString(MultipartFile file) throws IOException {
@@ -145,6 +147,31 @@ public class OpenFileUtils {
             }
         }
         file.delete();
+    }
+
+    /**
+     * 删除文件与目录
+     * @param filePath
+     */
+    public static void removeTempFile(String... filePath) {
+     if(filePath.length > 0){
+        for (int i = 0; i < filePath.length; i++){
+            log.info("删除目录 : {} "+filePath[i]);
+            File tempFilePath=new File(filePath[i]);
+            if(tempFilePath.exists() && tempFilePath.isDirectory()){
+                for (File chunk : tempFilePath.listFiles()) {
+                    if(chunk.isDirectory()){
+                        removeTempFile(chunk.getPath());
+                    }else{
+                        System.gc();//启动jvm垃圾回收
+                        chunk.delete();
+                    }
+                }
+            }
+            System.gc();//启动jvm垃圾回收
+            tempFilePath.delete();
+        }
+     }
     }
 
 }

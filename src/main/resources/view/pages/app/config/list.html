@@ -149,6 +149,7 @@
                 <div class="layui-form-item">
                     <button type="submit" class="layui-btn" lay-submit lay-filter="*">保存</button>
                     <button type="button" class="layui-btn layui-btn-danger" id="restart">重置</button>
+                    <button type="button" class="layui-btn layui-btn-danger" id="deleteImageDir">清空异常镜像</button>
                 </div>
             </div>
 
@@ -164,6 +165,7 @@
 var element = layui.element;
 var table = layui.table;
 var layer = layui.layer;
+var form = layui.form;
 var $ = layui.jquery
 //表单取值
 layui.$('#restart').on('click', function(){
@@ -199,14 +201,25 @@ layui.$('#restart').on('click', function(){
             }
         });
     });
+
+
 });
 
-
+layui.$('#deleteImageDir').on('click', function(){
+        $.ajax({
+            url : "[[@{/}]]harbor/deleteImageDir",
+            type : "post",
+            dataType : "json",
+            error : function(data) {
+                errorHandle(data);
+            },
+            success : function(data) {
+                layer.msg('清空完成');
+            }
+        });
+});
 // 按钮事件
-$('.layui-btn').on('click', function(){
-    var type = $(this).data('type');
-    active[type] ? active[type].call(this) : '';
-});
+
 
 // 提交表单
 form.on('submit(*)', function(data){
@@ -232,19 +245,8 @@ form.on('submit(*)', function(data){
 });
 
 
-// 按钮事件
-$('.layui-btn').on('click', function(){
-    var type = $(this).data('type');
-    active[type] ? active[type].call(this) : '';
-});
 
-active = {
-    restart: function() {
 
-        console.log("3333")
-    },
-
-};
 
 //错误处理
 function errorHandle(data) {

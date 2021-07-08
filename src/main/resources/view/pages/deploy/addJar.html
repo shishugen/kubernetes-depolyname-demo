@@ -27,6 +27,8 @@
 				</div>
 
 
+
+
 				<div class="layui-form-item">
 
 				</div>
@@ -34,32 +36,36 @@
 					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
 						<legend>拖拽多个文件上传，JAR包</legend>
 					</fieldset>
-					<div class="layui-upload-drag"  id="test4">
+					<div class="layui-form-item">
+						<label class="layui-form-label" style="color: #00FF00">总数</label>
+						<div class="layui-input-inline" style="width: 100px">
+							<input type="number" name="phone" disabled id="total" value=0 autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label" style="color: #01AAED">成功</label>
+						<div class="layui-input-inline" style="width: 100px">
+							<input type="number" name="phone" disabled id="successful" value=0 autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label" style="color: #FD482C">失败</label>
+						<div class="layui-input-inline" style="width: 100px">
+							<input type="number" name="phone" disabled id="aborted" value=0 autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-upload-drag"  id="test4" style="width: 500px">
 						<i class="layui-icon"></i>
 						<p>点击上传，或将文件拖拽到此处</p>
 					</div>
 				</div>
-
 
 				<div>
 					<div class="layui-form-item" style="width: 300px" >
 						<div class="layui-inline">
 							<div  id="successData" style="color: blue">成功后镜像列表</div>
 						</div>
-
 						<div class="layui-inline">
 							<div id="errorData"  style="color: red;display: none">失败上传镜像</div>
 						</div>
 					</div>
-
-					<div class="layui-form-item" style="width: 300px" >
-
-
-					</div>
-
 				</div>
-
-
 			</form>
 		</div>
 	</div>
@@ -85,26 +91,37 @@ var uploadInst = upload.render({
             return $('#version').val();
         }
 	}
+
     ,allDone: function(obj){ //当文件全部被提交后，才触发
-        $('#state').val("总 : "+obj.total+"  成功 : "+obj.successful+"  失败 : "+obj.aborted); //图片链接（base64）
+        $('#state').val("制作完成")
+       // $('#state').val("总 : "+obj.total+"  成功 : "+obj.successful+"  失败 : "+obj.aborted); //图片链接（base64）
+        $('#total').val(obj.total)
+        $('#successful').val(obj.successful)
+        $('#aborted').val(obj.aborted)
         $('#test9').removeClass("layui-btn-disabled").attr("disabled",false);
     }
     ,before: function(obj){
         $('#test9').addClass("layui-btn-disabled").attr("disabled",true);
         $('#state').val("制作镜像中"); //图片链接（base64）
         $("#successData").html("成功后镜像列表");
+        $('#total').val(0)
+        $('#successful').val(0)
+        $('#aborted').val(0)
     }
     ,error: function(index, upload){
-
+        var number = 1+Number($('#aborted').val());
+        $('#aborted').val(1+number);
     }
     ,done: function(res,index, upload){
         if(res.code == 200){
            // $('#state').val("制作完成"); //图片链接（base64）
             $("#successData").append ('<p>'+res.data.successData[0]+'</p>')
+            var number = 1+Number($('#successful').val());
+            $('#successful').val(number);
              layer.msg('制作成功');
         }else{
-            $("#successData").css("display","block");//显示div
-            $("#successData").append ('<p>'+res.data.errorData[0]+'</p>')
+           // $("#errorData").css("display","block");//显示div
+            //$("#errorData").append ('<p>'+res.data.errorData[0]+'</p>')
            //  layer.msg('制作失败');
         }
     }

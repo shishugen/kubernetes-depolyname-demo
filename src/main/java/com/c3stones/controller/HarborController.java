@@ -3,10 +3,12 @@ package com.c3stones.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.c3stones.client.BaseConfig;
+import com.c3stones.client.Dockers;
 import com.c3stones.common.Response;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
 import com.c3stones.http.HttpHarbor;
+import com.c3stones.util.OpenFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,5 +100,18 @@ public class HarborController {
         }else{
             return Response.success(false);
         }
+    }
+
+    /**
+     * 清空镜像文件
+     *
+     * @return
+     */
+    @RequestMapping(value = "deleteImageDir")
+    @ResponseBody
+    public Response<Boolean> deleteDir() {
+        log.info("删除  deleteDir");
+        OpenFileUtils.removeTempFile(Dockers.getHomeImagesDir());
+        return Response.success(true);
     }
 }

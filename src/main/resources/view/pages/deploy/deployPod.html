@@ -219,12 +219,12 @@ $.ajax({
             $('#nacosList').append(new Option(item.nacosName,item.bindK8sIP+"---"+item.ports+"---"+item.nacosName));// 下拉菜单里添加元素
 
             if(index == 0){
-                $('#nacosList').val(item.hostIp+"---"+item.ports+"---"+item.nacosName)
+                $('#nacosList').val(item.bindK8sIP+"---"+item.ports+"---"+item.nacosName)
                 $.ajax({
                     url : "[[@{/}]]deploy/getNacosNamespace",
                     // type : "get",
                     dataType : "json",
-                    data : {"ip":item.hostIp,"port":item.ports},
+                    data : {"ip":item.bindK8sIP,"port":item.ports},
                     error : function(data) {
                         errorHandle(data);
                     },

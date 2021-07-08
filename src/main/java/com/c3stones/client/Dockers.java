@@ -369,7 +369,13 @@ public class Dockers extends BaseConfig{
         return dir;
 
     }
-
+    public static String getHomeImagesDir() {
+        String dir = System.getProperty("user.home") + File.separator + ".kube-deployment"+ File.separator + ".docker"+ File.separator +"images";
+        if(!new File(dir).exists()){
+            new File(dir).mkdirs();
+        }
+        return dir;
+    }
 
     public static void main(String[] args) throws InterruptedException, Exception {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
