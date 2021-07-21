@@ -197,13 +197,23 @@ public class Dockers extends BaseConfig{
 
         FileOutputStream outputStream = new FileOutputStream(file);//形参里面可追加true参数，表示在原有文件末尾追加信息
 
-        outputStream.write(("FROM "+harborImageEnvPrefix+nginxImage).getBytes());
+       // outputStream.write(("FROM "+harborImageEnvPrefix+nginxImage).getBytes());
+        outputStream.write(("FROM  harbor.org/application/nginx:1.8").getBytes());
         outputStream.write(separator.getBytes());
+
+       // outputStream.write(("WORKDIR /opt").getBytes());
+       // outputStream.write(separator.getBytes());
+
+        outputStream.write(("ENV api_host=default").getBytes());
+        outputStream.write(separator.getBytes());
+
+      //  outputStream.write(("RUN chmod a+x ./main.sh").getBytes());
+      //  outputStream.write(separator.getBytes());
 
 
      //  UnRar.unRar(new File(homeDir+File.separator+fileName),homeDir);
      //  String name = fileName.substring(0, fileName.lastIndexOf("."));
-        String s1 = "COPY " + fileName + "  /"+fileName;
+        String s1 = "COPY " + fileName + "  "+fileName;
         outputStream.write(s1.getBytes());
         outputStream.write(separator.getBytes());
 
@@ -213,7 +223,6 @@ public class Dockers extends BaseConfig{
         String unzip = "RUN unzip "+ fileName;
         outputStream.write(unzip.getBytes());
         outputStream.write(separator.getBytes());
-
 
         outputStream.write("EXPOSE 80".getBytes());
         outputStream.write(separator.getBytes());

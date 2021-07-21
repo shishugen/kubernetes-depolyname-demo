@@ -2,6 +2,7 @@ package com.c3stones.client.pod;
 
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
+import com.github.dockerjava.api.model.Volumes;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
@@ -77,22 +78,25 @@ public class RabbitMQPod extends BaseConfig {
                          .withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
-                                // .withImagePullPolicy("Always")
-                                 .withImagePullPolicy("IfNotPresent")
+                               //  .withImagePullPolicy("Always")
+                                // .withImagePullPolicy("IfNotPresent")
                                  .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/bitnami").build())
                                //  .withVolumeMounts(new VolumeMountBuilder().withName("rabbitmq-config").withMountPath("/opt/bitnami/rabbitmq/etc/rabbitmq/").build())
                                  .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToPorts(new ContainerPortBuilder().withName(portName2).withContainerPort(port2).build())
                                  .addToEnv(new EnvVarBuilder().withName("RABBITMQ_USERNAME").withValue("admin").build())
                                  .addToEnv(new EnvVarBuilder().withName("RABBITMQ_PASSWORD").withValue("123456").build())
+                                 .withVolumeMounts(new VolumeMountBuilder().withName("date-config").withMountPath("/etc/localtime").build())
                                  .build())
                     .withVolumes(new VolumeBuilder().withName(pvcName)
                            .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
+                    .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
 
-                   //.withVolumes(new VolumeBuilder().withName("rabbitmq-config")
-                        //    .withConfigMap(new ConfigMapVolumeSourceBuilder().withName("rabbitmq-config").withItems(paths).build()
-                      //     ).build())
 
+
+                  /* .mounts(new VolumeMountBuilder().withName("date-config")
+                           .withMountPath("/etc/localtime").build()
+                   )*/
                     .endSpec()
                     .build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);

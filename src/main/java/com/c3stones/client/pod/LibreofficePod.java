@@ -45,7 +45,6 @@ public class LibreofficePod extends BaseConfig {
      * @return
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ,String configName ){
-        try{
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
@@ -66,10 +65,6 @@ public class LibreofficePod extends BaseConfig {
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
         return true;
     }
 

@@ -441,7 +441,7 @@ public class Kubes {
         HTTPGetAction httpGetAction = new HTTPGetAction();
         httpGetAction.setPath("/health");
         httpGetAction.setPort(new IntOrStringBuilder().withIntVal(9000).build());
-        httpGetAction.setScheme("HTTP");
+        httpGetAction.setScheme("HTTPS");
         probe.setHttpGet(httpGetAction);
         probe.setInitialDelaySeconds(30);
         probe.setTimeoutSeconds(5);
@@ -451,7 +451,7 @@ public class Kubes {
         HTTPGetAction httpGetAction2 = new HTTPGetAction();
         httpGetAction2.setPath("/health");
         httpGetAction2.setPort(new IntOrStringBuilder().withIntVal(9000).build());
-        httpGetAction2.setScheme("HTTP");
+        httpGetAction2.setScheme("HTTPS");
         probe2.setHttpGet(httpGetAction2);
         //容器启动后多久开始探测
         probe2.setInitialDelaySeconds(30);
@@ -493,12 +493,14 @@ public class Kubes {
 
         EnvVar envVar2 = new EnvVar();
         envVar2.setName("NACOS_PORT");
-        envVar2.setValue("8848");
+        //envVar2.setValue("8848");
+        envVar2.setValue("30848");
         env.add(envVar2);
 
         EnvVar envVar3 = new EnvVar();
         envVar3.setName("NACOS_IP");
-        envVar3.setValue(nacos);
+        envVar3.setValue("139.9.50.40");
+        //envVar3.setValue(nacos);
         env.add(envVar3);
         container.setEnv(env);
         container.setImagePullPolicy("Always");

@@ -60,7 +60,6 @@ public class NacosPod extends BaseConfig {
      * @return
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
-        try{
             String pvcName =namespace + podName;
             kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNacosStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
@@ -72,16 +71,14 @@ public class NacosPod extends BaseConfig {
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToEnv(new EnvVarBuilder().withName("MODE").withValue(MODE).build())
                             .addToEnv(new EnvVarBuilder().withName("EMBEDDED_STORAGE").withValue(EMBEDDED_STORAGE).build())
+                          //  .withVolumeMounts(new VolumeMountBuilder().withName("date").withMountPath("/etc/localtime").build())
                             .build())
-                          .withVolumes(new VolumeBuilder().withName(pvcName)
+                    //.withVolumes(new VolumeBuilder().withName("date").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
+                    .withVolumes(new VolumeBuilder().withName(pvcName)
                             .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
         return true;
     }
 

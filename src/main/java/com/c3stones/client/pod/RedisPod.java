@@ -41,19 +41,22 @@ public class RedisPod extends BaseConfig {
      * @return
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ,String configName ){
-        try{
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
                            // .withImagePullPolicy("Always")
-                            .withImagePullPolicy("IfNotPresent")
+                           // .withImagePullPolicy("IfNotPresent")
                             .withCommand("sh","-c","exec redis-server")
                             .addToArgs("/data/middleware-data/redis/conf/redis.conf")
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToVolumeMounts(new VolumeMountBuilder().withName(configName).withMountPath(MOUNT_PATH).build())
+                            .withVolumeMounts(new VolumeMountBuilder().withName("date-config").withMountPath("/etc/localtime").build())
+
                             .build())
-                           .addToVolumes(
+                    .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
+
+                    .addToVolumes(
                                    new VolumeBuilder()
                                            .withName(configName)
                                            .withConfigMap(new
@@ -62,10 +65,6 @@ public class RedisPod extends BaseConfig {
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
         return true;
     }
 

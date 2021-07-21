@@ -48,7 +48,6 @@ public class Neo4JPod extends BaseConfig {
      * @return
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
-        try{
             String pvcName =namespace + podName;
             kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNeo4jStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
@@ -56,7 +55,7 @@ public class Neo4JPod extends BaseConfig {
                             .withName(labelsName)
                             .withImage(image)
                            // .withImagePullPolicy("Always")
-                            .withImagePullPolicy("IfNotPresent")
+                          //  .withImagePullPolicy("IfNotPresent")
                             .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/data/").build())
                             .withCommand("/sbin/tini","-g")
                             .addToArgs("/docker-entrypoint.sh","neo4j")
@@ -68,10 +67,6 @@ public class Neo4JPod extends BaseConfig {
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
         return true;
     }
 

@@ -55,14 +55,13 @@ public class GuacdPod extends BaseConfig {
      * @return
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
-        try{
             String pvcName =namespace + podName;
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
                            // .withImagePullPolicy("Always")
-                            .withImagePullPolicy("IfNotPresent")
+                           // .withImagePullPolicy("IfNotPresent")
                             .withCommand("/bin/sh","-c")
                             .addToArgs("/usr/local/guacamole/sbin/guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f")
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
@@ -70,10 +69,6 @@ public class GuacdPod extends BaseConfig {
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
         return true;
     }
 

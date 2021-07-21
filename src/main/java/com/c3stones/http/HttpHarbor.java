@@ -94,7 +94,7 @@ public class HttpHarbor extends BaseConfig {
                     JSONObject harborVersionObject = harborVersionAarry.getJSONObject(k);
                     HarborTemp harborVersion = harborVersionObject.toJavaObject(HarborTemp.class);
                     HarborImage harbor = new HarborImage();
-                    harbor.setCreated(DateUtils.StringFormat(harborVersion.getCreated()));
+                    harbor.setCreated(DateUtils.StringFormat(harborVersion.getUpdateTime()));
                     harbor.setImageName(name);
                     harbor.setVersion(harborVersion.getName());
                      if(StringUtils.isNotBlank(harborProjectName) && StringUtils.isNotBlank(version)){

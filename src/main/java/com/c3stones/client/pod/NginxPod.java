@@ -53,12 +53,13 @@ public class NginxPod extends BaseConfig {
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
-                            //.withImagePullPolicy("Always")
-                            .withImagePullPolicy("IfNotPresent")
+                            .withImagePullPolicy("Always")
+                          //  .withImagePullPolicy("IfNotPresent")
                             .withSecurityContext(new SecurityContextBuilder().withPrivileged(true).build())
                             .addToPorts(new ContainerPortBuilder().withName(podName).withContainerPort(port).build())
                             .addToVolumeMounts(new VolumeMountBuilder().withName(podNginxPrefix+configName).withMountPath(MOUNT_PATH)
                                     .build())
+
                             .build())
                     .addToVolumes(
                             new VolumeBuilder()

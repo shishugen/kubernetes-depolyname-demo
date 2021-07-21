@@ -50,7 +50,7 @@ public class FastdfsPod  extends BaseConfig {
                         .withName(podName)
                         .withImage(image)
                        // .withImagePullPolicy("Always")
-                        .withImagePullPolicy("IfNotPresent")
+                       // .withImagePullPolicy("IfNotPresent")
                         .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/fdfs_storage/").build())
                         .withCommand("/home/start2.sh")
                         //    .withCommand("/usr/sbin/init")
@@ -61,10 +61,14 @@ public class FastdfsPod  extends BaseConfig {
                                         new ObjectFieldSelectorBuilder().withFieldPath("status.podIP").build()).build())
                                 .build()
                         )
+                        .withVolumeMounts(new VolumeMountBuilder().withName("date-config").withMountPath("/etc/localtime").build())
+
                         .build())
+                .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
                 .withVolumes(new VolumeBuilder().withName(pvcName)
                         .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
                 .endSpec().build();
+
         Pod newPod = kubes.getKubeclinet().pods().create(pod);
         createService(namespace,nodePort);
     }
