@@ -197,8 +197,8 @@ public class Dockers extends BaseConfig{
 
         FileOutputStream outputStream = new FileOutputStream(file);//形参里面可追加true参数，表示在原有文件末尾追加信息
 
-       // outputStream.write(("FROM "+harborImageEnvPrefix+nginxImage).getBytes());
-        outputStream.write(("FROM  harbor.org/application/nginx:1.8").getBytes());
+        outputStream.write(("FROM "+harborImageEnvPrefix+nginxImage).getBytes());
+       // outputStream.write(("FROM  harbor.org/application/nginx:1.8").getBytes());
         outputStream.write(separator.getBytes());
 
        // outputStream.write(("WORKDIR /opt").getBytes());

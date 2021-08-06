@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: nacos
@@ -60,6 +62,16 @@ public class NacosPod extends BaseConfig {
      * @return
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(2);
+        //map.put("cpu",new Quantity("m"));
+        map.put("memory",new Quantity("2000M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> stringQuantityMap= new HashMap(2);
+        //stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
+        resource.setRequests(stringQuantityMap);
             String pvcName =namespace + podName;
             kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNacosStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
@@ -71,6 +83,7 @@ public class NacosPod extends BaseConfig {
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToEnv(new EnvVarBuilder().withName("MODE").withValue(MODE).build())
                             .addToEnv(new EnvVarBuilder().withName("EMBEDDED_STORAGE").withValue(EMBEDDED_STORAGE).build())
+                            .withResources(resource)
                           //  .withVolumeMounts(new VolumeMountBuilder().withName("date").withMountPath("/etc/localtime").build())
                             .build())
                     //.withVolumes(new VolumeBuilder().withName("date").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())

@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @ClassName: MySQLPod
  * @Description: TODO
@@ -49,6 +52,15 @@ public class MySQLPod extends BaseConfig {
         if(StringUtils.isNotBlank(password)){
             MYSQL_ROOT_PASSWORD = password;
         }
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(2);
+        //map.put("cpu",new Quantity("m"));
+        map.put("memory",new Quantity("2000M"));
+        resource.setLimits(map);
+        Map<String,Quantity> stringQuantityMap= new HashMap(2);
+        //stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
+        resource.setRequests(stringQuantityMap);
             String pvcName =namespace + podName;
             kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
@@ -57,6 +69,7 @@ public class MySQLPod extends BaseConfig {
                             .withImage(image)
                            // .withImagePullPolicy("Always")
                             .withImagePullPolicy("IfNotPresent")
+                            .withResources(resource)
                             .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/var/lib/mysql/").build())
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToEnv(new EnvVarBuilder().withName("MYSQL_ROOT_PASSWORD").withValue(MYSQL_ROOT_PASSWORD).build())

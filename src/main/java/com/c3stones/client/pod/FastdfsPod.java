@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: FastdfsPod
@@ -44,11 +46,21 @@ public class FastdfsPod  extends BaseConfig {
       //  String image = "";
         // String image = "10.49.0.9/base/ssg-fastdfs:1.0";
         String pvcName =namespace + podName;
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(2);
+        //map.put("cpu",new Quantity("m"));
+        map.put("memory",new Quantity("2000M"));
+        resource.setLimits(map);
+        Map<String,Quantity> stringQuantityMap= new HashMap(2);
+        //stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
+        resource.setRequests(stringQuantityMap);
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsFdfsStorageSize);
         Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, podName).endMetadata()
                 .withNewSpec().withContainers(new ContainerBuilder()
                         .withName(podName)
                         .withImage(image)
+                        .withResources(resource)
                        // .withImagePullPolicy("Always")
                        // .withImagePullPolicy("IfNotPresent")
                         .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/fdfs_storage/").build())
@@ -61,10 +73,9 @@ public class FastdfsPod  extends BaseConfig {
                                         new ObjectFieldSelectorBuilder().withFieldPath("status.podIP").build()).build())
                                 .build()
                         )
-                        .withVolumeMounts(new VolumeMountBuilder().withName("date-config").withMountPath("/etc/localtime").build())
-
+                       // .withVolumeMounts(new VolumeMountBuilder().withName("date-config").withMountPath("/etc/localtime").build())
                         .build())
-                .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
+               // .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
                 .withVolumes(new VolumeBuilder().withName(pvcName)
                         .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
                 .endSpec().build();

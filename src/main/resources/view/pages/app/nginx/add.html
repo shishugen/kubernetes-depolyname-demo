@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane" method="post">
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">文件名称</label>
+					<div class="layui-input-inline">
+						<input type="tel" name="fileName"  lay-verify="required" id="fileName"  autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+						<legend> nginx.conf 配置文件 <samp style="color: crimson">nginx.conf 配置文件 </samp> </legend>
+					</fieldset>
+<!--
+					<label class="layui-form-label"><i>*</i>zip名称</label>
+-->
+					<div class="layui-upload-drag"   style="padding: 80px" id="test4">
+						<i class="layui-icon"></i>
+						<p>点击上传，或将文件拖拽到此处</p>
+					</div>
+					<button type="button" class="layui-btn" id="test9">开始上传</button>
+				</div>
+
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+
+layui.use('upload', function(){
+    var $ = layui.jquery
+        ,upload = layui.upload;
+//普通图片上传
+
+var uploadInst = upload.render({
+    elem: '#test4'
+    ,url: '[[@{/}]]app/env/nginx/addConfig' //改成您自己的上传接口
+   // ,url: '[[@{/}]]deploy/upload/nginx' //改成您自己的上传接口
+    ,accept: 'file' //普通文件
+    ,auto: false
+    ,bindAction: '#test9'
+    ,data:{
+        fileName: function(){
+            return $('#fileName').val();
+        }
+    }
+    ,done: function(res){
+        console.log("1111",res)
+        if(res.code == 200){
+            parent.location.reload();
+            return layer.msg('上传完成');
+        }else{
+            return layer.msg('上传失败');
+		}
+    }
+
+  });
+});
+
+
+
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

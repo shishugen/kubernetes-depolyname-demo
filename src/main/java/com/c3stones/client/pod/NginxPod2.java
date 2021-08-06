@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: NginxPod
@@ -44,6 +46,15 @@ public class NginxPod2 extends BaseConfig {
 
 
     public  boolean createDeployment(String namespace, String appName, String labelsName , String image , Integer port,String configName ) {
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(2);
+        //map.put("cpu",new Quantity("m"));
+        map.put("memory",new Quantity("3000M"));
+        resource.setLimits(map);
+        Map<String,Quantity> stringQuantityMap= new HashMap(2);
+        //stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
+        resource.setRequests(stringQuantityMap);
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podNginxPrefix+appName)
@@ -61,6 +72,7 @@ public class NginxPod2 extends BaseConfig {
                 .withNewSpec()
                 .withContainers(new ContainerBuilder()
                         .withName(labelsName)
+                       // .withResources(resource)
                         .withImage(image)
                         .withImagePullPolicy("Always")
                        // .withImagePullPolicy("IfNotPresent")

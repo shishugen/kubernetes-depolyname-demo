@@ -101,6 +101,33 @@ public class HarborController {
             return Response.success(false);
         }
     }
+    /**
+     * batchDeleteImage
+     *
+     * @param projectName
+     * @param tag
+     * @return
+     */
+    @RequestMapping(value = "batchDeleteImage")
+    @ResponseBody
+    public Response<Boolean> batchDeleteImage(String projectName,String tag) {
+        log.info("删除  projectName : {}:{}",projectName,tag);
+        Assert.notNull(projectName, "projectName不能为空");
+        Assert.notNull(tag, "tag不能为空");
+        //删除镜像
+        String[] projectNames = projectName.split(",");
+        String[] tags = tag.split(",");
+        for (int i =0 ; i<projectNames.length; i++){
+            String urlParame = "repositories/"+projectNames[i]+"/tags/"+tags[i];
+            ResponseEntity<JSONArray> exchange = httpHarbor.send(urlParame, HttpMethod.DELETE);
+            if(exchange.getStatusCodeValue() != 200){
+             log.error("删除镜像异常");
+            }
+        }
+        return Response.success(true);
+    }
+
+
 
     /**
      * 清空镜像文件

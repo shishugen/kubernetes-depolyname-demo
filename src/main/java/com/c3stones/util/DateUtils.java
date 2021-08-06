@@ -52,6 +52,9 @@ public class DateUtils {
      * @return
      */
     public static String StringFormat(String date){
+        if (date == null){
+            return null;
+        }
         //注意是空格+UTC
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.CHINESE);
         Date parse = null;

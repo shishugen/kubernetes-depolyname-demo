@@ -69,6 +69,13 @@
 							<div class="layui-input-inline" style="width: 180px;">
 								<input type="number" name="nodePort"  placeholder="30000-32766" th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
 							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label" style="width: 130px">是否为前端变量</label>
+								<div class="layui-input-inline">
+									<input type="radio" name="nginxEnv" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+									<input type="radio" name="nginxEnv" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -97,8 +104,8 @@
 						<div class="layui-inline">
 							<label class="layui-form-label" style="width: 200px">是否健康检查 /health </label>
 							<div class="layui-input-inline">
-								<input type="radio" name="health" value="0" title="否"><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
-								<input type="radio" name="health" value="1" title="是"  checked=""><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="1" title="是"  ><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
 							</div>
 						</div>
 					</div>

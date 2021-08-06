@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane" enctype='multipart/form-data' method="post" th:action="@{/deploy/pod/nginx2}">
+				<div class="layui-form-item">
+
+                    <input name="envList" id="envList" hidden />
+					<div class="layui-form-item">
+						<label class="layui-form-label">命名空间</label>
+						<div class="layui-input-block">
+							<select id="namespace" lay-verify="required" name="namespace">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">镜像</label>
+						<div class="layui-input-block">
+							<select id="image"  lay-verify="required" lay-search="" name="image">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">内端口</label>
+							<div class="layui-input-inline" style="width: 100px;">
+								<input type="number" name="port" id="port" th:min="0" value="80" placeholder="" autocomplete="off" class="layui-input">
+							</div>
+							<div class="layui-form-mid">外</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input type="number" name="nodePort" id="nodePort" value="30801" placeholder="30000-32767" th:min="30000" th:max="32767"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+					</div>
+				<!--	<div class="layui-form-item">
+						<label class="layui-form-label"><i>*</i>nginx.conf</label>
+                        <input type="file" name="conf" lay-verify="required" class="layui-btn layui-btn-primary" />
+					</div>-->
+
+					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 0px; color: mediumaquamarine">
+						<legend>nginx配置文件
+							<button  type="button" class="updateConfig layui-btn layui-btn-normal layui-btn-sm" >配置文件模式转换</button>
+						</legend>
+					</fieldset>
+					<div class="layui-form-item">
+					   <div id="nginxFileId">
+							<label class="layui-form-label">配置文件</label>
+							<div class="layui-input-inline" style="width: 400px;">
+								<select id="conf" lay-verify="required" name="conf">
+									<option value="">请选择</option>
+								</select>
+							</div>
+							<div class=" ">
+								<button  type="button" class="addEnv layui-btn layui-btn-normal layui-btn-sm" id="addEnv">添加配置文件&env变量</button>
+							</div>
+				      </div>
+					</div>
+
+					<div id="nginxEnv">
+
+                    </div>
+					<div class="layui-form-item">
+						<label style="width: 560px" class="layui-form-label">前端内端口为:80 外端口:30801  管理后台内端口为:80 外端口:30803</label>
+					</div>
+				</div>
+				<div class="layui-form-item">
+                    <button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+var isUpdateConfig = true;
+var nginxConfigFileList = [];
+
+layui.use('upload', function(){
+    var $ = layui.jquery
+        ,upload = layui.upload;
+});
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.render();
+});
+
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+$.ajax({
+    url : "[[@{/}]]app/env/nginx/config/listAll",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        nginxConfigFileList = data;
+        $.each(data, function (index, item) {
+            $('#conf').append(new Option(item.fileName, item.fileName));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+$.ajax({
+    url : "[[@{/}]]app/env/nginx/config/gatewayApi",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#confFileAPI').append(new Option(item.serviceName, item.serviceName+"."+item.namespace));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+
+$.ajax({
+    url : "[[@{/}]]harbor/list",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data.data, function (index, item) {
+            $('#image').append(new Option(item.imageName+":"+item.version, item.imageName+":"+item.version));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+$.ajax({
+    url : "[[@{/}]]deploy/getNacos",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#nacosList').append(new Option(item, item));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+
+
+//自定义验证规则
+form.verify({
+
+
+});
+var  envIndex=0;
+// 提交表单
+form.on('submit(*)', function(data){
+    var  envList='';
+    for(var i = 1; i <= envIndex; i++ ){
+        var evn = $("#confFileAPI_"+i).val();
+        if(evn != null && evn !='undefined'&& evn != ''){
+            envList+=evn+","
+        }
+    }
+    console.log("envList"+envList);
+    $("#envList").val(envList)
+
+    $(".layui-form").ajaxForm({
+        error: function(data){
+            errorHandle(data);
+        },
+        success: function(data) {
+            if(data.code == 200){
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("部署成功", {icon: 2});
+            }else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+            }
+        }
+    });
+});
+
+
+
+
+$("form").on('click','.test', function(){
+    var  envList='';
+    for(var i = 1; i <= envIndex; i++ ){
+        var evn = $("#confFileAPI_"+i).val();
+        if(evn != null && evn !='undefined'&& evn != ''){
+            envList+=evn+","
+        }
+	}
+    console.log("envList"+envList);
+     $("#envList").val(envList)
+     var jQuery = $("#envList").val();
+    console.log("jQuery"+jQuery);
+});
+//添加
+$("form").on('click','.addEnv', function(){
+    var taskHtml="";
+    $.ajax({
+        url : "[[@{/}]]app/env/nginx/config/gatewayApi",
+        type : "get",
+        dataType : "json",
+        error : function(data) {
+            errorHandle(data);
+        },
+        success : function(data) {
+            envIndex++;
+            console.log("addEnv",data)
+            for(var i =0; i < data.length ; i++){
+                console.log("addEnv33",data[i].serviceName)
+                console.log("addEnv33ii",i)
+            }
+            taskHtml+='<div  class="layui-form-item">';
+            taskHtml+='<label class="layui-form-label">变量'+envIndex+'</label>';
+            taskHtml+='<div class="layui-input-inline" style="width: 400px;">';
+            taskHtml+='<select id="confFileAPI_'+envIndex+'" lay-verify="required" name="confFileAPI">';
+            taskHtml+='<option value="">请选择</option>';
+            for(var i =0; i < data.length ; i++){
+                taskHtml+='<option value="'+data[i].serviceName+"."+data[i].namespace+":"+data[i].ports+'">'+data[i].serviceName+'</option>';
+            }
+            //taskHtml+='<option value="'+data[i].serviceName+'">'+data[i].serviceName+'</option>';
+            taskHtml+='</select>';
+            taskHtml+='</div>';
+            taskHtml+='<div>';
+            taskHtml+='<input type="button" id="del_env_'+envIndex+'" class="del_env layui-btn layui-btn-danger layui-btn-xs" value="删除">';
+            taskHtml+='<input type="button" id="input_env_'+envIndex+'" class="input_env layui-btn layui-btn-normal layui-btn-xs" value="手动输入">';
+            // taskHtml+='<button  type="button" class="del_env_'+i+' layui-btn layui-btn-normal layui-btn-sm" value="删除" id="addEnv">';
+            taskHtml+='</div>';
+            taskHtml+='</div>';
+              $("#nginxEnv").append(taskHtml);
+            layui.form.render("select")
+        }
+    });
+
+})
+//删除
+$('form').on("click",".del_env",function(){
+    $(this).parent().parent().remove();
+    return false;
+});
+
+$('form').on("click",".updateConfig",function(){
+    $("#nginxFileId").html('');
+    var taskHtml ="";
+    if (isUpdateConfig) {
+        envIndex = 0;
+        $("#nginxEnv").html('');
+        isUpdateConfig = false
+        taskHtml+='<div  class="layui-form-item">';
+        taskHtml+='<label class="layui-form-label">配置文件</label>';
+        taskHtml+='<label class="layui-form-label"><i>*</i>nginx.conf</label>';
+        taskHtml+='<input type="file" name="confFile" lay-verify="required" class="layui-btn layui-btn-primary" />';
+        taskHtml+='<div>';
+	}else{
+        taskHtml+='<div  class="layui-form-item">';
+        taskHtml+='<label class="layui-form-label">配置文件</label>';
+        taskHtml+='<div class="layui-input-inline" style="width: 400px;">';
+        taskHtml+='<select id="conf" lay-verify="required" name="conf">';
+        taskHtml+='<option value="">请选择</option>';
+        taskHtml+='</select>';
+        taskHtml+='</div>';
+        taskHtml+='<div>';
+        taskHtml+='<button  type="button" class="addEnv layui-btn layui-btn-normal layui-btn-sm" id="addEnv">配置文件&env变量</button>';
+        taskHtml+='</div>';
+        taskHtml+='</div>';
+        isUpdateConfig = true
+	}
+
+    $("#nginxFileId").append(taskHtml);
+    $.each(nginxConfigFileList, function (index, item) {
+        $('#conf').append(new Option(item.fileName, item.fileName));// 下拉菜单里添加元素
+    });
+    layui.form.render("select")
+
+    // var index = parent.layer.getFrameIndex(window.name);
+   // parent.layer.close(index);
+});
+//手动输入
+$('form').on("click",".input_env",function(){
+    $(this).parent().parent().remove();
+    var taskHtml ="";
+		taskHtml+='<div  class="layui-form-item">';
+		taskHtml+='<label class="layui-form-label">变量'+envIndex+'</label>';
+		taskHtml+='<div class="layui-input-inline" style="width: 400px;">';
+        taskHtml+= '<input  id="confFileAPI_'+envIndex+'"style="width: 400px"  class="layui-input">';
+		taskHtml+='</div>';
+        taskHtml+='<div>';
+        taskHtml+='<input type="button" id="del_env_'+envIndex+'" class="del_env layui-btn layui-btn-danger layui-btn-xs" value="删除">';
+		taskHtml+='</div>';
+		taskHtml+='</div>';
+    $("#nginxEnv").append(taskHtml);
+    return false;
+});
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

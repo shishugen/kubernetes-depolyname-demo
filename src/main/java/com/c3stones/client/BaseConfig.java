@@ -17,6 +17,15 @@ import java.util.Properties;
  */
 public class BaseConfig {
 
+    /**
+     * 判断pod是否为网关
+     */
+    public static String GATEWAY_API_KEY="GATEWAY_API";
+    /**
+     * 判断pod是否为网关
+     */
+    public static String GATEWAY_API_VALUE="GATEWAY_API_VALUE";
+
     protected static Integer dockerPort=2375;
     protected static String harborUser ;
     protected static String harborPassword ;

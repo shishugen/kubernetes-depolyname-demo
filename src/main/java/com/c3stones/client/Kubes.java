@@ -7,13 +7,18 @@ import com.c3stones.util.OpenFileUtils;
 import com.sun.org.apache.xml.internal.utils.NameSpace;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
+import io.fabric8.kubernetes.api.model.metrics.v1beta1.NodeMetricsList;
+import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetrics;
+import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetricsList;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.ExecListener;
 import io.fabric8.kubernetes.client.dsl.ExecWatch;
 import io.fabric8.kubernetes.client.dsl.LogWatch;
 import io.fabric8.kubernetes.client.dsl.ServiceResource;
+import io.fabric8.kubernetes.client.dsl.internal.PodMetricOperationsImpl;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -22,8 +27,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * @ClassName: Kubes
@@ -61,6 +69,21 @@ public class Kubes {
         }
         return null;
     }
+
+    /**
+     * 获取 k8s IP
+     * @return
+     */
+    public  String getK8SNodeIp() {
+        List<Pod> items = getKubeclinet().pods().inNamespace("kube-system").list().getItems();
+        for (Pod pod : items){
+            String hostIP = pod.getStatus().getHostIP();
+            System.out.println("hostIP"+hostIP);
+            return hostIP;
+        }
+        return null;
+    }
+
 
 
     /**
@@ -177,12 +200,18 @@ public class Kubes {
 
 
 
-    public  Service createService(String namespace, String serviceName, Integer port,Integer nodePort){
+    public  Service createService(String namespace, String serviceName, Integer port,Integer nodePort,boolean isNginxEnv){
+        Map<String,String> labels = new HashMap<>();
+        labels.put(LABELS_KEY,serviceName);
+        if(port.equals(8888) || isNginxEnv){
+            labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
+        }
         String type = "NodePort";
         Service build = new ServiceBuilder()
                 .withNewMetadata()
                 .withName(serviceName)
                 .withNamespace(namespace)
+                .withLabels(labels)
                 .endMetadata()
                 .withNewSpec()
                 .addNewPort()
@@ -327,6 +356,11 @@ public class Kubes {
                                      String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth) {
         Container container =
                 createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs,isHealth);
+        Map<String,String> labels = new HashMap<>();
+        labels.put(LABELS_KEY,randomPortName);
+        if(port != null && port.equals(8888)){
+            labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
+        }
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -339,7 +373,8 @@ public class Kubes {
                 .withReplicas(replicas)
                 .withNewTemplate()
                 .withNewMetadata()
-                .addToLabels(LABELS_KEY, randomPortName)
+                //.addToLabels(LABELS_KEY, randomPortName)
+                .addToLabels(labels)
                 .endMetadata()
                 .withNewSpec()
                 .withContainers(container)
@@ -347,7 +382,10 @@ public class Kubes {
                 .withName(pvcLogs)
                 .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build())
                 .endVolume()
-               // .addNewVolume()
+                .addNewVolume()
+                .withName("date-config").withNewHostPath().withNewPath("/etc/localtime").endHostPath()
+                .endVolume()
+                // .addNewVolume()
                // .endVolume()
                 .endSpec().endTemplate().endSpec().build();
         getKubeclinet().apps().deployments().createOrReplace(newDeployment);
@@ -357,6 +395,12 @@ public class Kubes {
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos ,
                                      String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth) {
         Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth);
+
+        Map<String,String> labels = new HashMap<>();
+        labels.put(LABELS_KEY,randomPortName);
+        if(port.equals(8888)){
+            labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
+        }
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -376,7 +420,8 @@ public class Kubes {
                 .withReplicas(replicas)
                 .withNewTemplate()
                 .withNewMetadata()
-                .addToLabels(LABELS_KEY, randomPortName)
+                //.addToLabels(LABELS_KEY, randomPortName)
+                .addToLabels(labels)
                 .endMetadata()
                 .withNewSpec()
                 .withTerminationGracePeriodSeconds(60L)
@@ -441,7 +486,7 @@ public class Kubes {
         HTTPGetAction httpGetAction = new HTTPGetAction();
         httpGetAction.setPath("/health");
         httpGetAction.setPort(new IntOrStringBuilder().withIntVal(9000).build());
-        httpGetAction.setScheme("HTTPS");
+        httpGetAction.setScheme("HTTP");
         probe.setHttpGet(httpGetAction);
         probe.setInitialDelaySeconds(30);
         probe.setTimeoutSeconds(5);
@@ -451,7 +496,7 @@ public class Kubes {
         HTTPGetAction httpGetAction2 = new HTTPGetAction();
         httpGetAction2.setPath("/health");
         httpGetAction2.setPort(new IntOrStringBuilder().withIntVal(9000).build());
-        httpGetAction2.setScheme("HTTPS");
+        httpGetAction2.setScheme("HTTP");
         probe2.setHttpGet(httpGetAction2);
         //容器启动后多久开始探测
         probe2.setInitialDelaySeconds(30);
@@ -493,14 +538,14 @@ public class Kubes {
 
         EnvVar envVar2 = new EnvVar();
         envVar2.setName("NACOS_PORT");
-        //envVar2.setValue("8848");
-        envVar2.setValue("30848");
+        envVar2.setValue("8848");
+       // envVar2.setValue("30848");
         env.add(envVar2);
 
         EnvVar envVar3 = new EnvVar();
         envVar3.setName("NACOS_IP");
-        envVar3.setValue("139.9.50.40");
-        //envVar3.setValue(nacos);
+       // envVar3.setValue("139.9.50.40");
+        envVar3.setValue(nacos);
         env.add(envVar3);
         container.setEnv(env);
         container.setImagePullPolicy("Always");
@@ -520,8 +565,12 @@ public class Kubes {
         volumeLogs.setMountPath("/logs/");
         volumeMounts.add(volumeLogs);
 
-        container.setVolumeMounts(volumeMounts);
+        VolumeMount volumeDate = new VolumeMount();
+        volumeDate.setName("date-config");
+        volumeDate.setMountPath("/etc/localtime");
+        volumeMounts.add(volumeDate);
 
+        container.setVolumeMounts(volumeMounts);
 
 
         SecurityContext securityContext = new SecurityContext();
@@ -628,15 +677,70 @@ public class Kubes {
         return true;
     }
 
+    /**
+     * 单位换算
+     * @param format
+     * @return
+     */
+    private static Integer memoryUnitFormat(String format){
+        Integer num = 1;
+        switch (format){
+            case "G":
+                num  = num * 1000;
+                break;
+            case "Mi" :
+                num  = num * 1;
+                break;
+            case "m":
+                num  = num * 1;
+                break;
+            case "mi":
+                num  = num * 1;
+                break;
+            default:
+        }
+        return num;
+    }
+
+
 
     @SneakyThrows
     public static void main(String[] args) {
-      //  String homeConfigFile = getHomeConfigFile();
+        BigDecimal bigDecimal  = new BigDecimal(0.5);
+        System.out.println(bigDecimal.intValue());
+        System.out.println(bigDecimal.doubleValue());
 
-        /*System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE, "E:\\dockerfile\\kube-test-config");
-        Config config = new ConfigBuilder()
-                .build();
-        DefaultKubernetesClient kubernetesClient = new DefaultKubernetesClient(config);
+       // String homeConfigFile = getHomeConfigFile();
+
+
+
+/*        Deployment deployment = new Deployment();
+        Map<String,Quantity> stringQuantityMap= new HashMap(2);
+        stringQuantityMap.put("cpu",new Quantity(String.valueOf(2000),"m"));
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(8000),"M"));
+        kubernetesClient.apps().deployments().inNamespace("1422357431756730369").withName("1422357431756730369")
+                .edit().editSpec().editTemplate().editSpec().editContainer(0)
+                .editResources().withRequests(stringQuantityMap).endResources()
+                .endContainer().endSpec()
+                .endTemplate().endSpec().done();*/
+
+
+       // PodMetricOperationsImpl pods = kubernetesClient.top().pods();
+
+
+   /*     List<PodMetrics> items = pods.metrics("1410113812702375937").getItems();
+        items.forEach(pod->{        // 120665107 n
+          //  System.out.println(a); 20515912 = 21m
+
+
+            pod.getContainers().forEach(b->{
+                b.setName(pod.getMetadata().getName());
+                System.out.println(b);
+
+            });
+        });*/
+
+       /*
 
         String namespace = "app-sys";
         String pvcName = "app-sys";
@@ -689,6 +793,17 @@ public class Kubes {
      */
     public static String getHomeConfigDir() {
         String dir = System.getProperty("user.home")+ File.separator + ".kube-deployment"+ File.separator +".k8s"+ File.separator+"configs";
+        if(!new File(dir).exists()){
+            new File(dir).mkdirs();
+        }
+        return dir;
+    }
+    /**
+     * nginx配置文件夹
+     * @return
+     */
+    public static String getHomeNginxConfigDir() {
+        String dir = System.getProperty("user.home")+ File.separator + ".kube-deployment"+ File.separator +".nginx"+ File.separator+"configs";
         if(!new File(dir).exists()){
             new File(dir).mkdirs();
         }

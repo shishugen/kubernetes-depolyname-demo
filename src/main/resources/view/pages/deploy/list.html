@@ -33,6 +33,7 @@
                     <button class="layui-btn layui-btn-normal layui-btn-sm" data-type="addNginx">前端新增</button>
                     <button class="layui-btn layui-btn-normal layui-btn-sm"  data-type="addJar">JAR新增</button>
                     <button class="layui-btn layui-btn-normal layui-btn-sm" data-type="addPython">Python新增</button>
+                    <button class="layui-btn layui-btn-danger layui-btn-sm"  data-type="batchDeleteImage">删除镜像</button>
                 </div>
 
 					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
@@ -60,6 +61,7 @@ table.render({
     ,url: '[[@{/harbor/listData}]]'
     ,cols: [
     	[
+             {fixed:'left',type:'checkbox'}
             ,{field:'imageName', title: '镜像'}
             ,{field:'version', title: '版本', align: 'center',sort: true}
             ,{field:'created', title: '日期',sort: true}
@@ -103,7 +105,7 @@ active = {
     		type: 2,
     		area: ['100%', '80%'],
     		title: '部署前端',
-    		content: '[[@{/}]]deploy/deployNginx'
+    		content: '[[@{/}]]deploy/deployNginx2'
     	});
 	},
     deployMultiPod: function() {
@@ -144,7 +146,38 @@ active = {
 	},
 	reset: function() {
 		$(".layui-input").val("");
-	}
+	},
+    batchDeleteImage : function(){ //获取选中数据
+        var checkStatus = table.checkStatus('harborTable')
+            ,data = checkStatus.data;
+        var projectName =''
+        var tag =''
+        for (var i = 0 ; i < data.length; i++){
+            projectName +=data[i].imageName+",";
+            tag +=data[i].version+",";
+        }
+        if (tag != '' && projectName != '' ) {
+            layer.confirm("确定删除吗？", {icon: 3, title:'提示'}, function(index) {
+                layer.close(index);
+                $.ajax({
+                    url : "[[@{/}]]harbor/batchDeleteImage",
+                    data : {'projectName': projectName,'tag':tag},
+                    type : "post",
+                    dataType : "json",
+                    error : function(data) {
+                        errorHandle(data);
+                    },
+                    success : function(data) {
+                        console.log("删除",data)
+                        layer.msg('删除成功');
+                        active.reload();
+                    }
+                });
+            });
+        }else{
+            layer.msg('请选择要删除的数据');
+        }
+    }
 };
 
 // 按钮事件

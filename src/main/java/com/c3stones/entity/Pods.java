@@ -44,5 +44,17 @@ public class Pods {
 
     private String nacosName;
 
+    private String serviceName;
 
+
+    public static void main(String[] args) {
+        String nginxfile ="我去VB &env 就看快乐快乐 &env dsdee";
+        String split[] ="1223,567".split(",");
+        String text = null;
+        for (String env:split){
+            nginxfile=  nginxfile.replaceFirst("&env",env);
+
+        }
+        System.out.println("nginxfile===="+nginxfile);
+    }
 }

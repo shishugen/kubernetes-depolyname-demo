@@ -15,7 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: guacd
@@ -56,10 +58,20 @@ public class GuacdPod extends BaseConfig {
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
             String pvcName =namespace + podName;
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(2);
+        //map.put("cpu",new Quantity("m"));
+        map.put("memory",new Quantity("2000M"));
+        resource.setLimits(map);
+        Map<String,Quantity> stringQuantityMap= new HashMap(2);
+        //stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
+        resource.setRequests(stringQuantityMap);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
                             .withName(labelsName)
                             .withImage(image)
+                            .withResources(resource)
                            // .withImagePullPolicy("Always")
                            // .withImagePullPolicy("IfNotPresent")
                             .withCommand("/bin/sh","-c")
