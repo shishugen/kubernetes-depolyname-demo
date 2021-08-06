@@ -14,10 +14,7 @@ import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.ExecListener;
-import io.fabric8.kubernetes.client.dsl.ExecWatch;
-import io.fabric8.kubernetes.client.dsl.LogWatch;
-import io.fabric8.kubernetes.client.dsl.ServiceResource;
+import io.fabric8.kubernetes.client.dsl.*;
 import io.fabric8.kubernetes.client.dsl.internal.PodMetricOperationsImpl;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -263,6 +260,16 @@ public class Kubes {
       }
         return null;
     }
+    public  ServiceList findService(String namesapce){
+        NonNamespaceOperation<Service, ServiceList, DoneableService, ServiceResource<Service, DoneableService>> serviceServiceList = getKubeclinet().services().inNamespace(namesapce);
+        ServiceList list = serviceServiceList.list();
+        if(serviceServiceList != null &&
+                list != null){
+            return list;
+        }
+        return null;
+    }
+
     public  Boolean deletePod(String namesapce,String podName){
         return getKubeclinet().pods().inNamespace(namesapce).withName(podName).delete();
     }

@@ -302,22 +302,22 @@ public class PodController {
         List<ContainerPort> ports1 = podSpec.getContainers().get(0).getPorts();
         if(ports1 != null && ports1.size() > 0 ){
         Service service = kubes.findService(metadata.getNamespace(),svcName);
-        if(service != null) {
-            ServiceSpec spec = service.getSpec();
-            List<ServicePort> ports = spec.getPorts();
-            if (ports != null && ports.size() > 0) {
-                StringBuffer buffer = new StringBuffer(ports.size());
-                for (ServicePort port : ports) {
-                    Integer port1 = port.getPort();
-                    Integer nodePort = port.getNodePort();
-                    if (buffer.toString().length() > 0) {
-                        buffer.append(",");
+            if(service != null) {
+                ServiceSpec spec = service.getSpec();
+                List<ServicePort> ports = spec.getPorts();
+                if (ports != null && ports.size() > 0) {
+                    StringBuffer buffer = new StringBuffer(ports.size());
+                    for (ServicePort port : ports) {
+                        Integer port1 = port.getPort();
+                        Integer nodePort = port.getNodePort();
+                        if (buffer.toString().length() > 0) {
+                            buffer.append(",");
+                        }
+                        buffer.append(port1 + ":" + nodePort);
                     }
-                    buffer.append(port1 + ":" + nodePort);
+                    pod.setPorts(buffer.toString());
                 }
-                pod.setPorts(buffer.toString());
             }
-        }
         }
         return pod;
     }

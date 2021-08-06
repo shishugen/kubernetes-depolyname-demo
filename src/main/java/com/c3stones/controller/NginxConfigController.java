@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -230,6 +230,49 @@ public class NginxConfigController {
         return Response.success("OK");
     }
 
+
+    /**
+     * pod
+     *
+     * @return
+     */
+    @RequestMapping(value = "nginx/download")
+    public void download(String fileName, HttpServletResponse response , HttpServletRequest request) {
+        System.out.println("fileName=="+fileName);
+        File file = new File(Kubes.getHomeNginxConfigDir()+File.separator+fileName);
+        response.setContentType("text/plain");
+        String filename = request.getParameter("filename");
+        response.setHeader("Content-disposition", "attachment; filename="+fileName);
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(file));
+            bos = new BufferedOutputStream(response.getOutputStream());
+            byte[] buff = new byte[bis.available()];
+            int bytesRead = 0;
+            while (-1 != (bytesRead = (bis.read(buff, 0, buff.length)))) {
+                bos.write(buff, 0, buff.length);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
 
     public static void main(String[] args) {
         String str ="https://10.49.0.11:6443";
