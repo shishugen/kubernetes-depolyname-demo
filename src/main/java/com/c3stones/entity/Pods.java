@@ -46,15 +46,15 @@ public class Pods {
 
     private String serviceName;
 
+    private String images;
+
 
     public static void main(String[] args) {
-        String nginxfile ="我去VB &env 就看快乐快乐 &env dsdee";
-        String split[] ="1223,567".split(",");
-        String text = null;
-        for (String env:split){
-            nginxfile=  nginxfile.replaceFirst("&env",env);
-
-        }
-        System.out.println("nginxfile===="+nginxfile);
+        String nginxfile ="harbor.org/application/portal-task-server:3.0";
+        String split[] =nginxfile.split("/");
+        String images = split[split.length - 1];
+        String[] split1 = images.split(":");
+        System.out.println("split===="+ images);
+        System.out.println("split1===="+ split1[0]);
     }
 }

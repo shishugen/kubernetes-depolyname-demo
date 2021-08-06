@@ -48,7 +48,7 @@
                     </li>-->
                     <li class="layui-nav-item">
                         <a href="javascript:;">
-                            <i class="layui-icon">&#xe716;</i>
+                            <i class="layui-icon layui-icon-app"></i>
                             <em>应用管理</em>
                         </a>
                      <!--   <dl class="layui-nav-child">
@@ -63,6 +63,13 @@
                         <dl class="layui-nav-child">
                             <dd><a th:href="@{/pod/list}">容器管理</a></dd>
                         </dl>
+                    </li>
+
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">
+                            <i class="layui-icon layui-icon-group"></i>
+                            <em>重要数据</em>
+                        </a>
                         <dl class="layui-nav-child">
                             <dd><a th:href="@{/namespace/list}">命名空间</a></dd>
                         </dl>
@@ -73,6 +80,8 @@
                             <dd><a th:href="@{/port/list}">端口管理</a></dd>
                         </dl>
                     </li>
+
+
                     <li class="layui-nav-item">
                         <a href="javascript:;">
                             <i class="layui-icon">&#xe716;</i>

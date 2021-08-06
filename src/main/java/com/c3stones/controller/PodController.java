@@ -299,7 +299,15 @@ public class PodController {
         pod.setDate(KubeUtils.StringFormatDate(status.getStartTime()));
 
         ///metadata.getLabels().get("app");
-        List<ContainerPort> ports1 = podSpec.getContainers().get(0).getPorts();
+        Container container = podSpec.getContainers().get(0);
+        String image = container.getImage();
+
+        String split[] =image.split("/");
+        String images = split[split.length - 1];
+        String[] split1 = images.split(":");
+        pod.setImages(podAppPrefix+split1[0]);
+        List<ContainerPort> ports1 = container.getPorts();
+
         if(ports1 != null && ports1.size() > 0 ){
         Service service = kubes.findService(metadata.getNamespace(),svcName);
             if(service != null) {

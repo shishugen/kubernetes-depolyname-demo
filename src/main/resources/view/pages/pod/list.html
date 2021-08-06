@@ -32,11 +32,12 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">容器名称</label>
                             <div class="layui-input-inline">
-                                <input type="text"  name="podName" autocomplete="off" class="layui-input">
+                                <input type="text" id="podName"  name="podName" autocomplete="off" class="layui-input">
                             </div>
                         </div>
-                        <button class="layui-btn" data-type="reload">查询</button>
-                        <table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
+                        <button class="layui-btn layui-btn-normal" id="podLoad" data-type="load">查询</button>
+                        <button class="layui-btn layui-btn-warm" id="podReload" data-type="reload">重置</button>
+                        <table class="layui-hide" id="harborDataTable"  lay-filter="config"></table>
                         <script type="text/html" id="operation">
                             <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
                             <a class="layui-btn layui-btn-xs" lay-event="logs">日志</a>
@@ -138,9 +139,10 @@ table.render({
     ,height:tableHeight2
     ,url: '[[@{/pod/listAppData}]]'
     ,cols: [  //      <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+//      <th lay-data="{field:'sign', width:'50%', event: 'setSign', style:'cursor: pointer;'}">签名</th>
 
         [
-	      {field:'podName', title: '容器名称', align: 'center'}
+	      {field:'podName', title: '容器名称',event: 'setPodName', align: 'center'}
             ,{field:'namespace', title: '命名空间', align: 'center',width:200}
 	      ,{field:'podStatus', title: '容器状态', align: 'center',width:80,sort: true}
 	      ,{field:'date', title: '部署时间', align: 'center',width:180,sort: true}
@@ -263,7 +265,7 @@ active = {
     		content: '[[@{/}]]env/add'
     	});
 	},
-	reload: function() {
+	load: function() {
 		table.reload('harborTable', {
             where: {
                 namespace : $("input[name='namespace']").val(),
@@ -271,6 +273,17 @@ active = {
             }
 		}, 'data');
 	},
+    reload: function() {
+
+	    $("input[name='namespace']").val(''),
+        $("input[name='podName']").val('')
+        table.reload('harborTable', {
+            where: {
+                namespace : $("input[name='namespace']").val(),
+                podName : $("input[name='podName']").val()
+            }
+        }, 'data');
+    },
     reload2: function() {
 		table.reload('harborTable2', {
             where: {
@@ -399,7 +412,6 @@ table.on('tool(config)', function(obj){
      }else if(obj.event === 'delNginx') {
 
     }else if(obj.event === "open"){
-
       var list = obj.data.ports.split(",");
       for (var i =0 ; i < list.length ; i++){
           if(obj.data.podName == "env-nacos"){
@@ -493,7 +505,7 @@ table.on('tool(config)', function(obj){
                     errorHandle(data);
                 },
                 success : function(data) {
-                    console.log(data)
+
                     $(".searchTable .layui-btn").eq(0).click();
                 }
             });
@@ -506,11 +518,20 @@ table.on('tool(config)', function(obj){
             title: '修改',
             content: '[[@{/}]]deploy/updatePage?deployname='+obj.data.name+"&replicas="+obj.data.replicas+"&image="+obj.data.image+"&namespace="+obj.data.namespace
         });
-        console.log("update",obj.data)
 
     }
 });
+//触发行双击事件
+table.on('rowDouble(config)', function(obj){
+    var row = obj.data;
+    layer.confirm("查找  "+row.images+"吗？", {icon: 3, title:'提示'}, function(index) {
+        layer.close(index);
+        $("#podName").val(row.images)
+        $("#podLoad").click()
+    });
 
+
+});
 
 
 //错误处理
