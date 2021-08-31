@@ -566,7 +566,7 @@ public class DeployController  extends BaseConfig {
 
 	@RequestMapping(value = "getDeployment")
 	@ResponseBody
-	public Response<Pages<Deployments>> getDeployment(String namespace) {
+	public Response<Pages<Deployments>> getDeployment(String namespace,String version) {
 		List<Deployments> deployments = new ArrayList<>();
 		List<Deployment> items = kubes.getKubeclinet().apps().deployments().list().getItems();
 		items.forEach(a->{
@@ -580,7 +580,14 @@ public class DeployController  extends BaseConfig {
 				String image = a.getSpec().getTemplate().getSpec().getContainers().get(0).getImage();
 				String substring = image.substring(image.indexOf("/") + 1, image.length());
 				Deployments deployment = new Deployments(name,replicas,KubeUtils.StringFormatDate(creationTimestamp),metadata.getNamespace(),substring);
-				deployments.add(deployment);
+				if (StringUtils.isNotEmpty(version)){
+					String[] split = image.split(":");
+					if (StringUtils.isNotEmpty(split[1]) && split[1].contains(version)){
+						deployments.add(deployment);
+					}
+				}else{
+					deployments.add(deployment);
+				}
 			}
 			if(a.getMetadata().getNamespace().startsWith(podNamespacePrefix) && StringUtils.isBlank(namespace)){
 				ObjectMeta metadata = a.getMetadata();
@@ -590,10 +597,15 @@ public class DeployController  extends BaseConfig {
 				String image = a.getSpec().getTemplate().getSpec().getContainers().get(0).getImage();
 				String substring = image.substring(image.indexOf("/") + 1, image.length());
 				Deployments deployment = new Deployments(name,replicas,KubeUtils.StringFormatDate(creationTimestamp),metadata.getNamespace(),substring);
-				deployments.add(deployment);
-
+				if (StringUtils.isNotEmpty(version)){
+					String[] split = image.split(":");
+					if (StringUtils.isNotEmpty(split[1]) && split[1].contains(version)){
+						deployments.add(deployment);
+					}
+				}else{
+					deployments.add(deployment);
+				}
 			}
-
 		});
 		Pages page = new Pages();
 		page.setRecords(deployments);

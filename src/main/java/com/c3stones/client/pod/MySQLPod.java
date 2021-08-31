@@ -62,22 +62,26 @@ public class MySQLPod extends BaseConfig {
         stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
         resource.setRequests(stringQuantityMap);
             String pvcName =namespace + podName;
-            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
+        kubes.createPV(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
+        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
+                           // .withVolumeMounts(new VolumeMountBuilder().withMountPath("/home/").withName("mysql").build())
                             .withName(labelsName)
                             .withImage(image)
-                           // .withImagePullPolicy("Always")
-                            .withImagePullPolicy("IfNotPresent")
+                            .withImagePullPolicy("Always")
+                          //  .withImagePullPolicy("IfNotPresent")
                             .withResources(resource)
-                            .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/var/lib/mysql/").build())
+                            .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/").build())
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToEnv(new EnvVarBuilder().withName("MYSQL_ROOT_PASSWORD").withValue(MYSQL_ROOT_PASSWORD).build())
                             .addToEnv(new EnvVarBuilder().withName("lower_case_table_names").withValue("1").build())
-                            .build())
+                            .build())//.withVolumes(new VolumeBuilder().withName("mysql").withNewNfs().withServer("192.168.0.218").withPath("/xuanyuan/nfs/data/test/").endNfs().build())
                        .withVolumes(new VolumeBuilder().withName(pvcName)
-                            .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
-                    .endSpec().build();
+                            .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).withReadOnly(true).build()).build())
+                    .endSpec()
+                    .
+                            build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
         return true;

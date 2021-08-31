@@ -343,10 +343,35 @@ public class Kubes {
                 .withNewResources()
                 .withRequests(map)
                 .endResources()
-                .withStorageClassName(storageClassName)
+                .withStorageClassName("test001")
                 .endSpec()
                 .build();
         return getKubeclinet().persistentVolumeClaims().createOrReplace(build);
+    }
+    /**
+     *
+     * @param name
+     * @param namespace
+     * @param storageClassName
+     * @param storageSize
+     * @return
+     */
+    public  PersistentVolume createPV(String name, String namespace, String storageClassName ,Integer storageSize) {
+        Map<String,Quantity> map = new HashMap(1);
+        map.put("storage",new Quantity(String.valueOf(storageSize),"G"));
+        PersistentVolume build = new PersistentVolumeBuilder()
+                .withNewMetadata()
+                .withName(name)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withCapacity(map)
+                .withAccessModes("ReadOnlyMany")
+                .withStorageClassName("test001")
+                .withNewNfs().withServer("192.168.0.218").withPath("/xuanyuan/nfs/data/test2/").endNfs()
+                .endSpec()
+                .build();
+        return getKubeclinet().persistentVolumes().createOrReplace(build);
     }
 
     public  boolean check(String name, String namespace) {

@@ -86,7 +86,6 @@ form.on('submit(*)', function(data){
             errorHandle(data);
         },
         success: function(data) {
-            parent.location.reload();
             var index = parent.layer.getFrameIndex(window.name);
             parent.layer.close(index);
         }
