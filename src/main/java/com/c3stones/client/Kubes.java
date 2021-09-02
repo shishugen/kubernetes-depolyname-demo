@@ -343,7 +343,7 @@ public class Kubes {
                 .withNewResources()
                 .withRequests(map)
                 .endResources()
-                .withStorageClassName("test001")
+                .withStorageClassName(storageClassName)
                 .endSpec()
                 .build();
         return getKubeclinet().persistentVolumeClaims().createOrReplace(build);
@@ -367,7 +367,7 @@ public class Kubes {
                 .withNewSpec()
                 .withCapacity(map)
                 .withAccessModes("ReadOnlyMany")
-                .withStorageClassName("test001")
+                .withStorageClassName(storageClassName)
                 .withNewNfs().withServer("192.168.0.218").withPath("/xuanyuan/nfs/data/test2/").endNfs()
                 .endSpec()
                 .build();

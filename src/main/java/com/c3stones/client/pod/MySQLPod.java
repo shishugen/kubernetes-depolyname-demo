@@ -62,7 +62,6 @@ public class MySQLPod extends BaseConfig {
         stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
         resource.setRequests(stringQuantityMap);
             String pvcName =namespace + podName;
-        kubes.createPV(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
             Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
                     .withNewSpec().withContainers(new ContainerBuilder()
