@@ -71,13 +71,13 @@ public class MySQLPod extends BaseConfig {
                             .withImagePullPolicy("Always")
                           //  .withImagePullPolicy("IfNotPresent")
                             .withResources(resource)
-                            .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/").build())
+                            .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/var/lib/mysql/").build())
                             .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                             .addToEnv(new EnvVarBuilder().withName("MYSQL_ROOT_PASSWORD").withValue(MYSQL_ROOT_PASSWORD).build())
                             .addToEnv(new EnvVarBuilder().withName("lower_case_table_names").withValue("1").build())
                             .build())//.withVolumes(new VolumeBuilder().withName("mysql").withNewNfs().withServer("192.168.0.218").withPath("/xuanyuan/nfs/data/test/").endNfs().build())
                        .withVolumes(new VolumeBuilder().withName(pvcName)
-                            .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).withReadOnly(true).build()).build())
+                            .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
                     .endSpec()
                     .
                             build();
