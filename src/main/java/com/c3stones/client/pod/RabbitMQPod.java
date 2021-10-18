@@ -120,6 +120,51 @@ public class RabbitMQPod extends BaseConfig {
         return true;
     }
 
+
+    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName,Integer port2,String portName2) {
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(1);
+        map.put("memory",new Quantity("1000M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> stringQuantityMap= new HashMap(1);
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
+        resource.setRequests(stringQuantityMap);
+        String pvcName =namespace + podName;
+        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMqStorageSize);
+        Deployment newDeployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName(podEnvPrefix+podName)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withNewSelector()
+                .addToMatchLabels(LABELS_KEY, labelsName)
+                .endSelector()
+                .withReplicas(1)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels(LABELS_KEY,labelsName)
+                .endMetadata()
+                .withNewSpec()
+                .addNewContainer()
+                .withName(podName)
+                .withImage(image)
+                .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/bitnami/").build())
+                .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
+                .addToPorts(new ContainerPortBuilder().withName(portName2).withContainerPort(port2).build())
+                .addToEnv(new EnvVarBuilder().withName("RABBITMQ_USERNAME").withValue("admin").build())
+                .addToEnv(new EnvVarBuilder().withName("RABBITMQ_PASSWORD").withValue("123456").build())
+                .withResources(resource)
+                .endContainer()
+                .withVolumes(new VolumeBuilder().withName(pvcName).withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
+
+                //  .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
+                .endSpec().endTemplate().endSpec().build();
+        kubes.getKubeclinet().apps().deployments().createOrReplace(newDeployment);
+        return true;
+    }
+
     //
 
     /**
@@ -187,11 +232,11 @@ public class RabbitMQPod extends BaseConfig {
         kubes.createNamespace(namespace);
      //   configMap(namespace);
         try {
-            create(namespace,podName,labelsName,harborImageEnvPrefix+image,15672,portName+1,5672,portName+2);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,15672,portName+1,5672,portName+2);
             createService(namespace,podName,labelsName,15672,portName+1,5672,portName+2);
         }catch (Exception e){
             e.printStackTrace();
-            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().apps().deployments().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
             kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
         }
     }

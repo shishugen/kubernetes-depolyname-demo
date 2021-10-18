@@ -4,6 +4,8 @@ import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.exception.KubernetesException;
 import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +86,55 @@ public class FastdfsPod  extends BaseConfig {
         createService(namespace,nodePort);
     }
 
+    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName) {
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(1);
+        map.put("memory",new Quantity("1000M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> stringQuantityMap= new HashMap(1);
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
+        resource.setRequests(stringQuantityMap);
+        String pvcName =namespace + podName;
+        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsFdfsStorageSize);
+        Deployment newDeployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName(podEnvPrefix+podName)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withNewSelector()
+                .addToMatchLabels(LABELS_KEY, labelsName)
+                .endSelector()
+                .withReplicas(1)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels(LABELS_KEY,labelsName)
+                .endMetadata()
+                .withNewSpec()
+                .addNewContainer().withName(podName).withImage(image)
+                .withCommand("/home/start2.sh")
+                .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/fdfs_storage/").build())
+                .withPorts(new ContainerPortBuilder().withContainerPort(80).withName("nginx").build())
+                .withPorts(new ContainerPortBuilder().withContainerPort(22122).withName("fdfs2").build())
+                .addToEnv(new EnvVarBuilder().withName("TRACKER_SERVER")
+                        .withValueFrom(new EnvVarSourceBuilder().withFieldRef(
+                                new ObjectFieldSelectorBuilder().withFieldPath("status.podIP").build()).build())
+                        .build()
+                )
+                .withResources(resource)
+                .endContainer()
+                .addNewVolume()
+                .withName("date-config").withNewHostPath().withNewPath("/etc/localtime").endHostPath()
+                .endVolume()
+                .withVolumes(new VolumeBuilder().withName(pvcName)
+                        .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
+                .endSpec().endTemplate().endSpec().build();
+        kubes.getKubeclinet().apps().deployments().createOrReplace(newDeployment);
+        createService(namespace,port);
+        return true;
+    }
+
     public  Service createService(String namespace ,Integer nodePort) {
         if(nodePort > 30000 || nodePort < 32767){
             log.error("端口为 30000-32767   nodePort : {}",nodePort);
@@ -124,10 +175,10 @@ public class FastdfsPod  extends BaseConfig {
     public  void  createT(String namespace,Integer nodePort){
         String podName = "fdfs";
         try {
-            tracker(namespace,harborImageEnvPrefix+image,nodePort,podName);
+            createDeployment(namespace,podName,podName,harborImageEnvPrefix+image,nodePort,podName);
         }catch (Exception e){
             e.printStackTrace();
-            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().apps().deployments().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
             kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
         }
 

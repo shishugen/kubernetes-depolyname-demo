@@ -8,6 +8,8 @@ import com.c3stones.common.Response;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
 import com.c3stones.http.HttpHarbor;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -61,6 +63,11 @@ public class EnvController extends BaseConfig {
     private String podNamespacePrefix;
     @Value("${pod.env.prefix}")
     private String podEnvPrefix;
+
+    /***
+     * labels
+     */
+    private  static  String LABELS_KEY = "app";
 
 
     /**
@@ -220,6 +227,19 @@ public class EnvController extends BaseConfig {
         return Response.success(true);
     }
 
+    /** 删除
+     *
+     * @return
+     */
+    @RequestMapping(value = "delDeploy")
+    @ResponseBody
+    public Response<Boolean> delDeploys(String  name,String namespace) {
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+            Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace).withName(name).delete();
+            kubes.deleteService(namespace,name);
+            kubes.deleteConf(namespace,name);
+        return Response.success(true);
+    }
 
 
 }

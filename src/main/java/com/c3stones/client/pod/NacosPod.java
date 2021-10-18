@@ -9,6 +9,8 @@ import com.c3stones.entity.NacosEntity;
 import com.c3stones.entity.Pods;
 import com.c3stones.util.KubeUtils;
 import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -92,6 +94,50 @@ public class NacosPod extends BaseConfig {
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
+        return true;
+    }
+
+
+    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName) {
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(1);
+        map.put("memory",new Quantity("1000M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> stringQuantityMap= new HashMap(1);
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
+        resource.setRequests(stringQuantityMap);
+        String pvcName =namespace + podName;
+        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNacosStorageSize);
+        Deployment newDeployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName(podEnvPrefix+podName)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withNewSelector()
+                .addToMatchLabels(LABELS_KEY, labelsName)
+                .endSelector()
+                .withReplicas(1)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels(LABELS_KEY,labelsName)
+                .endMetadata()
+                .withNewSpec()
+                .addNewContainer().withName(podName).withImage(image)
+                .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/nacos/data/").build())
+                .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
+                .addToEnv(new EnvVarBuilder().withName("MODE").withValue(MODE).build())
+                .addToEnv(new EnvVarBuilder().withName("EMBEDDED_STORAGE").withValue(EMBEDDED_STORAGE).build())
+                .withResources(resource)
+                .endContainer()
+                .addNewVolume()
+                .withName("date-config").withNewHostPath().withNewPath("/etc/localtime").endHostPath()
+                .endVolume()
+                .withVolumes(new VolumeBuilder().withName(pvcName)
+                        .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
+                .endSpec().endTemplate().endSpec().build();
+        kubes.getKubeclinet().apps().deployments().createOrReplace(newDeployment);
         return true;
     }
 
@@ -232,11 +278,11 @@ public class NacosPod extends BaseConfig {
         String portName="nacos";
         try {
             kubes.createNamespace(namespace);
-            create(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName);
             createService(namespace,podName,labelsName,8848,nodePort,portName);
         }catch (Exception e){
             e.printStackTrace();
-            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().apps().deployments().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
             kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
         }
     }

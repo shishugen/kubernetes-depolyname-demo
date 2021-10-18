@@ -3,6 +3,8 @@ package com.c3stones.client.pod;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,7 +70,6 @@ public class RedisPod extends BaseConfig {
 
                             .build())
                     .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
-
                     .addToVolumes(
                                    new VolumeBuilder()
                                            .withName(configName)
@@ -78,6 +79,51 @@ public class RedisPod extends BaseConfig {
                     .endSpec().build();
             Pod newPod = kubes.getKubeclinet().pods().create(pod);
             System.out.println(newPod);
+        return true;
+    }
+
+    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName ,String configName ){
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(1);
+        map.put("memory",new Quantity("1000M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> stringQuantityMap= new HashMap(1);
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
+        resource.setRequests(stringQuantityMap);
+        String pvcName =namespace + podName;
+        Deployment newDeployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName(podEnvPrefix+podName)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withNewSelector()
+                .addToMatchLabels(LABELS_KEY, labelsName)
+                .endSelector()
+                .withReplicas(1)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels(LABELS_KEY,labelsName)
+                .endMetadata()
+                .withNewSpec()
+                .addNewContainer().withName(podName).withImage(image)
+                .withCommand("sh","-c","exec redis-server")
+                .addToArgs("/data/middleware-data/redis/conf/redis.conf")
+                .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
+                .addToVolumeMounts(new VolumeMountBuilder().withName(configName).withMountPath(MOUNT_PATH).build())
+              //  .withVolumeMounts(new VolumeMountBuilder().withName("date-config").withMountPath("/etc/localtime").build())
+                .withResources(resource)
+                .endContainer()
+                .withVolumes(new VolumeBuilder().withName("date-config").withHostPath(new HostPathVolumeSourceBuilder().withNewPath("/etc/localtime").build()).build())
+                .addToVolumes(
+                        new VolumeBuilder()
+                                .withName(configName)
+                                .withConfigMap(new
+                                        ConfigMapVolumeSourceBuilder()
+                                        .withName(configName).build()).build())
+                .endSpec().endTemplate().endSpec().build();
+        kubes.getKubeclinet().apps().deployments().createOrReplace(newDeployment);
         return true;
     }
 
@@ -146,7 +192,7 @@ public class RedisPod extends BaseConfig {
         try {
             kubes.createNamespace(namespace);
             configMap(namespace,configName,configName);
-            create(namespace,podName,labelsName,harborImageEnvPrefix+image,6379,portName,configName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,6379,portName,configName);
             createService(namespace,podName,labelsName,6379,portName);
         }catch (Exception e){
             e.printStackTrace();

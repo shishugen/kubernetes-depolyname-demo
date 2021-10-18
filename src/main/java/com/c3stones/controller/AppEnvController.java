@@ -105,7 +105,7 @@ public class AppEnvController {
     public Response<Pages<Config>> k8sVerify(String masterUrl) {
         try {
          KubernetesClient kubernetesClient = new DefaultKubernetesClient(Kubes.getMasterConfig(masterUrl));
-         kubernetesClient.apps().deployments().inNamespace("kube-system").list();
+            kubernetesClient.apps().deployments().list();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.error("连接失败");

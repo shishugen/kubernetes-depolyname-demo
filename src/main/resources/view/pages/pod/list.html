@@ -41,9 +41,7 @@
                         <script type="text/html" id="operation">
                             <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
                             <a class="layui-btn layui-btn-xs" lay-event="logs">日志</a>
-<!--
-                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delDeploy">删除</a>
--->
+                            <a id="downloadJar"  class="layui-btn layui-btn-xs" lay-event="download">下载Jar</a>
                         </script>
                     </div>
                 </div>
@@ -125,9 +123,6 @@
                 </div>
             </div>
         </div>
-
-
-
     </div>
 </div>
 </div>
@@ -138,7 +133,7 @@ var element = layui.element;
 var table = layui.table;
 var layer = layui.layer;
 var tableHeight2 =  $(window).height() - 180;
-
+var isDownload = true
 table.render({
 	id: 'harborTable'
 	,elem: '#harborDataTable'
@@ -153,7 +148,7 @@ table.render({
 	      ,{field:'podStatus', title: '容器状态', align: 'center',width:80,sort: true}
 	      ,{field:'date', title: '部署时间', align: 'center',width:180,sort: true}
 	      ,{field:'ports', title: '端口', width:120,sort: true}
-	      ,{title:'操作', align: 'center', toolbar: '#operation', width:140}
+	      ,{title:'操作', align: 'center', toolbar: '#operation', width:190}
     	]
    	]
     ,response: {
@@ -261,7 +256,24 @@ table.render({
     }
 });
 
-
+$.ajax({
+    url : "[[@{/}]]pod/isEnable/downloadJar",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        console.log(data)
+        if (data == true){
+            console.log("222")
+            //$("#downloadJar").show();
+        }else{
+            console.log("223332")
+        }
+        $("#downloadJar").hide()
+    }
+});
 active = {
 	add: function() {
 		layer.open({
@@ -406,6 +418,8 @@ table.on('tool(podConfig)', function(obj) {
     }else if(obj.event ==='logs') {
         console.log(obj.data.namespace)
         window.open('[[@{/}]]pod/logs?namespace=' + obj.data.namespace + '&podName=' + obj.data.podName)
+    }else if(obj.event ==='download'){
+         window.open("[[@{/}]]pod/downloadJar?namespace="+obj.data.namespace+"&podName="+obj.data.podName)
     }
 })
 //监听行工具事件
@@ -530,6 +544,7 @@ table.on('tool(config)', function(obj){
         });
 
     }
+
 });
 //触发行双击事件
 table.on('rowDouble(podConfig)', function(obj){

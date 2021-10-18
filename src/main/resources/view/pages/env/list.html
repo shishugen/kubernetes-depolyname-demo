@@ -82,8 +82,30 @@ table.render({
 //监听行工具事件
 table.on('tool(config)', function(obj) {
     var row = obj.data;
+    var  str = row.podName
+    var name = row.podName.substring(0,str.indexOf("-",str.indexOf("-")+1));
     if (obj.event === 'del') {
         layer.confirm("确认  "+row.podName+"  删除吗？", {icon: 3, title: '提示'}, function (index) {
+            layer.close(index);
+            $.ajax({
+                url: "[[@{/}]]env/delDeploy",
+                data: {"name": name, 'namespace': row.namespace},
+                type: "post",
+                dataType: "json",
+                error: function (data) {
+                    errorHandle(data);
+                },
+                success: function (data) {
+                    console.log(data)
+                    if (data.code == 200) {
+                        $("#reloadName").click();
+                        layer.msg('删除成功');
+                    }
+                }
+            });
+        });
+
+        /*layer.confirm("确认  "+row.podName+"  删除吗？", {icon: 3, title: '提示'}, function (index) {
             layer.close(index);
             $.ajax({
                 url: "[[@{/}]]pod/delete",
@@ -101,11 +123,12 @@ table.on('tool(config)', function(obj) {
                     }
                 }
             });
-        });
+        });*/
+
     }if(obj.event === "open") {
         var list = obj.data.ports.split(",");
         for (var i = 0; i < list.length; i++) {
-            if (obj.data.podName == "env-nacos") {
+            if (obj.data.podName.indexOf("env-nacos") != -1) {
                 window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1] + "/nacos");
             } else {
                 window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1]);

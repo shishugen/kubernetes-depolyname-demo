@@ -124,11 +124,26 @@ public class PodController {
         return podsList;
     }
 
+    @RequestMapping(value = "isEnable/downloadJar")
+    @ResponseBody
+    public boolean isEnable() {
+        boolean isEnable = false;
+        String jarDownload = System.getProperty("jarDownload");
+        if (StringUtils.isNotBlank(jarDownload)
+                &&jarDownload.equals("true")){
+             isEnable = true;
+        }
+        return isEnable;
+    }
+
 
 
 
     @RequestMapping(value = "downloadLogs")
     public void downloadLogs( String namespace, String podName, HttpServletResponse response ,HttpServletRequest request ) {
+       if (!isEnable()){
+           return;
+       }
         String logs = kubes.getKubeclinet().pods().inNamespace(namespace)
                 .withName(podName).getLog();
         response.setContentType("text/plain");
@@ -212,6 +227,48 @@ public class PodController {
         }
     }
 
+    @SneakyThrows
+    @RequestMapping(value = "downloadJar")
+    public void downloadJar(String namespace, String podName, HttpServletResponse response ,HttpServletRequest request ) {
+        InputStream read = kubes.getKubeclinet().pods().inNamespace(namespace)
+                .withName(podName).file("/app.jar").read();
+        response.setContentType("application/octet-stream");
+        String filename = request.getParameter("filename");
+        response.setHeader("Content-disposition", "attachment; filename=" +new String((podName+".jar").getBytes("gb2312"),"ISO8859-1"));
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+            bos = new BufferedOutputStream(response.getOutputStream());
+            byte[] buff = new byte[1024];
+            int len = 0;
+            while((len = read.read(buff)) != -1) {
+                bos.write(buff, 0, len);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(read != null){
+                read.close();
+            }
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
     @RequestMapping(value = "listAppData")
     @ResponseBody
     public Response<Pages<Pods>> listAppData(String namespace,String podName) {
@@ -247,8 +304,10 @@ public class PodController {
             for (Pod pod:podList){
                 Pods pods = new Pods();
                 if (pod.getMetadata().getNamespace().startsWith(podNamespacePrefix)
-                        && pod.getMetadata().getName().startsWith(podEnvPrefix)){
-                    podsList.add(podConverEntity(pods,pod,pod.getMetadata().getName()));
+                        && pod.getMetadata().getName().startsWith(podEnvPrefix)
+                        && pod.getMetadata().getLabels() != null){
+                        String app = pod.getMetadata().getLabels().get(LABELS_KEY);
+                        podsList.add(podConverEntity(pods,pod,app));
                 }
             }
         Pages page = new Pages();
@@ -309,7 +368,7 @@ public class PodController {
         List<ContainerPort> ports1 = container.getPorts();
 
         if(ports1 != null && ports1.size() > 0 ){
-        Service service = kubes.findService(metadata.getNamespace(),svcName);
+        Service service = kubes.findService(metadata.getNamespace(),podEnvPrefix+svcName);
             if(service != null) {
                 ServiceSpec spec = service.getSpec();
                 List<ServicePort> ports = spec.getPorts();

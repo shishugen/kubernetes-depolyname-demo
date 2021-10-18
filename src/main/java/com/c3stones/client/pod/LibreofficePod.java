@@ -3,6 +3,8 @@ package com.c3stones.client.pod;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import io.fabric8.kubernetes.api.model.*;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +84,44 @@ public class LibreofficePod extends BaseConfig {
         return true;
     }
 
+    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName ,String configName ) {
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(1);
+        map.put("memory",new Quantity("1000M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> stringQuantityMap= new HashMap(1);
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
+        resource.setRequests(stringQuantityMap);
+        String pvcName =namespace + podName;
+        Deployment newDeployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName(podEnvPrefix+podName)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withNewSelector()
+                .addToMatchLabels(LABELS_KEY, labelsName)
+                .endSelector()
+                .withReplicas(1)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels(LABELS_KEY,labelsName)
+                .endMetadata()
+                .withNewSpec()
+                .addNewContainer().withName(podName)
+                .withImage(image)
+                     .withCommand("/bin/sh","-c")
+                     .addToArgs("/usr/bin/soffice --headless --accept=\"socket,host=0,port=8100;urp;\" --nofirststartwizard --invisible")
+                .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
+                .withResources(resource)
+                .endContainer()
+               // .addNewVolume().withName("date-config").withNewHostPath().withNewPath("/etc/localtime").endHostPath().endVolume()
+                .endSpec().endTemplate().endSpec().build();
+        kubes.getKubeclinet().apps().deployments().createOrReplace(newDeployment);
+        return true;
+    }
+
     //
 
     /**
@@ -148,11 +188,11 @@ public class LibreofficePod extends BaseConfig {
        // configMap(namespace,configName,configName);
 
         try {
-            create(namespace,podName,labelsName,harborImageEnvPrefix+image,8100,portName,configName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8100,portName,configName);
             createService(namespace,podName,labelsName,8100,portName);
         }catch (Exception e){
             e.printStackTrace();
-            kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
+            kubes.getKubeclinet().apps().deployments().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
             kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+podName).delete();
         }
     }

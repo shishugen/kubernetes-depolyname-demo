@@ -24,6 +24,7 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
             file.mkdirs();
         }
         BaseConfig.initConfig();
+
         log.info("启动完成……");
     }
 }
