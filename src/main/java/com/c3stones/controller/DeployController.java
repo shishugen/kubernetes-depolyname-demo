@@ -568,10 +568,10 @@ public class DeployController  extends BaseConfig {
 	@ResponseBody
 	public Response<Pages<Deployments>> getDeployment(String namespace,String version) {
 		List<Deployments> deployments = new ArrayList<>();
-		List<Deployment> items = kubes.getKubeclinet().apps().deployments().list().getItems();
+		List<Deployment> items = kubes.getKubeclinet().apps().deployments().inNamespace(namespace).list().getItems();
 		items.forEach(a->{
-			if((a.getMetadata().getNamespace().startsWith(podNamespacePrefix) ||
-					a.getMetadata().getNamespace().startsWith(podNginxPrefix))
+			if((a.getMetadata().getName().startsWith(podNamespacePrefix) ||
+					a.getMetadata().getName().startsWith(podNginxPrefix))
 					&& StringUtils.isNotBlank(namespace)&&a.getMetadata().getNamespace().startsWith(namespace)){
 				ObjectMeta metadata = a.getMetadata();
 				String name = metadata.getName();
@@ -589,7 +589,9 @@ public class DeployController  extends BaseConfig {
 					deployments.add(deployment);
 				}
 			}
-			if(a.getMetadata().getNamespace().startsWith(podNamespacePrefix) && StringUtils.isBlank(namespace)){
+			if(a.getMetadata().getName().startsWith(podNamespacePrefix)
+					||a.getMetadata().getName().startsWith(podNginxPrefix)
+					&& StringUtils.isBlank(namespace)){
 				ObjectMeta metadata = a.getMetadata();
 				String name = metadata.getName();
 				Integer replicas = a.getSpec().getReplicas();

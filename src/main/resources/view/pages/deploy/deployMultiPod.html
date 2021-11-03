@@ -218,9 +218,10 @@ $.ajax({
     success : function(data) {
         console.log(data)
         $.each(data, function (index, item) {
-            $('#nacosList').append(new Option(item.nacosName,item.bindK8sIP+"---"+item.ports+"---"+item.nacosName));// 下拉菜单里添加元素
+
+            $('#nacosList').append(new Option(item.nacosName,item.bindK8sIP+"---"+item.ports+"---"+item.serviceName));// 下拉菜单里添加元素
             if(index == 0){
-                $('#nacosList').val(item.bindK8sIP+"---"+item.ports+"---"+item.nacosName)
+                $('#nacosList').val(item.bindK8sIP+"---"+item.ports+"---"+item.serviceName)
                 $.ajax({
                     url : "[[@{/}]]deploy/getNacosNamespace",
                     // type : "get",

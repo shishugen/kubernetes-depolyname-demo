@@ -18,14 +18,20 @@
 
                     <div class="layui-content">
                         <div class="layui-row">
-                            <div class="">
-                                命名空间 ：
-                                <div class="layui-inline mr10">
-                                    <input class="layui-input" name="namespace2"  autocomplete="off">
+                            <div class="layui-card">
+                                <div class="layui-form-item layui-form layui-card-body layui-form-pane" >
+                                    <label class="layui-form-label">命名空间</label>
+                                    <div class="layui-input-inline">
+                                        <select id="namespace"  lay-verify="required"   lay-filter="namespace"class="layui-input" name="namespace">
+                                            <option value="">请选择</option>
+                                        </select>
+                                    </div>
+                                    <button class="layui-btn" id="reloadName" data-type="reload">查询</button>
+<!--
+                                    <button class="layui-btn layui-btn-normal" data-type="add">单个部署环境</button>
+-->
+                                    <button class="layui-btn layui-btn-warm" data-type="addMulti">批量部署环境</button>
                                 </div>
-                                <button class="layui-btn" id="reloadName" data-type="reload">查询</button>
-                                <button class="layui-btn layui-btn-normal" data-type="add">单个部署环境</button>
-                                <button class="layui-btn layui-btn-warm" data-type="addMulti">批量部署环境</button>
                                 <table class="layui-hide" id="harborDataTable2" lay-filter="config"></table>
                                 <script type="text/html" id="operation2">
                                     <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
@@ -46,6 +52,26 @@
 var element = layui.element;
 var table = layui.table;
 var layer = layui.layer;
+var namespace = ''
+var form = layui.form;
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+form.on('select(namespace)', function(data){
+    console.log(data);
+    namespace = data.value;
+})
 
 table.render({
     id: 'harborTable2'
@@ -160,7 +186,7 @@ active = {
     reload: function() {
         table.reload('harborTable2', {
             where: {
-                namespace : $("input[name='namespace2']").val()
+                namespace : namespace
             }
         }, 'data');
     },

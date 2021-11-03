@@ -325,7 +325,7 @@ public class PodController {
                 Pods pods = new Pods();
                 if (pod.getMetadata().getNamespace().startsWith(podNamespacePrefix)
                         && pod.getMetadata().getName().startsWith(podNginxPrefix)){
-                    podsList.add(podConverEntity(pods,pod,pod.getMetadata().getLabels().get(LABELS_KEY)));
+                    podsList.add(podConverEntity2(pods,pod,pod.getMetadata().getLabels().get(LABELS_KEY)));
                 }
             }
         Pages page = new Pages();
@@ -334,6 +334,58 @@ public class PodController {
         return Response.success(page);
     }
 
+
+    /**
+     * api pod转换
+     * @param pod
+     * @param kubePod
+     * @return
+     */
+    public  Pods podConverEntity2(Pods pod , io.fabric8.kubernetes.api.model.Pod kubePod,String svcName){
+
+        PodStatus status = kubePod.getStatus();
+        ObjectMeta metadata = kubePod.getMetadata();
+        PodSpec podSpec = kubePod.getSpec();
+        String hostIp = status.getHostIP();
+        pod.setPodIp(status.getPodIP());
+        pod.setHostIp(hostIp);
+        pod.setPodName(metadata.getName());
+        pod.setPodStatus(getPodStatus(kubePod).getReason());
+
+        pod.setNamespace(metadata.getNamespace());
+        pod.setDate(KubeUtils.StringFormatDate(status.getStartTime()));
+
+        ///metadata.getLabels().get("app");
+        Container container = podSpec.getContainers().get(0);
+        String image = container.getImage();
+
+        String split[] =image.split("/");
+        String images = split[split.length - 1];
+        String[] split1 = images.split(":");
+        pod.setImages(podAppPrefix+split1[0]);
+        List<ContainerPort> ports1 = container.getPorts();
+
+        if(ports1 != null && ports1.size() > 0 ){
+            Service service = kubes.findService(metadata.getNamespace(),svcName);
+            if(service != null) {
+                ServiceSpec spec = service.getSpec();
+                List<ServicePort> ports = spec.getPorts();
+                if (ports != null && ports.size() > 0) {
+                    StringBuffer buffer = new StringBuffer(ports.size());
+                    for (ServicePort port : ports) {
+                        Integer port1 = port.getPort();
+                        Integer nodePort = port.getNodePort();
+                        if (buffer.toString().length() > 0) {
+                            buffer.append(",");
+                        }
+                        buffer.append(port1 + ":" + nodePort);
+                    }
+                    pod.setPorts(buffer.toString());
+                }
+            }
+        }
+        return pod;
+    }
 
 
 

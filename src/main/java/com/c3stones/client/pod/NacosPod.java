@@ -173,7 +173,9 @@ public class NacosPod extends BaseConfig {
         pod.setNacosName(metadata.getName()+"."+metadata.getNamespace());
         List<ContainerPort> ports1 = podSpec.getContainers().get(0).getPorts();
         if(ports1 != null && ports1.size() > 0 ){
-            Service service = kubes.findService(metadata.getNamespace(), metadata.getName());
+            Service service = kubes.findService(metadata.getNamespace(),podEnvPrefix+kubePod.getMetadata().getLabels().get(LABELS_KEY));
+
+          //  Service service = kubes.findService(metadata.getNamespace(), metadata.getName());
             if(service != null) {
                 ServiceSpec spec = service.getSpec();
                 List<ServicePort> ports = spec.getPorts();
@@ -186,6 +188,7 @@ public class NacosPod extends BaseConfig {
                         }
                         buffer.append(nodePort);
                     }
+                    pod.setServiceName(service.getMetadata().getName());
                     pod.setPorts(buffer.toString());
                 }
             }

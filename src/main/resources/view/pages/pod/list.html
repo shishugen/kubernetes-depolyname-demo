@@ -23,20 +23,24 @@
         <div class="layui-tab-item layui-show">
             <div class="layui-content">
                 <div class="layui-row">
-                    <div class="">
-                        命名空间 ：
-                        <div class="layui-inline mr10">
-                            <input class="layui-input" name="namespace"  autocomplete="off">
-                        </div>
-
-                        <div class="layui-inline">
-                            <label class="layui-form-label">容器名称</label>
+                    <div class="layui-card">
+                        <div class="layui-form-item layui-form layui-card-body layui-form-pane" >
+                            <label class="layui-form-label">命名空间</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="podName"  name="podName" autocomplete="off" class="layui-input">
+                                <select id="namespace1"  lay-verify="required"   lay-filter="namespace1"class="layui-input" name="namespace1">
+                                    <option value="">请选择</option>
+                                </select>
                             </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">容器名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="podName"  name="podName" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <button class="layui-btn layui-btn-normal" id="podLoad" data-type="load">查询</button>
+                            <button class="layui-btn layui-btn-warm" id="podReload" data-type="reload">重置</button>
                         </div>
-                        <button class="layui-btn layui-btn-normal" id="podLoad" data-type="load">查询</button>
-                        <button class="layui-btn layui-btn-warm" id="podReload" data-type="reload">重置</button>
                         <table class="layui-hide" id="harborDataTable"  lay-filter="podConfig"></table>
                         <script type="text/html" id="operation">
                             <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
@@ -47,40 +51,25 @@
                 </div>
             </div>
         </div>
-        <!--  环境 --><!--       <div class="layui-tab-item">
-            <div class="layui-content">
-                <div class="layui-row">
-                    <div class="">
-                        命名空间 ：
-                        <div class="layui-inline mr10">
-                            <input class="layui-input" name="namespace2"  autocomplete="off">
-                        </div>
 
-                        <button class="layui-btn" data-type="reload2">查询</button>
-
-                        <table class="layui-hide" id="harborDataTable2" lay-filter="config"></table>
-                        <script type="text/html" id="operation2">
-                            <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
-                            <a class="layui-btn layui-btn-xs" lay-event="logs">日志</a>
-                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-                        </script>
-                    </div>
-                </div>
-            </div>
-        </div>-->
 
 
         <!--  前端 -->
         <div class="layui-tab-item">
             <div class="layui-content">
                 <div class="layui-row">
-                    <div class="">
-                        命名空间 ：
-                        <div class="layui-inline mr10">
-                            <input class="layui-input" name="namespace3"  autocomplete="off">
+                    <div class="layui-card">
+                        <div class="layui-form-item layui-form layui-card-body layui-form-pane" >
+                            <label class="layui-form-label">命名空间</label>
+                            <div class="layui-input-inline">
+                                <select id="namespace2"   lay-filter="namespace2"class="layui-input" name="namespace2">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                            <button class="layui-btn" data-type="reload3">查询</button>
+
+                            <button class="layui-btn" data-type="downloadConf">下载nginx.conf文件</button>
                         </div>
-                        <button class="layui-btn" data-type="reload3">查询</button>
-                        <button class="layui-btn" data-type="downloadConf">下载nginx.conf文件</button>
                         <table class="layui-hide" id="harborDataTable3" lay-filter="config"></table>
                         <script type="text/html" id="operation3">
                             <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
@@ -98,20 +87,24 @@
 
             <div class="layui-content">
                 <div class="layui-row">
-                    <div class="">
-                        命名空间 ：
-                        <div class="layui-inline ">
-                            <input class="layui-input"  name="namespace4"  autocomplete="off">
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label">镜像版本</label>
+                    <div class="layui-card">
+                        <div class="layui-form-item layui-form layui-card-body layui-form-pane" >
+                            <label class="layui-form-label">命名空间</label>
                             <div class="layui-input-inline">
-                                <input type="text" id="version"  name="version" autocomplete="off" class="layui-input">
+                                <select id="namespace4"  lay-verify="required"   lay-filter="namespace4"class="layui-input" name="namespace4">
+                                    <option value="">请选择</option>
+                                </select>
                             </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">版本</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="version"  name="version" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <button class="layui-btn"id="namespace" data-type="reload4">查询</button>
+                            <button class="layui-btn layui-btn-danger" data-type="deleteDeployment">批量删除</button>
+                            <button class="layui-btn layui-btn-danger" data-type="restartDeployment">批量重启</button>
                         </div>
-                        <button class="layui-btn"id="namespace4" data-type="reload4">查询</button>
-                        <button class="layui-btn layui-btn-danger" data-type="deleteDeployment">批量删除</button>
-                        <button class="layui-btn layui-btn-danger" data-type="restartDeployment">批量重启</button>
                         <table class="layui-hide" id="harborDataTable4" lay-filter="config"></table>
                         <script type="text/html" id="operation4">
                             <a class="layui-btn layui-btn-xs" lay-event="update">编辑</a>
@@ -134,6 +127,47 @@ var table = layui.table;
 var layer = layui.layer;
 var tableHeight2 =  $(window).height() - 180;
 var isDownload = true
+
+var form = layui.form;
+var namespace4 = '';
+var namespace1 = '';
+var namespace2 = '';
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.render();
+});
+
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#namespace4').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            $('#namespace1').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            $('#namespace2').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+
+form.on('select(namespace4)', function(data){
+    console.log(data);
+    namespace4 = data.value;
+})
+;form.on('select(namespace1)', function(data){
+    console.log(data);
+    namespace1 = data.value;
+});
+;form.on('select(namespace2)', function(data){
+    console.log(data);
+    namespace2 = data.value;
+});
 table.render({
 	id: 'harborTable'
 	,elem: '#harborDataTable'
@@ -165,35 +199,6 @@ table.render({
     }
 });
 
-table.render({
-	id: 'harborTable2'
-	,elem: '#harborDataTable2'
-    ,url: '[[@{/pod/listEnvData}]]'
-    ,cols: [
-    	[
-	      ,{field:'hostIp', title: '容器宿主机IP'}
-	      ,{field:'bindK8sIP', title: '容器宿主机IP'}
-	      ,{field:'ports', title: '端口'}
-	      ,{field:'podName', title: '容器名称', align: 'center'}
-	      ,{field:'namespace', title: '命名空间', align: 'center'}
-	      ,{field:'podStatus', title: '容器状态', align: 'center',sort: true}
-	      ,{field:'date', title: '部署时间', align: 'center',sort: true}
-	      ,{title:'操作', align: 'center', toolbar: '#operation2', width:250}
-    	]
-   	]
-    ,response: {
-        statusCode: 200
-    }
-    ,parseData: function(res){
-	    console.log(res)
-    	return {
-    		"code": res.code
-            ,"msg": res.msg
-            ,"count": res.data.total
-            ,"data": res.data.records
-    	};
-    }
-});
 table.render({
 	id: 'harborTable3'
 	,elem: '#harborDataTable3'
@@ -286,7 +291,7 @@ active = {
 	load: function() {
 		table.reload('harborTable', {
             where: {
-                namespace : $("input[name='namespace']").val(),
+                namespace : namespace1,
                 podName : $("input[name='podName']").val()
             }
 		}, 'data');
@@ -302,24 +307,17 @@ active = {
             }
         }, 'data');
     },
-    reload2: function() {
-		table.reload('harborTable2', {
-            where: {
-                namespace : $("input[name='namespace2']").val()
-            }
-		}, 'data');
-	},
     reload3: function() {
 		table.reload('harborTable3', {
             where: {
-                namespace : $("input[name='namespace3']").val()
+                namespace : namespace2
             }
 		}, 'data');
 	},
     reload4: function() {
 		table.reload('harborTable4', {
             where: {
-                namespace : $("input[name='namespace4']").val(),
+                namespace : namespace4,
                 version : $("input[name='version']").val()
             }
 		}, 'data');
