@@ -6,6 +6,7 @@ import com.c3stones.exception.KubernetesException;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,13 +165,38 @@ public class MySQLPod extends BaseConfig {
                 .build();
         return kubes.getKubeclinet().services().create(build);
     }
+    protected final static  String[] POD_COMMAND_ARRY = {"/usr/sbin/sshd","-D"};
 
     public static void main(String[] args) {
-        Integer nodePort = 23234;
-        if(nodePort > 30000 || nodePort < 32767){
-            log.error("端口为 30000-32767   nodePort : {}",nodePort);
-        }
-        System.out.println(1111);
+        KubernetesClient kubeclinet = Kubes.getKubeclinet2();
+
+        String labelsName = "test";
+        Deployment newDeployment = new DeploymentBuilder()
+                .withNewMetadata()
+                .withName("test")
+                .withNamespace("default")
+                .endMetadata()
+                .withNewSpec()
+                .withNewSelector()
+                .addToMatchLabels(LABELS_KEY, labelsName)
+                .endSelector()
+                .withReplicas(1)
+                .withNewTemplate()
+                .withNewMetadata()
+                .addToLabels(LABELS_KEY,labelsName)
+                .endMetadata()
+                .withNewSpec()
+                .addNewContainer().withName(labelsName).withImage("centos:centos7").addToCommand("/usr/sbin/init")
+                .withVolumeMounts(new VolumeMountBuilder().withName("test01").withMountPath("/home/").withReadOnly(true).build())
+                .endContainer()
+                .addNewVolume()
+                .withNewHostPath().withPath("/home2/").endHostPath()
+                .withName("test01")
+                .endVolume()
+              //  .withVolumes(new VolumeBuilder().withName(pvcName)
+                     //   .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
+                .endSpec().endTemplate().endSpec().build();
+        kubeclinet.apps().deployments().createOrReplace(newDeployment);
     }
     public void  createMySQL(String namespace, Integer nodePort){
         String podName="mysql";

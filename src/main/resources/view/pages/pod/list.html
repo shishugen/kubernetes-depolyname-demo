@@ -11,6 +11,8 @@
 <body>
 
 <div class="layui-tab layui-tab-card" >
+    <input id="defaultNamespaceHidden" hidden th:value="${defaultNamespace}"/>
+
     <ul class="layui-tab-title">
         <li class="layui-this">应用管理</li>
 <!--
@@ -150,6 +152,12 @@ $.ajax({
             $('#namespace4').append(new Option(item.name, item.name));// 下拉菜单里添加元素
             $('#namespace1').append(new Option(item.name, item.name));// 下拉菜单里添加元素
             $('#namespace2').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            var val = $("#defaultNamespaceHidden").val();
+            if (val && item.name == val ){
+                $('#namespace4').val(item.name)
+                $('#namespace2').val(item.name)
+                $('#namespace1').val(item.name)
+            }
         });
         layui.form.render("select")
     }

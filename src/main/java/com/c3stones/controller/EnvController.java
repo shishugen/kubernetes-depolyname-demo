@@ -13,6 +13,7 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -76,7 +77,9 @@ public class EnvController extends BaseConfig {
      * @return
      */
     @RequestMapping(value = "list")
-    public String list() {
+    public String list(Model model) {
+        String defaultNamespace = BaseConfig.defaultNamespace;
+        model.addAttribute("defaultNamespace",defaultNamespace);
         return "pages/env/list";
     }
 

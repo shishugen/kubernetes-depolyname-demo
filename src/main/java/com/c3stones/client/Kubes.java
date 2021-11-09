@@ -734,16 +734,49 @@ public class Kubes {
         return num;
     }
 
-
+    public static KubernetesClient getKubeclinet2(){
+        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\kube-test-config-10");
+        Config config = new ConfigBuilder()
+                .build();
+        return new DefaultKubernetesClient(config);
+    }
 
     @SneakyThrows
     public static void main(String[] args) {
-        BigDecimal bigDecimal  = new BigDecimal(0.5);
-        System.out.println(bigDecimal.intValue());
-        System.out.println(bigDecimal.doubleValue());
 
-       // String homeConfigFile = getHomeConfigFile();
+        KubernetesClient kubeclinet = getKubeclinet2();
 
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(2);
+        map.put("cpu",new Quantity("600","m"));
+        map.put("memory",new Quantity("500","M"));
+        resource.setLimits(map);
+
+        Map<String,Quantity> stringQuantityMap= new HashMap(2);
+        stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
+        stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
+        resource.setRequests(stringQuantityMap);
+
+  /*      Deployment done = kubeclinet.apps()
+                .deployments()
+                .inNamespace("1455814591134339073")
+                .withName("1455814591134339073")
+                .edit()
+                .editSpec()
+                .editTemplate()
+                .editSpec()
+                .editContainer(0)
+                .withResources(resource)
+                .endContainer()
+                .endSpec()
+                .endTemplate()
+                .endSpec()
+                .done();
+
+        System.out.println(done);
+        System.out.println(done);*/
+        List<Pod> items = kubeclinet.pods().inNamespace("1455814591134339073").list().getItems();
+        System.out.println(items);
 
 
 /*        Deployment deployment = new Deployment();

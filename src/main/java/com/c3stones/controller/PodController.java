@@ -3,6 +3,7 @@ package com.c3stones.controller;
 import cn.hutool.db.Page;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.client.pod.MySQLPod;
 import com.c3stones.client.pod.NacosPod;
@@ -48,7 +49,7 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequestMapping(value = "pod")
-public class PodController {
+public class PodController extends BaseConfig{
 
     /***
      * labels
@@ -76,7 +77,9 @@ public class PodController {
      * @return
      */
     @RequestMapping(value = "list")
-    public String list() {
+    public String list(Model model) {
+        String defaultNamespace = BaseConfig.defaultNamespace;
+        model.addAttribute("defaultNamespace",defaultNamespace);
         return "pages/pod/list";
     }
 
@@ -272,6 +275,9 @@ public class PodController {
     @RequestMapping(value = "listAppData")
     @ResponseBody
     public Response<Pages<Pods>> listAppData(String namespace,String podName) {
+        if (StringUtils.isBlank(namespace)){
+            namespace= BaseConfig.defaultNamespace;
+        }
         List<Pods> podsList = new ArrayList<>();
             List<Pod> podList =  kubes.findPod(namespace);
             for (Pod pod:podList){
@@ -299,6 +305,9 @@ public class PodController {
     @RequestMapping(value = "listEnvData")
     @ResponseBody
     public Response<Pages<Pods>> listEnvData(String namespace) {
+        if (StringUtils.isBlank(namespace)){
+            namespace= BaseConfig.defaultNamespace;
+        }
         List<Pods> podsList = new ArrayList<>();
             List<Pod> podList =  kubes.findPod(namespace);
             for (Pod pod:podList){
@@ -319,6 +328,9 @@ public class PodController {
     @RequestMapping(value = "listNginxData")
     @ResponseBody
     public Response<Pages<Pods>> listNginxData(String namespace) {
+        if (StringUtils.isBlank(namespace)){
+            namespace= BaseConfig.defaultNamespace;
+        }
         List<Pods> podsList = new ArrayList<>();
             List<Pod> podList =  kubes.findPod(namespace);
             for (Pod pod:podList){

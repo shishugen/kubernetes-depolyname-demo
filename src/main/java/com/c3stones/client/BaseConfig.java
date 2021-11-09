@@ -42,6 +42,7 @@ public class BaseConfig {
     protected static String harborImageEnvPrefix ;
     protected static String pythonRely ;
     protected static String bindK8sIP ;
+    protected static String defaultNamespace ;
 
     private static void getConfig(){
         Properties pro = new Properties();
@@ -83,11 +84,12 @@ public class BaseConfig {
          nfsNeo4jStorageSize = Integer.valueOf(pro.getProperty("nfs.storage.neo4j.size"));
          pythonRely = pro.getProperty("python.rely");
         bindK8sIP = pro.getProperty("bindK8sIP");
+        defaultNamespace = pro.getProperty("defaultNamespace");
          //harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
          harborImageEnvPrefix = harborImageEnvProjectName;
         return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
                 ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString()
-                ,nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString(),pythonRely,bindK8sIP);
+                ,nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString(),pythonRely,bindK8sIP,defaultNamespace);
 
     }
 

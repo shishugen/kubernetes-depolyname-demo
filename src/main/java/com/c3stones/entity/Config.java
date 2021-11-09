@@ -33,12 +33,14 @@ public class Config {
      */
     private String bindK8sIP ;
 
+    private String defaultNamespace ;
+
 
     public Config(Integer dockerPort, String harborUser, String harborPassword, String harborUrl,
                   String harborImagePrefix, String harborImageProjectName, String harborImageEnvProjectName,
                   String nfsStorageClassName, String nfsMySqlStorageSize, String nfsNacosStorageSize,
                   String nfsMqStorageSize, String nfsFdfsStorageSize,String nfsNeo4jStorageSize,
-                  String pythonRely,String bindK8sIP) {
+                  String pythonRely,String bindK8sIP,String defaultNamespace) {
         this.dockerPort = dockerPort;
         this.harborUser = harborUser;
         this.harborPassword = harborPassword;
@@ -54,5 +56,6 @@ public class Config {
         this.nfsNeo4jStorageSize = nfsNeo4jStorageSize;
         this.pythonRely = pythonRely;
         this.bindK8sIP = bindK8sIP;
+        this.defaultNamespace = defaultNamespace;
     }
 }

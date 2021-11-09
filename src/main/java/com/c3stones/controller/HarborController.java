@@ -56,6 +56,7 @@ public class HarborController {
     @RequestMapping(value = "list")
     @ResponseBody
     public Response<List<HarborImage>> list(){
+
          List<HarborImage> harborList = httpHarbor.harborList( BaseConfig.initConfig().getHarborImageProjectName(),null);
         return Response.success(harborList);
     }

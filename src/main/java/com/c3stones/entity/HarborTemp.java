@@ -18,7 +18,7 @@ public class HarborTemp {
     private String updateTime;
     private Boolean deleted;
     private Integer repoCount;
-    private Integer  size;
+   // private Integer  size;
     private String created;
     private String dockerVersion;
 

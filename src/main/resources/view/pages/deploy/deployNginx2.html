@@ -11,6 +11,7 @@
     <title></title>
 </head>
 <body class="layui-view-body">
+<input id="defaultNamespaceHidden" hidden th:value="${defaultNamespace}"/>
 	<div class="layui-row">
     	<div class="layui-card">
         	<form class="layui-form layui-card-body layui-form-pane" enctype='multipart/form-data' method="post" th:action="@{/deploy/pod/nginx2}">
@@ -109,6 +110,10 @@ $.ajax({
     success : function(data) {
         $.each(data, function (index, item) {
             $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            var val = $("#defaultNamespaceHidden").val();
+            if (val && item.name == val ){
+                $('#namespace').val(item.name)
+            }
         });
         layui.form.render("select")
     }

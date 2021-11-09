@@ -94,7 +94,9 @@ public class DeployController  extends BaseConfig {
 	 * @return
 	 */
 	@RequestMapping(value = "list")
-	public String list() {
+	public String list(Model model) {
+		String harborImageProjectName = BaseConfig.harborImageProjectName;
+		model.addAttribute("harborImageProjectName",harborImageProjectName);
 		return "pages/deploy/list";
 	}
 
@@ -154,6 +156,8 @@ public class DeployController  extends BaseConfig {
 	public String deployPod( Model model,String image) {
         model.addAttribute("image", image);
         model.addAttribute("namespace", kubes.getNamespace());
+		String defaultNamespace = BaseConfig.defaultNamespace;
+		model.addAttribute("defaultNamespace",defaultNamespace);
         return "pages/deploy/deployPod";
     }
 
@@ -167,6 +171,8 @@ public class DeployController  extends BaseConfig {
 	public String deployMultiPod( Model model,String image) {
         model.addAttribute("image", image);
         model.addAttribute("namespace", kubes.getNamespace());
+		String defaultNamespace = BaseConfig.defaultNamespace;
+		model.addAttribute("defaultNamespace",defaultNamespace);
         return "pages/deploy/deployMultiPod";
     }
 		/**
@@ -177,6 +183,8 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "deployNginx2")
 	public String deployNginx2( Model model) {
 		model.addAttribute("namespace",kubes.getNamespace());
+		String defaultNamespace = BaseConfig.defaultNamespace;
+		model.addAttribute("defaultNamespace",defaultNamespace);
 		return "pages/deploy/deployNginx2";
 	}		/**
 	 * deployPod
@@ -186,6 +194,8 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "deployNginx")
 	public String deployNginx( Model model) {
 		model.addAttribute("namespace",kubes.getNamespace());
+		String defaultNamespace = BaseConfig.defaultNamespace;
+		model.addAttribute("defaultNamespace",defaultNamespace);
 		return "pages/deploy/deployNginx";
 	}
 	/**
@@ -196,6 +206,8 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "deployPython")
 	public String deployPython( Model model) {
 		model.addAttribute("namespace",kubes.getNamespace());
+		String defaultNamespace = BaseConfig.defaultNamespace;
+		model.addAttribute("defaultNamespace",defaultNamespace);
 		return "pages/deploy/deployPython";
 	}
 
@@ -206,6 +218,8 @@ public class DeployController  extends BaseConfig {
 		model.addAttribute("replicas",replicas);
 		model.addAttribute("image",image);
 		model.addAttribute("namespace",namespace);
+		String defaultNamespace = BaseConfig.defaultNamespace;
+		model.addAttribute("defaultNamespace",defaultNamespace);
 		return "pages/pod/update";
 	}
 
@@ -567,12 +581,26 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "getDeployment")
 	@ResponseBody
 	public Response<Pages<Deployments>> getDeployment(String namespace,String version) {
+
 		List<Deployments> deployments = new ArrayList<>();
-		List<Deployment> items = kubes.getKubeclinet().apps().deployments().inNamespace(namespace).list().getItems();
+        String defaultNamespace2 = null;
+        if (StringUtils.isBlank(namespace)){
+            defaultNamespace2= BaseConfig.defaultNamespace;
+        }else{
+            defaultNamespace2= namespace;
+        }
+
+		List<Deployment> items = kubes.getKubeclinet().apps().deployments().inNamespace(defaultNamespace2).list().getItems();
 		items.forEach(a->{
+            String defaultNamespace = null;
+            if (StringUtils.isBlank(namespace)){
+                defaultNamespace= BaseConfig.defaultNamespace;
+            }else{
+                defaultNamespace= namespace;
+            }
 			if((a.getMetadata().getName().startsWith(podNamespacePrefix) ||
 					a.getMetadata().getName().startsWith(podNginxPrefix))
-					&& StringUtils.isNotBlank(namespace)&&a.getMetadata().getNamespace().startsWith(namespace)){
+					&& StringUtils.isNotBlank(defaultNamespace)&&a.getMetadata().getNamespace().startsWith(defaultNamespace)){
 				ObjectMeta metadata = a.getMetadata();
 				String name = metadata.getName();
 				Integer replicas = a.getSpec().getReplicas();
@@ -591,7 +619,7 @@ public class DeployController  extends BaseConfig {
 			}
 			if(a.getMetadata().getName().startsWith(podNamespacePrefix)
 					||a.getMetadata().getName().startsWith(podNginxPrefix)
-					&& StringUtils.isBlank(namespace)){
+					&& StringUtils.isBlank(defaultNamespace)){
 				ObjectMeta metadata = a.getMetadata();
 				String name = metadata.getName();
 				Integer replicas = a.getSpec().getReplicas();

@@ -12,6 +12,7 @@
     <title></title>
 </head>
 <body class="layui-view-body">
+<input id="defaultNamespaceHidden" hidden th:value="${defaultNamespace}"/>
 
 	<div class="layui-row">
     	<div class="layui-card">
@@ -153,7 +154,8 @@ $.ajax({
     success : function(data) {
         $.each(data, function (index, item) {
              $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
-            if(index == 0){
+            var val = $("#defaultNamespaceHidden").val();
+            if (val && item.name == val ){
                 $('#namespace').val(item.name)
             }
         });

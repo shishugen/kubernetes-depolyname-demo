@@ -80,6 +80,7 @@ public class ConfigController {
             pro.setProperty("nfs.storage.neo4j.size",config.getNfsNeo4jStorageSize());
             pro.setProperty("python.rely",config.getPythonRely());
             pro.setProperty("bindK8sIP",config.getBindK8sIP());
+            pro.setProperty("defaultNamespace",config.getDefaultNamespace());
             pro.store(outputStream,"保存");
             BaseConfig.setConfig(pro);
         } catch (Exception e) {

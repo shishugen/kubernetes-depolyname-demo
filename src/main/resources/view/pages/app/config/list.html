@@ -138,6 +138,21 @@
 
             <div class="layui-form-item">
                 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
+                    <legend>默认命名空间</legend>
+                </fieldset>
+                <div class="layui-inline">
+                    <div class="layui-form-label" style="width: 180px;">默认命名空间</div>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input id="defaultNamespaceHidden" hidden th:value="${config.defaultNamespace}"/>
+                        <select id="defaultNamespace" th:value="${config.defaultNamespace}" name="defaultNamespace">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px; color: mediumaquamarine">
                     <legend>docker配置</legend>
                 </fieldset>
                    <div class="layui-inline">
@@ -167,6 +182,25 @@ var table = layui.table;
 var layer = layui.layer;
 var form = layui.form;
 var $ = layui.jquery
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#defaultNamespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            var val = $("#defaultNamespaceHidden").val();
+            if (val && item.name == val ){
+              $('#defaultNamespace').val(item.name)
+            }
+
+        });
+        layui.form.render("select")
+    }
+});
 //表单取值
 layui.$('#restart').on('click', function(){
     layer.confirm("确认重置吗？", {icon: 3, title:'提示'}, function(index) {
