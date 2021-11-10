@@ -600,7 +600,7 @@ public class DeployController  extends BaseConfig {
             }
 			if((a.getMetadata().getName().startsWith(podNamespacePrefix) ||
 					a.getMetadata().getName().startsWith(podNginxPrefix))
-					&& StringUtils.isNotBlank(defaultNamespace)&&a.getMetadata().getNamespace().startsWith(defaultNamespace)){
+					&&a.getMetadata().getNamespace().startsWith(defaultNamespace)){
 				ObjectMeta metadata = a.getMetadata();
 				String name = metadata.getName();
 				Integer replicas = a.getSpec().getReplicas();
@@ -617,7 +617,7 @@ public class DeployController  extends BaseConfig {
 					deployments.add(deployment);
 				}
 			}
-			if(a.getMetadata().getName().startsWith(podNamespacePrefix)
+			/*if(a.getMetadata().getName().startsWith(podNamespacePrefix)
 					||a.getMetadata().getName().startsWith(podNginxPrefix)
 					&& StringUtils.isBlank(defaultNamespace)){
 				ObjectMeta metadata = a.getMetadata();
@@ -635,7 +635,7 @@ public class DeployController  extends BaseConfig {
 				}else{
 					deployments.add(deployment);
 				}
-			}
+			}*/
 		});
 		Pages page = new Pages();
 		page.setRecords(deployments);
