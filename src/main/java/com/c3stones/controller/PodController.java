@@ -286,10 +286,10 @@ public class PodController extends BaseConfig{
                         && pod.getMetadata().getName().startsWith(podAppPrefix)
                       ){
                     if(StringUtils.isNotBlank(podName)&&pod.getMetadata().getName().startsWith(podName)){
-                       podsList.add(podConverEntity(pods,pod,pod.getMetadata().getLabels().get(LABELS_KEY)));
+                       podsList.add(podConverEntity2(pods,pod,pod.getMetadata().getLabels().get(LABELS_KEY)));
                     }
                     if(StringUtils.isBlank(podName)){
-                       podsList.add(podConverEntity(pods,pod,pod.getMetadata().getLabels().get(LABELS_KEY)));
+                       podsList.add(podConverEntity2(pods,pod,pod.getMetadata().getLabels().get(LABELS_KEY)));
                     }
                 }
             }
