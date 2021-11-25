@@ -580,7 +580,7 @@ public class DeployController  extends BaseConfig {
 
 	@RequestMapping(value = "getDeployment")
 	@ResponseBody
-	public Response<Pages<Deployments>> getDeployment(String namespace,String version) {
+	public Response<Pages<Deployments>> getDeployment(String namespace,String version ,Integer limit,Integer page) {
 
 		List<Deployments> deployments = new ArrayList<>();
         String defaultNamespace2 = null;
@@ -637,10 +637,10 @@ public class DeployController  extends BaseConfig {
 				}
 			}*/
 		});
-		Pages page = new Pages();
-		page.setRecords(deployments);
-		page.setTotal(deployments.size());
-		return Response.success(page);
+		Pages pages = new Pages();
+		pages.setRecords(super.setPage(deployments,limit,page));
+		pages.setTotal(deployments.size());
+		return Response.success(pages);
 	}
 
 

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Properties;
  * @Author: stone
  * @Date: 2021/4/6 15:38
  */
-public class BaseConfig {
+public class BaseConfig<T> {
 
     /**
      * 判断pod是否为网关
@@ -148,5 +149,23 @@ public class BaseConfig {
         return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
                 ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize,nfsNacosStorageSize,nfsMqStorageSize,nfsFdfsStorageSize);
     }*/
+
+    /**
+     * 设置分页
+     * @param list
+     * @param limit
+     * @param page
+     * @return
+     */
+    public List<T> setPage(List<T> list, Integer limit, Integer page){
+        int count = list.size();
+        int pageNo=(page-1)*limit;
+        if (pageNo+limit > count) {
+            list = list.subList(pageNo,count);
+        }else {
+            list = list.subList(pageNo,pageNo+limit);
+        }
+        return list;
+    }
 
 }

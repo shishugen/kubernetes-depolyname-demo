@@ -274,7 +274,7 @@ public class PodController extends BaseConfig{
 
     @RequestMapping(value = "listAppData")
     @ResponseBody
-    public Response<Pages<Pods>> listAppData(String namespace,String podName) {
+    public Response<Pages<Pods>> listAppData(String namespace,String podName ,Integer limit,Integer page) {
         if (StringUtils.isBlank(namespace)){
             namespace= BaseConfig.defaultNamespace;
         }
@@ -293,18 +293,15 @@ public class PodController extends BaseConfig{
                     }
                 }
             }
-        Pages page = new Pages();
-        page.setRecords(podsList);
-        page.setTotal(podsList.size());
-
-
-
-        return Response.success(page);
+        Pages pages= new Pages();
+        pages.setRecords(super.setPage(podsList,limit,page));
+        pages.setTotal(podsList.size());
+        return Response.success(pages);
     }
 
     @RequestMapping(value = "listEnvData")
     @ResponseBody
-    public Response<Pages<Pods>> listEnvData(String namespace) {
+    public Response<Pages<Pods>> listEnvData(String namespace,Integer limit,Integer page) {
         if (StringUtils.isBlank(namespace)){
             namespace= BaseConfig.defaultNamespace;
         }
@@ -319,15 +316,15 @@ public class PodController extends BaseConfig{
                         podsList.add(podConverEntity(pods,pod,app));
                 }
             }
-        Pages page = new Pages();
-        page.setRecords(podsList);
-        page.setTotal(podsList.size());
-        return Response.success(page);
+        Pages pages= new Pages();
+        pages.setRecords(super.setPage(podsList,limit,page));
+        pages.setTotal(podsList.size());
+        return Response.success(pages);
     }
 
     @RequestMapping(value = "listNginxData")
     @ResponseBody
-    public Response<Pages<Pods>> listNginxData(String namespace) {
+    public Response<Pages<Pods>> listNginxData(String namespace,Integer limit,Integer page) {
         if (StringUtils.isBlank(namespace)){
             namespace= BaseConfig.defaultNamespace;
         }
@@ -340,10 +337,10 @@ public class PodController extends BaseConfig{
                     podsList.add(podConverEntity2(pods,pod,pod.getMetadata().getLabels().get(LABELS_KEY)));
                 }
             }
-        Pages page = new Pages();
-        page.setRecords(podsList);
-        page.setTotal(podsList.size());
-        return Response.success(page);
+        Pages pages= new Pages();
+        pages.setRecords(super.setPage(podsList,limit,page));
+        pages.setTotal(podsList.size());
+        return Response.success(pages);
     }
 
 

@@ -83,6 +83,14 @@ table.render({
     id: 'harborTable2'
     ,elem: '#harborDataTable2'
     ,url: '[[@{/pod/listEnvData}]]'
+    ,page: {
+        layout: ['prev', 'page', 'next', 'count', 'skip', 'limit']
+        ,limits:[10,20,50,100]
+        , limit: 20
+        ,groups: 5
+        ,first: false
+        ,last: false
+    }
     ,cols: [
         [
             {field:'hostIp', title: '容器宿主机IP',sort: true}

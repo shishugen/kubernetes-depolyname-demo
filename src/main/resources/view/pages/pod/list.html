@@ -181,6 +181,14 @@ table.render({
 	,elem: '#harborDataTable'
     ,height:tableHeight2
     ,url: '[[@{/pod/listAppData}]]'
+    ,page: {
+        layout: ['prev', 'page', 'next', 'count', 'skip', 'limit']
+        ,limits:[10,20,50,100]
+        , limit: 20
+        ,groups: 5
+        ,first: false
+        ,last: false
+    }
     ,cols: [  //      <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
 //      <th lay-data="{field:'sign', width:'50%', event: 'setSign', style:'cursor: pointer;'}">签名</th>
 
@@ -211,6 +219,14 @@ table.render({
 	id: 'harborTable3'
 	,elem: '#harborDataTable3'
     ,url: '[[@{/pod/listNginxData}]]'
+    ,page: {
+        layout: ['prev', 'page', 'next', 'count', 'skip', 'limit']
+        ,limits:[10,20,50,100]
+        , limit: 10
+        ,groups: 5
+        ,first: false
+        ,last: false
+    }
     ,cols: [
     	[
 	      ,{field:'hostIp', title: '容器宿主机IP'}
@@ -244,14 +260,22 @@ table.render({
     ,done : function () {
         $('.layui-table-fixed-r').removeClass('layui-hide');
     }
+    ,page: {
+        layout: ['prev', 'page', 'next', 'count', 'skip', 'limit']
+        ,limits:[10,20,50,100]
+        , limit: 20
+        ,groups: 5
+        ,first: false
+        ,last: false
+    }
     ,cols: [
     	[
 	         {fixed:'left',type:'checkbox'}
-            ,{field:'name', title: '部署名称', align: 'center',width:300}
+            ,{field:'image', title: '镜像', width:400,align: 'center'}
             ,{field:'namespace', title: '命名空间', align: 'center',width:100}
             ,{field:'replicas', title: '数量', align: 'center',width:40,sort: true}
             ,{field:'date', title: '日期', align: 'center',sort: true}
-            ,{field:'image', title: '镜像', align: 'center'}
+            ,{field:'name', title: '部署名称', align: 'center'}
             ,{fixed: 'right',title:'操作', align: 'center', toolbar: '#operation4', width:300}
     	]
    	]
@@ -575,4 +599,9 @@ function errorHandle(data) {
 	return;
 }
 </script>
+<style type="text/css">
+    .layui-table-page {
+        text-align: center;
+    }
+</style>
 </html>

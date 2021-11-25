@@ -59,6 +59,14 @@ table.render({
 	id: 'harborTable'
 	,elem: '#harborDataTable'
     ,url: '[[@{/harbor/listData}]]'
+    ,page: {
+        layout: ['prev', 'page', 'next', 'count', 'skip', 'limit']
+        ,limits:[10,20,50,100]
+        , limit: 20
+        ,groups: 5
+        ,first: false
+        ,last: false
+    }
     ,cols: [
     	[
              {fixed:'left',type:'checkbox'}
@@ -246,4 +254,10 @@ function errorHandle(data) {
     return;
 }
 </script>
+
+<style type="text/css">
+    .layui-table-page {
+        text-align: center;
+    }
+</style>
 </html>

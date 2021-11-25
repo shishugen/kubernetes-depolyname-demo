@@ -32,7 +32,7 @@ import java.util.List;
 @Controller
 @Slf4j
 @RequestMapping(value = "harbor")
-public class HarborController {
+public class HarborController extends  BaseConfig<HarborImage>{
 
 
     @Autowired
@@ -45,12 +45,12 @@ public class HarborController {
 
     @RequestMapping(value = "listData")
     @ResponseBody
-    public Response<Pages<HarborImage>> listData(String projectName,String version){
-        Pages page = new Pages();
+    public Response<Pages<HarborImage>> listData(String projectName,String version,Integer limit,Integer page){
+        Pages pages = new Pages();
         List<HarborImage> harborList = httpHarbor.harborList(projectName,version);
-        page.setRecords(harborList);
-        page.setTotal(harborList.size());
-        return Response.success(page);
+        pages.setRecords(super.setPage(harborList,limit,page));
+        pages.setTotal(harborList.size());
+        return Response.success(pages);
     }
 
     @RequestMapping(value = "list")
