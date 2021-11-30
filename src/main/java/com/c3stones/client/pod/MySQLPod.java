@@ -89,12 +89,15 @@ public class MySQLPod extends BaseConfig {
         return true;
     }
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+             policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -115,7 +118,9 @@ public class MySQLPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
-                .addNewContainer().withName(podName).withImage(image).withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("var/lib/mysql/").build())
+                .addNewContainer().withName(podName).withImage(image)
+                .withImagePullPolicy(policy)
+                .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("var/lib/mysql/").build())
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                 .addToEnv(new EnvVarBuilder().withName("MYSQL_ROOT_PASSWORD").withValue(MYSQL_ROOT_PASSWORD).build())
                 .addToEnv(new EnvVarBuilder().withName("lower_case_table_names").withValue("1").build())
@@ -198,13 +203,13 @@ public class MySQLPod extends BaseConfig {
                 .endSpec().endTemplate().endSpec().build();
         kubeclinet.apps().deployments().createOrReplace(newDeployment);
     }
-    public void  createMySQL(String namespace, Integer nodePort){
+    public void  createMySQL(String namespace, Integer nodePort, boolean isAnew){
         String podName="mysql";
         String labelsName="mysql";
         String portName="mysql";
         try {
             kubes.createNamespace(namespace);
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,3306,portName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,3306,portName,isAnew);
             createService(namespace,podName,labelsName,3306,portName,nodePort);
         }catch (Exception e){
             e.printStackTrace();

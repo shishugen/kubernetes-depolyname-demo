@@ -18,12 +18,21 @@
 
 				<div class="layui-form-item">
 					<label class="layui-form-label">命名空间</label>
-					<div class="layui-input-block">
+					<div class="layui-input-inline">
 						<select id="namespace" lay-verify="required" name="namespace">
 							<option value="">请选择</option>
 						</select>
 					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label" style="width: 200px">更新镜像</label>
+						<div class="layui-input-inline">
+							<input type="radio" name="isUpdateImage" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+							<input type="radio" name="isUpdateImage" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+						</div>
+					</div>
 				</div>
+
 
 				<div class="layui-form-item">
 					<label class="layui-form-label">环境</label>
@@ -69,6 +78,12 @@
 							<div class="layui-form-label" style="width: 170px">Nacos端口</div>
 							<div class="layui-input-inline" style="width: 180px;">
 								<input  type="number" name="nacosNodePort"   placeholder="30848"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline" style="display:none" id="kkfileviewPort">
+							<div class="layui-form-label" style="width: 170px">kkfileview端口</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input  type="number" name="kkfileviewPort"   placeholder="30012"  autocomplete="off" class="layui-input">
 							</div>
 						</div>
 					</div>
@@ -125,6 +140,9 @@ var demo1 = xmSelect.render({
                  }else if ('fdfs'== change[i].value){
                      $("#fdfsPort").attr("style","display:block;");//隐藏div
                      $("input[name='fdfsPort']").val(30380);//
+				 }else if ('kkfileview'== change[i].value){
+                     $("#kkfileviewPort").attr("style","display:block;");//隐藏div
+                     $("input[name='kkfileviewPort']").val(30012);//
                  }
 			}
         //取消
@@ -142,6 +160,9 @@ var demo1 = xmSelect.render({
                 }else if ('fdfs'== change[i].value){
                     $("#fdfsPort").attr("style","display:none;");//隐藏div
                      $("input[name='fdfsPort']").val("");//
+                }else if ('kkfileview'== change[i].value){
+                    $("#kkfileviewPort").attr("style","display:none;");//隐藏div
+                    $("input[name='kkfileviewPort']").val("");//
                 }
             }
         }
@@ -168,6 +189,7 @@ var demo1 = xmSelect.render({
         {name: 'libreoffice', value: 'libreoffice'},
         {name: 'guacamole', value: 'guacamole'},
         {name: 'neo4j', value: 'neo4j'},
+        {name: 'kkfileview', value: 'kkfileview'},
     ]
 })
 form.render();

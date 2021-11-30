@@ -74,12 +74,15 @@ public class Neo4JPod extends BaseConfig {
         return true;
     }
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+            policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -103,6 +106,7 @@ public class Neo4JPod extends BaseConfig {
                 .addNewContainer()
                 .withImage(image)
                 .withName(podName)
+                .withImagePullPolicy(policy)
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/data/").build())
                 .withCommand("/sbin/tini","-g")
                 .addToArgs("/docker-entrypoint.sh","neo4j")
@@ -162,13 +166,13 @@ public class Neo4JPod extends BaseConfig {
     }
 
 
-    public void create(String namespace){
+    public void create(String namespace, boolean isAnew){
         String labelsName="neo4j";
         String portName="neo4j";
         String podName="neo4j";
         Integer port=7687;
         try {
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,port,portName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,port,portName,isAnew);
             Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
             if(service == null){
                 createService(namespace,labelsName,labelsName,port);

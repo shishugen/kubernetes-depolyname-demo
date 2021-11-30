@@ -1,6 +1,5 @@
 package com.c3stones.controller;
 
-import cn.hutool.db.Page;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.client.pod.*;
@@ -8,7 +7,6 @@ import com.c3stones.common.Response;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
 import com.c3stones.http.HttpHarbor;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +43,9 @@ public class EnvController extends BaseConfig {
 
     @Autowired
     private Neo4JPod neo4JPod ;
+
+    @Autowired
+    private KKfileViewPod kKfileViewPod ;
 
     @Autowired
     private RabbitMQPod rabbitMQPod ;
@@ -122,7 +123,8 @@ public class EnvController extends BaseConfig {
      */
     @RequestMapping(value = "create")
     @ResponseBody
-    public Response<Boolean> create(String name,String namespace,Integer nodePort,String guacamoleName,Integer MySQLnodePort,Integer nacosNodePort) {
+    public Response<Boolean> create(String name,String namespace,Integer nodePort,String guacamoleName,
+                                    Integer MySQLnodePort,Integer nacosNodePort,Integer kkfileviewPort) {
         System.out.println("创建 名称为 : "+name+namespace);
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(name, "name不能为空");
@@ -135,33 +137,12 @@ public class EnvController extends BaseConfig {
         if(kubes.checkSvc(nacosNodePort)){
             return Response.error("端口已存在"+nacosNodePort);
         }
+        if(kubes.checkSvc(kkfileviewPort)){
+            return Response.error("端口已存在"+kkfileviewPort);
+        }
         try {
-            switch (name){
-                case "mysql":
-                    mySQLPod.createMySQL(namespace,MySQLnodePort);
-                    break;
-                case "nacos":
-                    nacosPod.createNacos(namespace,nacosNodePort);
-                    break;
-                case "redis":
-                    redisPod.createRedis(namespace);
-                    break;
-                case "rabbitMq":
-                    rabbitMQPod.createRabbitmq(namespace);
-                    break;
-                case "fdfs":
-                    fastdfsPod.createT(namespace,nodePort);
-                    break;
-                case "libreoffice":
-                    libreofficePod.createlibreoffice(namespace);
-                    break;
-                case "guacamole":
-                    guacdPod.createGuacamole(namespace,guacamoleName);
-                    break;
-                case "neo4j":
-                    neo4JPod.create(namespace);
-                    break;
-            }
+
+
         }catch (Exception e){
             e.printStackTrace();
             kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+name).delete();
@@ -177,10 +158,11 @@ public class EnvController extends BaseConfig {
      */
     @RequestMapping(value = "createMulti")
     @ResponseBody
-    public Response<Boolean> createMulti(String envList , String namespace,Integer fdfsPort,String guacamoleName,Integer mysqlNodePort,Integer nacosNodePort) {
+    public Response<Boolean> createMulti(String envList , String namespace,Integer fdfsPort,String guacamoleName,
+                                         Integer mysqlNodePort,Integer nacosNodePort,Integer kkfileviewPort,Integer isUpdateImage) {
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(envList, "envList不能为空");
-
+        boolean isAnew = isUpdateImage == 1 ? true : false;
         if(kubes.checkSvc(fdfsPort)){
             return Response.error("端口已存在"+fdfsPort);
         }
@@ -194,28 +176,31 @@ public class EnvController extends BaseConfig {
         Arrays.stream(envList.split(",")).forEach(name->{
             switch (name){
                 case "mysql":
-                    mySQLPod.createMySQL(namespace,mysqlNodePort);
+                    mySQLPod.createMySQL(namespace,mysqlNodePort,isAnew);
                     break;
                 case "nacos":
-                    nacosPod.createNacos(namespace,nacosNodePort);
+                    nacosPod.createNacos(namespace,nacosNodePort,isAnew);
                     break;
                 case "redis":
-                    redisPod.createRedis(namespace);
+                    redisPod.createRedis(namespace,isAnew);
                     break;
                 case "rabbitMq":
-                    rabbitMQPod.createRabbitmq(namespace);
+                    rabbitMQPod.createRabbitmq(namespace,isAnew);
                     break;
                 case "fdfs":
-                    fastdfsPod.createT(namespace,fdfsPort);
+                    fastdfsPod.createT(namespace,fdfsPort,isAnew);
                     break;
                 case "libreoffice":
-                    libreofficePod.createlibreoffice(namespace);
+                    libreofficePod.createlibreoffice(namespace,isAnew);
                     break;
                 case "guacamole":
-                    guacdPod.createGuacamole(namespace,guacamoleName);
+                    guacdPod.createGuacamole(namespace,guacamoleName,isAnew);
                     break;
                 case "neo4j":
-                    neo4JPod.create(namespace);
+                    neo4JPod.create(namespace,isAnew);
+                    break;
+                case "kkfileview":
+                    kKfileViewPod.create(namespace,kkfileviewPort,isAnew);
                     break;
             }
         });

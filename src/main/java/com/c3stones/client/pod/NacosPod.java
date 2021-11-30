@@ -4,16 +4,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
-import com.c3stones.controller.PodController;
 import com.c3stones.entity.NacosEntity;
 import com.c3stones.entity.Pods;
-import com.c3stones.util.KubeUtils;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -98,12 +95,15 @@ public class NacosPod extends BaseConfig {
     }
 
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+            policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -124,7 +124,7 @@ public class NacosPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
-                .addNewContainer().withName(podName).withImage(image)
+                .addNewContainer().withName(podName).withImage(image).withImagePullPolicy(policy)
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/nacos/data/").build())
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                 .addToEnv(new EnvVarBuilder().withName("MODE").withValue(MODE).build())
@@ -275,13 +275,13 @@ public class NacosPod extends BaseConfig {
     }
 
 
-    public void createNacos(String namespace,Integer nodePort){
+    public void createNacos(String namespace, Integer nodePort, boolean isAnew){
         String podName="nacos";
         String labelsName="nacos";
         String portName="nacos";
         try {
             kubes.createNamespace(namespace);
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8848,portName,isAnew);
             createService(namespace,podName,labelsName,8848,nodePort,portName);
         }catch (Exception e){
             e.printStackTrace();

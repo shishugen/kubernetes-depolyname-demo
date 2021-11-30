@@ -82,12 +82,15 @@ public class RedisPod extends BaseConfig {
         return true;
     }
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName ,String configName ){
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, String configName, boolean isAnew){
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+            policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -107,7 +110,7 @@ public class RedisPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
-                .addNewContainer().withName(podName).withImage(image)
+                .addNewContainer().withName(podName).withImage(image).withImagePullPolicy(policy)
                 .withCommand("sh","-c","exec redis-server")
                 .addToArgs("/data/middleware-data/redis/conf/redis.conf")
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
@@ -184,7 +187,7 @@ public class RedisPod extends BaseConfig {
     }
 
 
-    public void createRedis(String namespace){
+    public void createRedis(String namespace, boolean isAnew){
         String podName="redis";
         String configName="redis";
         String labelsName="redis";
@@ -192,7 +195,7 @@ public class RedisPod extends BaseConfig {
         try {
             kubes.createNamespace(namespace);
             configMap(namespace,configName,configName);
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,6379,portName,configName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,6379,portName,configName,isAnew);
             createService(namespace,podName,labelsName,6379,portName);
         }catch (Exception e){
             e.printStackTrace();

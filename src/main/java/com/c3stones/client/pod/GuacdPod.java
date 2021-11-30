@@ -1,10 +1,7 @@
 package com.c3stones.client.pod;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
-import com.c3stones.entity.NacosEntity;
 import com.c3stones.entity.Pods;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -14,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,12 +82,15 @@ public class GuacdPod extends BaseConfig {
         return true;
     }
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+            policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -110,7 +109,7 @@ public class GuacdPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
-                .addNewContainer().withName(podName)
+                .addNewContainer().withName(podName).withImagePullPolicy(policy)
                 .withImage(image)
                 .withCommand("/bin/sh","-c")
                 .addToArgs("/usr/local/guacamole/sbin/guacd -b 0.0.0.0 -L $GUACD_LOG_LEVEL -f")
@@ -231,12 +230,12 @@ public class GuacdPod extends BaseConfig {
 
 
 
-    public void createGuacamole(String namespace,String podName){
+    public void createGuacamole(String namespace, String podName, boolean isAnew){
         String labelsName="guacamole";
         String portName=podName;
 
         try {
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,4822,portName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,4822,portName,isAnew);
             Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
             if(service == null){
                 createService(namespace,labelsName,labelsName,4822,portName);

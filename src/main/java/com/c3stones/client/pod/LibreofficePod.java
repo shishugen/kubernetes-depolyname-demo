@@ -6,7 +6,6 @@ import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.jcajce.provider.symmetric.util.BaseWrapCipher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -84,12 +83,15 @@ public class LibreofficePod extends BaseConfig {
         return true;
     }
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName ,String configName ) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, String configName, boolean isAnew) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+            policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -109,7 +111,7 @@ public class LibreofficePod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
-                .addNewContainer().withName(podName)
+                .addNewContainer().withName(podName).withImagePullPolicy(policy)
                 .withImage(image)
                      .withCommand("/bin/sh","-c")
                      .addToArgs("/usr/bin/soffice --headless --accept=\"socket,host=0,port=8100;urp;\" --nofirststartwizard --invisible")
@@ -179,7 +181,7 @@ public class LibreofficePod extends BaseConfig {
     }
 
 
-    public void createlibreoffice(String namespace){
+    public void createlibreoffice(String namespace, boolean isAnew){
         kubes.createNamespace(namespace);
         String podName="libreoffice";
         String configName="libreoffice";
@@ -188,7 +190,7 @@ public class LibreofficePod extends BaseConfig {
        // configMap(namespace,configName,configName);
 
         try {
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8100,portName,configName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8100,portName,configName,isAnew);
             createService(namespace,podName,labelsName,8100,portName);
         }catch (Exception e){
             e.printStackTrace();

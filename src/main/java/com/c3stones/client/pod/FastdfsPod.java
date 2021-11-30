@@ -7,7 +7,6 @@ import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -86,12 +85,15 @@ public class FastdfsPod  extends BaseConfig {
         createService(namespace,nodePort);
     }
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+            policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -112,7 +114,7 @@ public class FastdfsPod  extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
-                .addNewContainer().withName(podName).withImage(image)
+                .addNewContainer().withName(podName).withImage(image).withImagePullPolicy(policy)
                 .withCommand("/home/start2.sh")
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/fdfs_storage/").build())
                 .withPorts(new ContainerPortBuilder().withContainerPort(80).withName("nginx").build())
@@ -172,10 +174,10 @@ public class FastdfsPod  extends BaseConfig {
       //  createService("app-sys");
     }
 
-    public  void  createT(String namespace,Integer nodePort){
+    public  void  createT(String namespace, Integer nodePort, boolean isAnew){
         String podName = "fdfs";
         try {
-            createDeployment(namespace,podName,podName,harborImageEnvPrefix+image,nodePort,podName);
+            createDeployment(namespace,podName,podName,harborImageEnvPrefix+image,nodePort,podName,isAnew);
         }catch (Exception e){
             e.printStackTrace();
             kubes.getKubeclinet().apps().deployments().inNamespace(namespace).withName(podEnvPrefix+podName).delete();

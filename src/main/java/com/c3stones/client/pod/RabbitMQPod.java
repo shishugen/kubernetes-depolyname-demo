@@ -2,7 +2,6 @@ package com.c3stones.client.pod;
 
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
-import com.github.dockerjava.api.model.Volumes;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,12 +119,15 @@ public class RabbitMQPod extends BaseConfig {
     }
 
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName , String image , Integer port,String portName,Integer port2,String portName2) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, Integer port2, String portName2, boolean isAnew) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
         resource.setLimits(map);
-
+        String policy ="IfNotPresent";
+        if (isAnew){
+            policy ="Always";
+        }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
@@ -150,6 +151,7 @@ public class RabbitMQPod extends BaseConfig {
                 .addNewContainer()
                 .withName(podName)
                 .withImage(image)
+                .withImagePullPolicy(policy)
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/bitnami/").build())
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                 .addToPorts(new ContainerPortBuilder().withName(portName2).withContainerPort(port2).build())
@@ -225,14 +227,14 @@ public class RabbitMQPod extends BaseConfig {
 
     }
 
-    public  void createRabbitmq(String namespace){
+    public  void createRabbitmq(String namespace, boolean isAnew){
         String podName="rabbitmq";
         String labelsName="rabbitmq";
         String portName="rabbitmq";
         kubes.createNamespace(namespace);
      //   configMap(namespace);
         try {
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,15672,portName+1,5672,portName+2);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,15672,portName+1,5672,portName+2,isAnew);
             createService(namespace,podName,labelsName,15672,portName+1,5672,portName+2);
         }catch (Exception e){
             e.printStackTrace();
