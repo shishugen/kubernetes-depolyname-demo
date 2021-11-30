@@ -159,7 +159,8 @@ public class EnvController extends BaseConfig {
     @RequestMapping(value = "createMulti")
     @ResponseBody
     public Response<Boolean> createMulti(String envList , String namespace,Integer fdfsPort,String guacamoleName,
-                                         Integer mysqlNodePort,Integer nacosNodePort,Integer kkfileviewPort,Integer isUpdateImage) {
+                                         Integer mysqlNodePort,Integer nacosNodePort,Integer kkfileviewPort,
+                                         Integer isUpdateImage,String kkfileviewHttps) {
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(envList, "envList不能为空");
         boolean isAnew = isUpdateImage == 1 ? true : false;
@@ -200,7 +201,7 @@ public class EnvController extends BaseConfig {
                     neo4JPod.create(namespace,isAnew);
                     break;
                 case "kkfileview":
-                    kKfileViewPod.create(namespace,kkfileviewPort,isAnew);
+                    kKfileViewPod.create(namespace,kkfileviewPort,isAnew,kkfileviewHttps);
                     break;
             }
         });

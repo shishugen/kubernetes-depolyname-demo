@@ -6,11 +6,14 @@ import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +48,7 @@ public class KKfileViewPod extends BaseConfig {
 
 
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew, String kkfileviewHttps) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("500M"));
@@ -53,6 +56,17 @@ public class KKfileViewPod extends BaseConfig {
         String policy ="IfNotPresent";
         if (isAnew){
             policy ="Always";
+        }
+        List<EnvVar> envVars = new ArrayList<>();
+        if (StringUtils.isNotBlank(kkfileviewHttps)){
+            EnvVar envVar = new EnvVar();
+            envVar.setName("KK_BASE_URL");
+            envVar.setValue(kkfileviewHttps);
+            EnvVar envVar2 = new EnvVar();
+            envVar2.setName("KK_CONTEXT_PATH");
+            envVar2.setValue("/preview");
+            envVars.add(envVar);
+            envVars.add(envVar2);
         }
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(200),"M"));
@@ -75,6 +89,7 @@ public class KKfileViewPod extends BaseConfig {
                 .withNewSpec()
                 .addNewContainer().withName(podName).withImage(image).withImagePullPolicy(policy)
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
+                .withEnv(envVars)
                 .withResources(resource)
                 .endContainer()
                 .addNewVolume()
@@ -134,13 +149,13 @@ public class KKfileViewPod extends BaseConfig {
 
 
 
-    public void create(String namespace, Integer nodePort, boolean isAnew){
+    public void create(String namespace, Integer nodePort, boolean isAnew, String kkfileviewHttps){
         String podName="kkfileview";
         String labelsName="kkfileview";
         String portName="kkfileview";
         try {
             kubes.createNamespace(namespace);
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8012,portName,isAnew);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8012,portName,isAnew,kkfileviewHttps);
             createService(namespace,podName,labelsName,8012,nodePort,portName);
         }catch (Exception e){
             e.printStackTrace();
