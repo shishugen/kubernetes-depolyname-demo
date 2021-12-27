@@ -430,7 +430,7 @@ public class Kubes {
 
         Map<String,String> labels = new HashMap<>();
         labels.put(LABELS_KEY,randomPortName);
-        if(port.equals(8888)){
+        if(port != null &&port.equals(8888)){
             labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
         }
         Deployment newDeployment = new DeploymentBuilder()
@@ -466,6 +466,9 @@ public class Kubes {
                 .addNewVolume()
                 .withName(pvcLogs)
                 .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build())
+                .endVolume()
+                .addNewVolume()
+                .withName("date-config").withNewHostPath().withNewPath("/etc/localtime").endHostPath()
                 .endVolume()
 
                 .endSpec().endTemplate().endSpec().build();
