@@ -6,6 +6,7 @@ import com.c3stones.client.pod.*;
 import com.c3stones.common.Response;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
+import com.c3stones.entity.PodParameter;
 import com.c3stones.http.HttpHarbor;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,9 @@ public class EnvController extends BaseConfig {
     private FastdfsPod fastdfsPod ;
 
     @Autowired
+    private SeataPod2 seataPod ;
+
+    @Autowired
     private RedisPod redisPod ;
     @Autowired
     private LibreofficePod libreofficePod ;
@@ -92,6 +96,15 @@ public class EnvController extends BaseConfig {
     @RequestMapping(value = "add")
     public String add() {
         return "pages/env/add";
+    }
+    /**
+     * 新增
+     *
+     * @return
+     */
+    @RequestMapping(value = "addSeata")
+    public String addSeata() {
+        return "pages/env/addSeata";
     }
     /**
      * 批量
@@ -151,6 +164,29 @@ public class EnvController extends BaseConfig {
 
         return Response.success(true);
     }
+
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping(value = "createSeata")
+    @ResponseBody
+    public Response<Boolean> createSeata(PodParameter podParameter) {
+        Assert.notNull(podParameter.getNamespace(), "name不能为空");
+        Assert.notNull(podParameter.getName(), "name不能为空");
+        try {
+            seataPod.createSeata(podParameter);
+        }catch (Exception e){
+            e.printStackTrace();
+          //  kubes.getKubeclinet().pods().inNamespace(namespace).withName(podEnvPrefix+name).delete();
+           // kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+name).delete();
+        }
+        return Response.success(true);
+    }
+
+
     /**
      *
      * @param name
@@ -222,11 +258,11 @@ public class EnvController extends BaseConfig {
      */
     @RequestMapping(value = "delDeploy")
     @ResponseBody
-    public Response<Boolean> delDeploys(String  name,String namespace) {
+    public Response<Boolean> delDeploys(String  name,String namespace,String configName) {
         KubernetesClient kubeclinet = kubes.getKubeclinet();
             Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace).withName(name).delete();
             kubes.deleteService(namespace,name);
-            kubes.deleteConf(namespace,name);
+            kubes.deleteConf(namespace,configName);
         return Response.success(true);
     }
 

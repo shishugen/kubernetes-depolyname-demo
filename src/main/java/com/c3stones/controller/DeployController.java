@@ -295,7 +295,7 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "pod")
 	@ResponseBody
 	public Response<Boolean> pod(String namespace, String image,String podName,String nacos,Integer port,Integer nodePort,Integer replicas,
-	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health ,Integer nginxEnv
+	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health ,Integer nginxEnv,String seataNacosNamespace
 	) {
 		System.out.println(namespace);
 		System.out.println(podName);
@@ -331,7 +331,7 @@ public class DeployController  extends BaseConfig {
 			if(nfs == 1){
 					kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
 					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,serviceName,split[2],
-							nacosNamespace,namespace+podName, memoryXmx, memoryXms,pvcLogs,isHealth)){
+							nacosNamespace,namespace+podName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,serviceName,port,nodePort,isNginxEnv);
 						}
@@ -339,7 +339,7 @@ public class DeployController  extends BaseConfig {
 					}
 				}else{
 					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,serviceName,split[2],
-							nacosNamespace, memoryXmx, memoryXms,pvcLogs,isHealth)){
+							nacosNamespace, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,serviceName,port,nodePort,isNginxEnv);
 						}
@@ -363,7 +363,7 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "mepoyMultiPod")
 	@ResponseBody
 	public Response<JSONObject> mepoyMultiPod(String namespace, String images,String nacos,Integer replicas,
-	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health
+	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health,String seataNacosNamespace
 	) {
 		Assert.notNull(memoryXmx, "memoryXmx不能为空");
 		Assert.notNull(memoryXms, "memoryXms不能为空");
@@ -402,9 +402,9 @@ public class DeployController  extends BaseConfig {
 					if(nfs == 1){
 						kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
 						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace,
-								namespace+podName, memoryXmx, memoryXms,pvcLogs,isHealth);
+								namespace+podName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
 					}else{
-						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms,pvcLogs,isHealth);
+						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
 					}
 					jsonObject.put("success",++success);
 				}

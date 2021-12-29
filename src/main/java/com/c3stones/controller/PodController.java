@@ -414,7 +414,7 @@ public class PodController extends BaseConfig{
         pod.setHostIp(hostIp);
         pod.setPodName(metadata.getName());
         pod.setPodStatus(getPodStatus(kubePod).getReason());
-
+        pod.setConfigName(svcName);
         pod.setNamespace(metadata.getNamespace());
         pod.setDate(KubeUtils.StringFormatDate(status.getStartTime()));
 
@@ -430,6 +430,7 @@ public class PodController extends BaseConfig{
 
         if(ports1 != null && ports1.size() > 0 ){
         Service service = kubes.findService(metadata.getNamespace(),podEnvPrefix+svcName);
+            pod.setServiceName(service.getMetadata().getName());
             if(service != null) {
                 ServiceSpec spec = service.getSpec();
                 List<ServicePort> ports = spec.getPorts();

@@ -307,7 +307,17 @@ public class Dockers extends BaseConfig{
                 "        web:\n" +
                 "            exposure:\n" +
                 "                include: '*'\n" +
-                "            base-path: /";
+                "            base-path: / \n"+
+                "seata:\n" +
+                "    registry:\n" +
+                "        nacos:\n" +
+                "            server-addr: ${NACOS_IP}:${NACOS_PORT}\n" +
+                "            namespace: ${NAMESPACE}\n" +
+                "    config:\n" +
+                "        nacos:\n" +
+                "            server-addr: ${NACOS_IP}:${NACOS_PORT}\n" +
+                "            namespace: ${SEATA_NAMESPACE}"
+                ;
         outputStream.write(conf.getBytes());
         return file;
     }

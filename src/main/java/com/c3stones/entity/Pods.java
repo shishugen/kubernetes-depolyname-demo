@@ -46,6 +46,8 @@ public class Pods {
 
     private String serviceName;
 
+    private String configName;
+
     private String images;
 
 

@@ -55,6 +55,13 @@
 								<option value="">请选择</option>
 							</select>
 						</div>
+
+						<label class="layui-form-label" style="width: 200px" >seata事物配置-命名空间</label>
+						<div class="layui-input-inline">
+							<select id="seataNacosNamespace"  name="seataNacosNamespace">
+								<option value="">请选择</option>
+							</select>
+						</div>
 					</div>
 					<div class="layui-form-item">
 						<div class="layui-inline">
@@ -120,7 +127,9 @@ layui.use('form', function(){
 
 form.on('select(nacosList)', function(data){
     $("#nacosNamespace").empty()
+    $("#seataNacosNamespace").empty()
     $('#nacosNamespace').append(new Option("请选择",""));// 下拉菜单里添加元素
+    $('#seataNacosNamespace').append(new Option("请选择",""));// 下拉菜单里添加元素
     var strings = data.value.split("---");
     console.log(strings);
     if(strings != null && strings != ''){
@@ -135,6 +144,7 @@ form.on('select(nacosList)', function(data){
             success : function(data) {
                 $.each(data.data, function (index, item) {
                     $('#nacosNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
+                    $('#seataNacosNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
                 });
                 layui.form.render("select")
             }
@@ -235,8 +245,10 @@ $.ajax({
                     success : function(data) {
                         $.each(data.data, function (index, item) {
                             $('#nacosNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
+                            $('#seataNacosNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
                             if(index == 1){
                                 $('#nacosNamespace').val(item.namespace)
+                                $('#seataNacosNamespace').val(item.namespace)
                             }
                         });
                         layui.form.render("select")

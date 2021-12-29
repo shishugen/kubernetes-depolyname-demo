@@ -33,6 +33,7 @@
                                     <button class="layui-btn layui-btn-normal" data-type="add">单个部署环境</button>
 -->
                                     <button class="layui-btn layui-btn-warm" data-type="addMulti">批量部署环境</button>
+                                    <button class="layui-btn layui-btn-warm" data-type="addSeata">seata环境</button>
                                 </div>
                                 <table class="layui-hide" id="harborDataTable2" lay-filter="config"></table>
                                 <script type="text/html" id="operation2">
@@ -122,14 +123,16 @@ table.render({
 //监听行工具事件
 table.on('tool(config)', function(obj) {
     var row = obj.data;
+    console.log(obj)
     var  str = row.podName
+    var  configName = row.configName
     var name = row.podName.substring(0,str.indexOf("-",str.indexOf("-")+1));
     if (obj.event === 'del') {
         layer.confirm("确认  "+row.podName+"  删除吗？", {icon: 3, title: '提示'}, function (index) {
             layer.close(index);
             $.ajax({
                 url: "[[@{/}]]env/delDeploy",
-                data: {"name": name, 'namespace': row.namespace},
+                data: {"name": name, 'namespace': row.namespace,'configName':configName},
                 type: "post",
                 dataType: "json",
                 error: function (data) {
@@ -195,6 +198,14 @@ active = {
     		area: ['100%', '80%'],
     		title: '批量部署',
     		content: '[[@{/}]]env/addMulti'
+    	});
+	},
+    addSeata: function() {
+		layer.open({
+    		type: 2,
+    		area: ['100%', '80%'],
+    		title: 'seata',
+    		content: '[[@{/}]]env/addSeata'
     	});
 	},
     reload: function() {

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane" method="post" th:action="@{/env/createSeata}">
+				    <div class="layui-form-item">
+						<label class="layui-form-label">单行选择框</label>
+						<div class="layui-input-inline">
+							<select name="name"  lay-filter="image">
+								<option value="staea">staea</option>
+							</select>
+					    </div>
+
+						<label class="layui-form-label">命名空间</label>
+						<div class="layui-input-inline">
+							<select id="namespace" lay-verify="required" name="namespace">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">MySQL配置</label>
+						<div class="layui-input-inline">
+							<select id="mysqlServer" lay-verify="required" name="mysqlServer">
+								<option value="">请选择</option>
+							</select>
+						</div>
+						<label class="layui-form-label">用户</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="mysqlUser" lay-verify="required" value="root" autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label">密码</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="mysqlPwd"   value="123456"  autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label">数据库</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="mysqlDatabase" value="seata"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">Nacos配置</label>
+						<div class="layui-input-inline">
+							<input id="nacosServer2" type="hidden" name="nacosServer"/>
+							<select id="nacosServer" lay-filter="nacosList" lay-verify="required">
+								<option value="">请选择</option>
+							</select>
+						</div>
+						<label class="layui-form-label">用户</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="nacosUser" lay-verify="required" value="nacos" autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label">密码</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="nacosPwd"  lay-verify="required" value="nacos"  autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				<div class="layui-form-item">
+						<label class="layui-form-label">服务命名空间</label>
+						<div class="layui-input-inline">
+							<select id="nacosNamespace"  lay-verify="required" name="nacosNamespace">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					<label class="layui-form-label">配置命名空间</label>
+					<div class="layui-input-inline">
+						<select id="nacosConfigNamespace"  lay-verify="required" name="nacosConfigNamespace">
+							<option value="">请选择</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<button type="submit" class="layui-btn" lay-submit lay-filter="*">开始部署</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.render();
+});
+
+$.ajax({
+    url : "[[@{/}]]pod/listEnvData",
+    type : "get",
+    data : {limit : 100, page:1},
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        data = data.data.records;
+        $.each(data, function (index, item) {
+            if (item.podName.indexOf("mysql") != -1){
+                $('#mysqlServer').append(new Option(item.namespace+"."+item.podName, item.serviceName+"."+item.namespace));// 下拉菜单里添加元素
+            } else if(item.podName.indexOf("nacos") != -1){
+               // $('#nacosServer').append(new Option(item.namespace+"."+item.podName, item.serviceName+"."+item.namespace));// 下拉菜单里添加元素
+                $('#nacosServer').append(new Option(item.namespace+"."+item.podName, item.bindK8sIP+"---"+item.ports.split(":")[1]+"---"+item.serviceName+"."+item.namespace));// 下拉菜单里添加元素
+                $('#nacosServer2').val(item.serviceName+"."+item.namespace)
+            }
+        });
+        layui.form.render("select")
+    }
+});
+
+
+form.on('select(nacosList)', function(data){
+    $("#nacosNamespace").empty()
+    $("#nacosConfigNamespace").empty()
+    $('#nacosNamespace').append(new Option("请选择",""));// 下拉菜单里添加元素
+    $('#nacosConfigNamespace').append(new Option("请选择",""));// 下拉菜单里添加元素
+
+    console.log(data);
+    console.log(data.bindK8sIP+"---"+data.ports);
+    var strings = data.value.split("---");
+    console.log(strings);
+    $('#nacosServer2').val(strings[2])
+    if(strings != null && strings != ''){
+        $.ajax({
+            url : "[[@{/}]]deploy/getNacosNamespace",
+            // type : "get",
+            dataType : "json",
+            data : {"ip":strings[0],"port":strings[1]},
+            error : function(data) {
+                errorHandle(data);
+            },
+            success : function(data) {
+                $.each(data.data, function (index, item) {
+                    $('#nacosNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
+                    $('#nacosConfigNamespace').append(new Option(item.namespaceShowName,item.namespace));// 下拉菜单里添加元素
+                    if(index == 1){
+                        $('#nacosNamespace').val(item.namespace)
+                        $('#nacosConfigNamespace').val(item.namespace)
+                    }
+                });
+                layui.form.render("select")
+            }
+        });
+    }
+});
+
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+// 提交表单
+form.on('submit(*)', function(data){
+    $(".layui-form").ajaxForm({
+        error: function(data){
+            errorHandle(data);
+        },
+        success: function(data) {
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("部署成功", {icon: 2});
+            }else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+            }
+        }
+    });
+});
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

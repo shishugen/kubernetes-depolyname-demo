@@ -173,7 +173,7 @@ public class Kubes {
          * @param image
          * @return
          */
-        public  boolean createPod(String namespace, String podName, String image , Integer port,String portName,String nacos,String nacosNamespace){
+        public  boolean createPod(String namespace, String podName, String image , Integer port,String portName,String nacos,String nacosNamespace,String seataNacosNamespace){
                /* ContainerPort[] arr = new ContainerPort[ports.size()];
                 for (int i = 0 ; i < ports.size(); i++ ) {
                     ContainerPort build = new ContainerPortBuilder().withName(podName).withContainerPort(ports.get(i)).build();
@@ -187,6 +187,7 @@ public class Kubes {
                                 .addToEnv(new EnvVarBuilder().withName("NAMESPACE").withValue(nacosNamespace).build())
                                 .addToEnv(new EnvVarBuilder().withName("NACOS_PORT").withValue("8848").build())
                                 .addToEnv(new EnvVarBuilder().withName("NACOS_IP").withValue(nacos).build())
+                                .addToEnv(new EnvVarBuilder().withName("SEATA_NAMESPACE").withValue(seataNacosNamespace).build())
                                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                                 .build())
                         .endSpec().build();
@@ -385,9 +386,9 @@ public class Kubes {
 
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
-                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth) {
+                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth,String seataNacosNamespace) {
         Container container =
-                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs,isHealth);
+                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
         Map<String,String> labels = new HashMap<>();
         labels.put(LABELS_KEY,randomPortName);
         if(port != null && port.equals(8888)){
@@ -425,8 +426,8 @@ public class Kubes {
     }
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos ,
-                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth) {
-        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth);
+                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth,String seataNacosNamespace) {
+        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
 
         Map<String,String> labels = new HashMap<>();
         labels.put(LABELS_KEY,randomPortName);
@@ -492,7 +493,7 @@ public class Kubes {
      * @return
      */
     private  Container createContainer(String appName,String image,Integer ports,String serviceName,String nacos ,String nacosNamespace,String pvcName
-    ,Integer memoryXmx,Integer memoryXms,String pvcLogs, boolean isHealth){
+    ,Integer memoryXmx,Integer memoryXms,String pvcLogs, boolean isHealth,String seataNacosNamespace){
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
@@ -574,14 +575,19 @@ public class Kubes {
         EnvVar envVar2 = new EnvVar();
         envVar2.setName("NACOS_PORT");
         envVar2.setValue("8848");
-       // envVar2.setValue("30848");
         env.add(envVar2);
 
         EnvVar envVar3 = new EnvVar();
         envVar3.setName("NACOS_IP");
-       // envVar3.setValue("139.9.50.40");
         envVar3.setValue(nacos);
         env.add(envVar3);
+
+        EnvVar envVar4 = new EnvVar();
+        envVar4.setName("SEATA_NAMESPACE");
+        envVar4.setValue(seataNacosNamespace);
+        env.add(envVar4);
+
+
         container.setEnv(env);
         container.setImagePullPolicy("Always");
 

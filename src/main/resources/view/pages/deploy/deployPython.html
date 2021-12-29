@@ -110,6 +110,7 @@ $.ajax({
 $.ajax({
     url : "[[@{/}]]pod/listEnvData",
     type : "get",
+    data : {limit : 100, page:1},
     dataType : "json",
     error : function(data) {
         errorHandle(data);
