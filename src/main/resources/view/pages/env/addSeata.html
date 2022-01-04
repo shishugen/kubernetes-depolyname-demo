@@ -70,20 +70,22 @@
 						</div>
 					</div>
 				<div class="layui-form-item">
-						<label class="layui-form-label">服务命名空间</label>
+						<label class="layui-form-label" style="width: 116px">服务命名空间</label>
 						<div class="layui-input-inline">
 							<select id="nacosNamespace"  lay-verify="required" name="nacosNamespace">
 								<option value="">请选择</option>
 							</select>
 						</div>
-					<label class="layui-form-label">配置命名空间</label>
+					<label class="layui-form-label" style="width: 116px">配置命名空间</label>
 					<div class="layui-input-inline">
 						<select id="nacosConfigNamespace"  lay-verify="required" name="nacosConfigNamespace">
 							<option value="">请选择</option>
 						</select>
 					</div>
 				</div>
-
+				<div class="layui-form-item">
+					<label style="width: 560px;color: blueviolet" class="layui-form-label">数据库、SQL及nacos会自动创建添加配置</label>
+				</div>
 				<div class="layui-form-item">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="*">开始部署</button>
 				</div>

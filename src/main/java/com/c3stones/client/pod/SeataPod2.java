@@ -84,7 +84,7 @@ public class SeataPod2 extends BaseConfig {
     }
 
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, PodParameter podParameter,String configName) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, PodParameter podParameter,String configName,String configNameMySql) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("1000M"));
@@ -154,7 +154,12 @@ public class SeataPod2 extends BaseConfig {
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
-       // kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNacosStorageSize);
+        List<VolumeMount> volumeMountList = new ArrayList<>();
+        VolumeMount build = new VolumeMountBuilder().withName(configName).withMountPath("/home/seata/registry/").build();
+        VolumeMount build1 = new VolumeMountBuilder().withName(configNameMySql).withMountPath("/home/mysql/").build();
+        volumeMountList.add(build);
+        volumeMountList.add(build1);
+
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -175,15 +180,21 @@ public class SeataPod2 extends BaseConfig {
                 .withCommand("/home/start.sh")
                 .withName(podName).withImage(image)
                 .withEnv(env)
-                .addToVolumeMounts(new VolumeMountBuilder().withName(configName).withMountPath("/home/seata/registry/").build())
+                .addAllToVolumeMounts(volumeMountList)
                 .withResources(resource)
                 .endContainer()
-                .addToVolumes(
+                .addToVolumes(0,
                         new VolumeBuilder()
                                 .withName(configName)
                                 .withConfigMap(new
                                         ConfigMapVolumeSourceBuilder()
                                         .withName(configName).build()).build())
+                .addToVolumes(1,
+                        new VolumeBuilder()
+                                .withName(configNameMySql)
+                                .withConfigMap(new
+                                        ConfigMapVolumeSourceBuilder()
+                                        .withName(configNameMySql).build()).build())
                 .endSpec().endTemplate().endSpec().build();
       new  Kubes().getKubeclinet().apps().deployments().createOrReplace(newDeployment);
         return true;
@@ -241,17 +252,87 @@ public class SeataPod2 extends BaseConfig {
         kubes.getKubeclinet().configMaps().createOrReplace(configMap);
     }
 
+    public  void configMap2(String namespace ,String configName,String labelsName,PodParameter podParameter){
+        ConfigMap configMap = new ConfigMapBuilder()
+                .withNewMetadata()
+                .withName(configName)
+                .withNamespace(namespace)
+                .addToLabels(LABELS_KEY,labelsName).endMetadata()
+                .addToData("seate.sql",
+                        "CREATE DATABASE IF NOT EXISTS "+podParameter.getMysqlDatabase()+" CHARACTER SET UTF8;\n" +
+                                "USE "+podParameter.getMysqlDatabase()+";\n"+
+                        "CREATE TABLE IF NOT EXISTS `global_table`\n" +
+                                "(\n" +
+                                "    `xid`                       VARCHAR(128) NOT NULL,\n" +
+                                "    `transaction_id`            BIGINT,\n" +
+                                "    `status`                    TINYINT      NOT NULL,\n" +
+                                "    `application_id`            VARCHAR(32),\n" +
+                                "    `transaction_service_group` VARCHAR(32),\n" +
+                                "    `transaction_name`          VARCHAR(128),\n" +
+                                "    `timeout`                   INT,\n" +
+                                "    `begin_time`                BIGINT,\n" +
+                                "    `application_data`          VARCHAR(2000),\n" +
+                                "    `gmt_create`                DATETIME,\n" +
+                                "    `gmt_modified`              DATETIME,\n" +
+                                "    PRIMARY KEY (`xid`),\n" +
+                                "    KEY `idx_gmt_modified_status` (`gmt_modified`, `status`),\n" +
+                                "    KEY `idx_transaction_id` (`transaction_id`)\n" +
+                                ") ENGINE = InnoDB\n" +
+                                "  DEFAULT CHARSET = utf8;\n" +
+                                "\n" +
+                                "CREATE TABLE IF NOT EXISTS `branch_table`\n" +
+                                "(\n" +
+                                "    `branch_id`         BIGINT       NOT NULL,\n" +
+                                "    `xid`               VARCHAR(128) NOT NULL,\n" +
+                                "    `transaction_id`    BIGINT,\n" +
+                                "    `resource_group_id` VARCHAR(32),\n" +
+                                "    `resource_id`       VARCHAR(256),\n" +
+                                "    `branch_type`       VARCHAR(8),\n" +
+                                "    `status`            TINYINT,\n" +
+                                "    `client_id`         VARCHAR(64),\n" +
+                                "    `application_data`  VARCHAR(2000),\n" +
+                                "    `gmt_create`        DATETIME(6),\n" +
+                                "    `gmt_modified`      DATETIME(6),\n" +
+                                "    PRIMARY KEY (`branch_id`),\n" +
+                                "    KEY `idx_xid` (`xid`)\n" +
+                                ") ENGINE = InnoDB\n" +
+                                "  DEFAULT CHARSET = utf8;\n" +
+                                "\n" +
+                                "CREATE TABLE IF NOT EXISTS `lock_table`\n" +
+                                "(\n" +
+                                "    `row_key`        VARCHAR(128) NOT NULL,\n" +
+                                "    `xid`            VARCHAR(128),\n" +
+                                "    `transaction_id` BIGINT,\n" +
+                                "    `branch_id`      BIGINT       NOT NULL,\n" +
+                                "    `resource_id`    VARCHAR(256),\n" +
+                                "    `table_name`     VARCHAR(32),\n" +
+                                "    `pk`             VARCHAR(36),\n" +
+                                "    `status`         TINYINT      NOT NULL DEFAULT '0' COMMENT '0:locked ,1:rollbacking',\n" +
+                                "    `gmt_create`     DATETIME,\n" +
+                                "    `gmt_modified`   DATETIME,\n" +
+                                "    PRIMARY KEY (`row_key`),\n" +
+                                "    KEY `idx_status` (`status`),\n" +
+                                "    KEY `idx_branch_id` (`branch_id`)\n" +
+                                ") ENGINE = InnoDB\n" +
+                                "  DEFAULT CHARSET = utf8;"
+                ).build();
+        kubes.getKubeclinet().configMaps().createOrReplace(configMap);
+    }
+
 
     public void createSeata(PodParameter podParameter){
         String podName="seata";
         String labelsName="seata";
         String portName="seata";
         String configName ="seata";
+        String configName2 ="seata2";
         String namespace =podParameter.getNamespace();
         try {
             configMap(namespace,configName,configName,podParameter);
+            configMap2(namespace,configName2,configName2,podParameter);
             kubes.createNamespace(namespace);
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,podParameter,configName);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,podParameter,configName,configName2);
+          //  createDeployment(namespace,podName,labelsName,"harbor.org/tool/seata:1.4.0",podParameter,configName,configName2);
            // createService(namespace,podName,labelsName,8091,nodePort,portName);
         }catch (Exception e){
             e.printStackTrace();

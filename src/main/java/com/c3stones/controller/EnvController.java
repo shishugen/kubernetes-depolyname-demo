@@ -263,6 +263,9 @@ public class EnvController extends BaseConfig {
             Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace).withName(name).delete();
             kubes.deleteService(namespace,name);
             kubes.deleteConf(namespace,configName);
+            if ("seata".equals(configName)){
+                kubes.deleteConf(namespace,configName+"2");
+            }
         return Response.success(true);
     }
 

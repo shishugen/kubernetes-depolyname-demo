@@ -7,6 +7,7 @@ import com.c3stones.util.OpenFileUtils;
 import com.sun.org.apache.xml.internal.utils.NameSpace;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
+import io.fabric8.kubernetes.api.model.metrics.v1beta1.ContainerMetrics;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.NodeMetricsList;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetrics;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetricsList;
@@ -750,42 +751,56 @@ public class Kubes {
         return new DefaultKubernetesClient(config);
     }
 
+
+
     @SneakyThrows
     public static void main(String[] args) {
+        Map<String,Integer> map = new HashMap<>();
 
         KubernetesClient kubeclinet = getKubeclinet2();
+        PodList list = kubeclinet.pods().inNamespace("1478191349792313345").list();
+        List<Pod> items1 = list.getItems();
+        items1.stream().forEach(pod ->{
+            String name = pod.getMetadata().getName();
+            ResourceRequirements resources = pod.getSpec().getContainers().get(0).getResources();
+            Map<String, Quantity> capacity = resources.getLimits();
+            if (capacity != null){
+                capacity.forEach((k, v)->{
+                    Quantity quantity = capacity.get(k);
+                    switch (k){
+                        case "memory":
+                            String format = quantity.getFormat();
+                            int memory = Integer.valueOf(quantity.getAmount()) * memoryUnitFormat(format);
+                            map.put(name,memory);
+                            break;
+                        default:
+                    }
+                });
+            }
+        });
+        System.out.println("map====="+map);
+        List<PodMetrics> items = kubeclinet.top().pods().metrics().getItems();
 
-        ResourceRequirements resource= new ResourceRequirements();
-        Map<String,Quantity> map= new HashMap(2);
-        map.put("cpu",new Quantity("600","m"));
-        map.put("memory",new Quantity("500","M"));
-        resource.setLimits(map);
+        items.stream().forEach(a->{
+            String name = a.getMetadata().getName();
+            System.out.println(name);
+            List<ContainerMetrics> containers = a.getContainers();
+            containers.stream().forEach(b->{
+                Map<String, Quantity> usage = b.getUsage();
+                Quantity quantity2 = usage.get("memory");
+                String format2 = quantity2.getFormat();
+                if ( format2.endsWith("Ki")){
+                    System.out.println(Integer.valueOf(quantity2.getAmount()) / 1024);
+                    Integer integer = map.get(name);
+                    if (integer != null && integer > 0){
+                        System.out.println("最大"+integer);
+                        System.out.println("当前"+Integer.valueOf(quantity2.getAmount()) / 1024);
+                    }
+                }
+            });
 
-        Map<String,Quantity> stringQuantityMap= new HashMap(2);
-        stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
-        stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
-        resource.setRequests(stringQuantityMap);
+        });
 
-  /*      Deployment done = kubeclinet.apps()
-                .deployments()
-                .inNamespace("1455814591134339073")
-                .withName("1455814591134339073")
-                .edit()
-                .editSpec()
-                .editTemplate()
-                .editSpec()
-                .editContainer(0)
-                .withResources(resource)
-                .endContainer()
-                .endSpec()
-                .endTemplate()
-                .endSpec()
-                .done();
-
-        System.out.println(done);
-        System.out.println(done);*/
-        List<Pod> items = kubeclinet.pods().inNamespace("1455814591134339073").list().getItems();
-        System.out.println(items);
 
 
 /*        Deployment deployment = new Deployment();
