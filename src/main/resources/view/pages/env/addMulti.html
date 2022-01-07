@@ -96,6 +96,29 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="layui-form-item" style="display:none" id="vsftpd">
+						<div class="layui-inline"  >
+							<div class="layui-form-label" style="width: 170px">vsftpd端口</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input  type="number" name="vsftpdPort"   placeholder="30021"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+
+						<div class="layui-inline"  >
+							<div class="layui-form-label" style="width: 170px">vsftpd-nginx端口</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input  type="number" name="vsftpdNginxPort"   placeholder="30821"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline"  >
+							<div class="layui-form-label" style="width: 170px">持久化存储大小G</div>
+							<div class="layui-input-inline" style="width: 180px;">
+								<input  type="number" name="vsftpdSize"   placeholder="50" value="50"  autocomplete="off" class="layui-input">
+							</div>
+								<label style="width: 240px;color: blueviolet" class="layui-form-label">用户：myuser,密码：mypass</label>
+						</div>
+					</div>
 				<div class="layui-form-item">
 					<button type="submit" class="layui-btn" lay-submit lay-filter="*">开始部署</button>
 				</div>
@@ -152,6 +175,10 @@ var demo1 = xmSelect.render({
 				 }else if ('kkfileview'== change[i].value){
                      $("#kkfileviewPort").attr("style","display:block;");//隐藏div
                      $("input[name='kkfileviewPort']").val(30012);//
+				 }else if ('vsftpd'== change[i].value){
+                     $("#vsftpd").attr("style","display:block;");//隐藏div
+                     $("input[name='vsftpdPort']").val(30021);//
+                     $("input[name='vsftpdNginxPort']").val(30821);//
                  }
 			}
         //取消
@@ -172,6 +199,10 @@ var demo1 = xmSelect.render({
                 }else if ('kkfileview'== change[i].value){
                     $("#kkfileviewPort").attr("style","display:none;");//隐藏div
                     $("input[name='kkfileviewPort']").val("");//
+				}else if ('vsftpd'== change[i].value){
+                    $("#vsftpd").attr("style","display:none;");//隐藏div
+                    $("input[name='vsftpdPort']").val("");//
+                    $("input[name='vsftpdNginxPort']").val("");//
                 }
             }
         }
@@ -185,6 +216,8 @@ var demo1 = xmSelect.render({
             $("#nacosNodePort").val("");//
             $("#guacamoleName").val("");//
             $("#mysqlNodePort").val("");//
+            $("#vsftpdPort").val("");//
+            $("#vsftpdNginxPort").val("");//
 		}
 
       //  alert('已有: '+arr.length+' 变化: '+change.length+', 状态: ' + isAdd)
@@ -199,6 +232,7 @@ var demo1 = xmSelect.render({
         {name: 'guacamole', value: 'guacamole'},
         {name: 'neo4j', value: 'neo4j'},
         {name: 'kkfileview', value: 'kkfileview'},
+        {name: 'vsftpd', value: 'vsftpd'},
     ]
 })
 form.render();

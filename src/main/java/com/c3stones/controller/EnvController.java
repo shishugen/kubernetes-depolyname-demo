@@ -60,6 +60,8 @@ public class EnvController extends BaseConfig {
     @Autowired
     private RedisPod redisPod ;
     @Autowired
+    private VsFtpPod vsFtpPod;
+    @Autowired
     private LibreofficePod libreofficePod ;
 
     @Autowired
@@ -196,7 +198,8 @@ public class EnvController extends BaseConfig {
     @ResponseBody
     public Response<Boolean> createMulti(String envList , String namespace,Integer fdfsPort,String guacamoleName,
                                          Integer mysqlNodePort,Integer nacosNodePort,Integer kkfileviewPort,
-                                         Integer isUpdateImage,String kkfileviewHttps) {
+                                         Integer isUpdateImage,String kkfileviewHttps,Integer vsftpdPort,Integer vsftpdNginxPort,
+                                         Integer vsftpdSize ) {
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(envList, "envList不能为空");
         boolean isAnew = isUpdateImage == 1 ? true : false;
@@ -208,6 +211,12 @@ public class EnvController extends BaseConfig {
         }
         if(kubes.checkSvc(nacosNodePort)){
             return Response.error("端口已存在"+nacosNodePort);
+        }
+        if(kubes.checkSvc(vsftpdPort)){
+            return Response.error("端口已存在"+vsftpdPort);
+        }
+        if(kubes.checkSvc(vsftpdNginxPort)){
+            return Response.error("端口已存在"+vsftpdNginxPort);
         }
 
         Arrays.stream(envList.split(",")).forEach(name->{
@@ -239,16 +248,16 @@ public class EnvController extends BaseConfig {
                 case "kkfileview":
                     kKfileViewPod.create(namespace,kkfileviewPort,isAnew,kkfileviewHttps);
                     break;
+                case "vsftpd":
+                    if (vsftpdSize > 500){
+                        System.err.println("存储不能大于500G");
+                    }else{
+                        vsFtpPod.create(namespace,vsftpdPort,vsftpdNginxPort,vsftpdSize,isAnew);
+                    }
+                    break;
             }
         });
-           /* mySQLPod.createMySQL(namespace,MySQLnodePort);
-            nacosPod.createNacos(namespace,nacosNodePort);
-            redisPod.createRedis(namespace);
-            rabbitMQPod.createRabbitmq(namespace);
-            fastdfsPod.createT(namespace,fdfsPort);
-            libreofficePod.createlibreoffice(namespace);
-            guacdPod.createGuacamole(namespace,guacamoleName);
-            neo4JPod.create(namespace);*/
+
         return Response.success(true);
     }
 

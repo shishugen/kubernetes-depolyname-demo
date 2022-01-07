@@ -173,6 +173,8 @@ table.on('tool(config)', function(obj) {
         for (var i = 0; i < list.length; i++) {
             if (obj.data.podName.indexOf("env-nacos") != -1) {
                 window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1] + "/nacos");
+            } else if(obj.data.podName.indexOf("kkfileview") != -1){
+                window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1] + "/preview");
             } else {
                 window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1]);
             }

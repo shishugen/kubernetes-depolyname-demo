@@ -1,5 +1,9 @@
 package com.c3stones.service;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,24 +24,39 @@ public class Test {
     static long comentLine = 0;
     static long sormaLine = 0;
 
-    /**
-     * 有效代码行数: 733
-     * 注释行数: 19000
-     * 空白行数: 1535
-     * 总代码行数: 21267
-     * @param args 14468 301611 638588
-     */
+
 
     public static void main(String[] args) {
-        File f = new File("E:\\xuanyuan_project\\xuanyuan-base-spring-cloud"); // 在这里输入需要统计的文件夹路径
-        File[] codeFiles = f.listFiles();
-        for(File child:codeFiles){
-            //System.out.println(child);
-            preas(child);
+        FTPClient fc = null;
+        try {
+            //创建ftp客户端
+            fc = new FTPClient();
+            //设置连接地址和端口
+            // fc.connect("10.49.0.12", 31368);
+             fc.connect("10.49.0.12", 30021);
+           // fc.connect("139.9.46.153", 30021);
+            //设置用户和密码
+            boolean login = fc.login("myuser", "mypass");
+
+            //设置文件类型
+            fc.setFileType(FTP.BINARY_FILE_TYPE);
+            System.out.println("login=="+login);
+
+            //上传
+            boolean flag = fc.storeFile("test3377.jpg", new FileInputStream(new File("E:/test.jpg")));
+          //  fc.enterLocalPassiveMode();
+            // boolean b = fc.deleteFile("test.jpg");
+            FTPFile[] ftpFiles = fc.listFiles();
+            System.out.println(ftpFiles.length);
+            if (flag)
+                System.out.println("上传成功...");
+            else
+                System.out.println("上传失败...");
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        System.out.println("空行："+whiteLine);
-        System.out.println("注释行："+comentLine);
-        System.out.println("有效行："+sormaLine);
+
+
     }
 
     private static void preas(File f){

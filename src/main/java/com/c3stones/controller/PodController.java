@@ -430,8 +430,8 @@ public class PodController extends BaseConfig{
 
         if(ports1 != null && ports1.size() > 0 ){
         Service service = kubes.findService(metadata.getNamespace(),podEnvPrefix+svcName);
-            pod.setServiceName(service.getMetadata().getName());
             if(service != null) {
+                pod.setServiceName(service.getMetadata().getName());
                 ServiceSpec spec = service.getSpec();
                 List<ServicePort> ports = spec.getPorts();
                 if (ports != null && ports.size() > 0) {
