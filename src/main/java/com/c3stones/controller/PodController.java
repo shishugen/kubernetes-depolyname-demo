@@ -563,6 +563,8 @@ public class PodController extends BaseConfig{
         for (int i = 0 ; i < name.length; i++){
             Deployment items = kubeclinet.apps().deployments().inNamespace(namespace[i]).withName((name[i])).get();
             kubes.deleteService(namespace[i],items.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
+            kubes.deleteIngress(namespace[i],items.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
+            kubes.deleteSecret(namespace[i],items.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
             kubes.deletePvc(namespace[i],name[i]);
             Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace[i]).withName(name[i]).delete();
         }

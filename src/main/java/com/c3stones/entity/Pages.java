@@ -3,6 +3,7 @@ package com.c3stones.entity;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: Pages
@@ -14,5 +15,6 @@ import java.util.List;
 public class Pages<T> {
 
     private List<T> records;
+    private Map map;
     private Integer total;
 }

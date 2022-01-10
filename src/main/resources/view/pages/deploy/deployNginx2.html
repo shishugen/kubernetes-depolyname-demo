@@ -70,11 +70,22 @@
 				      </div>
 					</div>
 
+
 					<div id="nginxEnv">
 
                     </div>
 					<div class="layui-form-item">
-						<label style="width: 560px" class="layui-form-label">前端内端口为:80 外端口:30801  管理后台内端口为:80 外端口:30803</label>
+						<div class="layui-inline">
+							<label class="layui-form-label">域名</label>
+							<div class="layui-input-block" style="width: 400px">
+								<select id="domain"  name="domain">
+									<option value="">请选择</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label style="width: 560px; color: brown;" class="layui-form-label">前端内端口为:80,没有域名可为空</label>
 					</div>
 				</div>
 				<div class="layui-form-item">
@@ -114,6 +125,22 @@ $.ajax({
             if (val && item.name == val ){
                 $('#namespace').val(item.name)
             }
+        });
+        layui.form.render("select")
+    }
+});
+
+$.ajax({
+    url : "[[@{/}]]app/env/ssl/data/list",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        console.log(data)
+        $.each(data.data.records, function (index, item) {
+            $('#domain').append(new Option(item.domain, item.domain));// 下拉菜单里添加元素
         });
         layui.form.render("select")
     }

@@ -275,6 +275,8 @@ public class DeployController  extends BaseConfig {
         Deployment deployment = kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).get();
         Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).delete();
         kubes.deleteService(namespace,deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
+        kubes.deleteIngress(namespace,deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
+        kubes.deleteSecret(namespace,deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
 
 		kubeclinet.configMaps().inNamespace(namespace).withName(deployname).delete();
 
@@ -471,7 +473,7 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "pod/nginx2")
 	@ResponseBody
 	public Response<Boolean> deployNginx(String envList ,String namespace, String image,Integer port,Integer nodePort,
-										 String  conf,MultipartFile  confFile) {
+										 String  conf,MultipartFile  confFile,String domain) {
 		String[] split = envList.split(",");
 
 		System.out.println("namespace=="+namespace);
@@ -519,6 +521,10 @@ public class DeployController  extends BaseConfig {
 		try {
 			nginxPod2.createDeployment(namespace,podName,podName,image,port,podName);
 			nginxPod2.createService(namespace,podName,port,nodePort);
+			if (StringUtils.isNotBlank(domain)){
+				nginxPod2.ingress(namespace,podName,domain,podName,80);
+			}
+
         }catch (Exception e){
 		    e.printStackTrace();
             nginxPod.delete(namespace,podName);

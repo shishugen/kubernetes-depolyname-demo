@@ -2,17 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="c754761e-40fd-4b5d-a60f-99a4cdb361c7" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_net_commons_net_3_3.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/VsFtpPod.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxSslPod.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/IngressController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/SSLController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/entity/SSLConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/add.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/addConfigFile.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spring-boot-layui-demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-boot-layui-demo.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/service/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/service/Test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/env/addMulti.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/env/addMulti.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/env/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/env/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pages.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pages.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/c3stones/util/OpenFileUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/c3stones/util/OpenFileUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx2.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -45,38 +52,72 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Test.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/service/Test.java">
+      <file leaf-file-name="NginxPod2.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="52" column="16" lean-forward="true" selection-start-line="52" selection-start-column="16" selection-end-line="52" selection-end-column="16" />
+            <state relative-caret-position="127">
+              <caret line="199" column="46" selection-start-line="199" selection-start-column="46" selection-end-line="199" selection-end-column="46" />
+              <folding>
+                <element signature="e#1165#1181#1" expanded="true" />
+                <element signature="e#1221#1242#1" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BaseConfig.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/BaseConfig.java">
+      <file leaf-file-name="NginxSslPod.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxSslPod.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
-              <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
+            <state relative-caret-position="125">
+              <caret line="134" selection-start-line="134" selection-end-line="159" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SeataPod2.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/SeataPod2.java">
+      <file leaf-file-name="list.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="333" column="78" selection-start-line="333" selection-start-column="58" selection-end-line="333" selection-end-column="78" />
+            <state relative-caret-position="275">
+              <caret line="507" column="42" selection-start-line="507" selection-start-column="42" selection-end-line="507" selection-end-column="42" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EnvController.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/view/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="246" column="26" lean-forward="true" selection-start-line="246" selection-start-column="26" selection-end-line="246" selection-end-column="26" />
+            <state relative-caret-position="100">
+              <caret line="85" column="47" lean-forward="true" selection-start-line="85" selection-start-column="47" selection-end-line="85" selection-end-column="47" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IngressController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/IngressController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="181">
+              <caret line="44" column="26" selection-start-line="44" selection-start-column="26" selection-end-line="44" selection-end-column="26" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Filterable.java" pinned="false" current-in-tab="false">
+        <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-client/4.11.0/kubernetes-client-4.11.0-sources.jar!/io/fabric8/kubernetes/client/dsl/Filterable.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="138">
+              <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IngressRule.java" pinned="false" current-in-tab="false">
+        <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-networking/4.11.0/kubernetes-model-networking-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/networking/v1beta1/IngressRule.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="188">
+              <caret line="67" column="25" selection-start-line="67" selection-start-column="25" selection-end-line="67" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -85,75 +126,31 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/common/Response.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="146">
-              <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+              <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
               <folding>
                 <element signature="e#485#486#0" expanded="true" />
                 <element signature="e#530#531#0" expanded="true" />
+                <element signature="e#637#638#0" expanded="true" />
+                <element signature="e#683#684#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="addMulti.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/env/addMulti.html">
+      <file leaf-file-name="Pages.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pages.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="114" column="93" lean-forward="true" selection-start-line="114" selection-start-column="93" selection-end-line="114" selection-end-column="93" />
-              <folding>
-                <element signature="n#style#0;n#div#2;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#1;n#div#2;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#0;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#1;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#1;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#div#2;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#1;n#div#2;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#label#0;n#div#2;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="287">
+              <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="addSeata.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/env/addSeata.html">
+      <file leaf-file-name="SSLConfig.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/SSLConfig.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="85" column="16" selection-start-line="85" selection-start-column="16" selection-end-line="87" selection-end-column="22" />
-              <folding>
-                <element signature="n#style#0;n#label#0;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#label#1;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#label#0;n#div#4;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="application.properties" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="71" column="24" lean-forward="true" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="VsFtpPod.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/VsFtpPod.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="897">
-              <caret line="174" column="39" lean-forward="true" selection-start-line="174" selection-start-column="39" selection-end-line="174" selection-end-column="39" />
-              <folding>
-                <element signature="e#984#1000#1" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ObjectMetaFluent.java" pinned="false" current-in-tab="false">
-        <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/ObjectMetaFluent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="31" column="29" lean-forward="true" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="59" />
+            <state relative-caret-position="225">
+              <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -172,36 +169,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>namespace</find>
-      <find>listNginxData</find>
-      <find>defaultNamespace</find>
-      <find>userDataTable</find>
-      <find>harborDataTable</find>
-      <find>operation</find>
-      <find>listAppData</find>
-      <find>getDeployment</find>
-      <find>Always</find>
-      <find>date-config</find>
-      <find>configMap</find>
-      <find>addMulti</find>
-      <find>python</find>
-      <find>env</find>
-      <find>nacosNamespace</find>
-      <find>getNacosNamespace</find>
-      <find>nacosList</find>
-      <find>nacosServer</find>
-      <find>delete</find>
-      <find>nginx-admin-dist-1-0-78f8886f76-598qk</find>
-      <find>最大</find>
-      <find>listEnvData</find>
-      <find>del</find>
-      <find>delDeploy</find>
-      <find>前端内端口为:80 外端口:30801 管理后台内端口为:80 外端口:30803</find>
-      <find>1478191349792313345</find>
-      <find>envList</find>
-      <find>demo1</find>
       <find>createMulti</find>
       <find>vsftpdNginx</find>
+      <find>del</find>
+      <find>addServer</find>
+      <find>add</find>
+      <find>/ssl/add</find>
+      <find>ssl/add</find>
+      <find>addView</find>
+      <find>addConfigFileView</find>
+      <find>configFile</find>
+      <find>deleteServerConfigFile</find>
+      <find>deletes</find>
+      <find>fileName</find>
+      <find>configFile/list</find>
+      <find>deleteConfigFile</find>
+      <find>addConfigFile</find>
+      <find>delete</find>
+      <find>delDeploys</find>
+      <find>deleteIngress</find>
+      <find>load</find>
+      <find>delDeployment</find>
+      <find>nginx2</find>
+      <find>domain</find>
+      <find>list</find>
+      <find>harborDataTable3</find>
+      <find>table13</find>
+      <find>operation13</find>
+      <find>ingressOpen</find>
+      <find>restartDeployment</find>
+      <find>deleteDeployment</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -209,46 +206,32 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/LibreofficePod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RedisPod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/Neo4JPod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/KKfileViewPod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/NginxConfigController.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/VsFtpPod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PortController.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/SeataPod2.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/LibreofficePod.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/NginxConfigController.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PortController.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/SSLController.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/MySQLPod.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/FastdfsPod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/MySQLPod.java" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RabbitMQPod.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxSslPod.java" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NacosPod.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RabbitMQPod.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/VsFtpPod.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/Neo4JPod.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RedisPod.java" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/KKfileViewPod.java" root0="SKIP_INSPECTION" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/nginx/list.html" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/NginxConfigController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PortController.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/port/list.html" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/index.html" />
-        <option value="$PROJECT_DIR$/src/main/resources/application.yml" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/Test.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/pod/update.html" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/config/ApplicationRunnerImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppEnvController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/HarborTemp.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Config.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/ConfigController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx.html" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx2.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/config/list.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/BaseConfig.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/HarborController.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/list.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/MySQLPod.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NacosPod.java" />
@@ -263,23 +246,39 @@
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPython.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/SeataPod.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod2.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/PodParameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pods.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/SeataPod2.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/env/addSeata.html" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/env/list.html" />
-        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/service/Test.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/VsFtpPod.java" />
         <option value="$PROJECT_DIR$/src/main/resources/view/pages/env/addMulti.html" />
         <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxSslPod.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppDockerEnvController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/SSLConfig.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/SSLController.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/list.html" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/util/OpenFileUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/addConfigFile.html" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx2.html" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/add.html" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/SecretController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pages.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/c3stones/controller/IngressController.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html" />
+        <option value="$PROJECT_DIR$/src/main/resources/view/index.html" />
       </list>
     </option>
   </component>
@@ -316,8 +315,7 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
+    <option name="x" value="322" />
     <option name="width" value="1382" />
     <option name="height" value="744" />
   </component>
@@ -330,7 +328,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -388,24 +385,6 @@
               <item name="spring-boot-layui-demo" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="c3stones" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spring-boot-layui-demo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spring-boot-layui-demo" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="c3stones" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spring-boot-layui-demo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spring-boot-layui-demo" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -424,23 +403,14 @@
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="view" type="462c0819:PsiDirectoryNode" />
               <item name="pages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spring-boot-layui-demo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spring-boot-layui-demo" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="view" type="462c0819:PsiDirectoryNode" />
-              <item name="pages" type="462c0819:PsiDirectoryNode" />
-              <item name="env" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="AndroidView" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -468,18 +438,18 @@
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\deploy" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.c3stones.client.pod" />
+      <recent name="com.c3stones.entity" />
       <recent name="com.c3stones.controller" />
+      <recent name="com.c3stones.client.pod" />
       <recent name="com.c3stones.test" />
       <recent name="com.c3stones.client.pod.context" />
-      <recent name="com.c3stones.util" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\app\ssl" />
+      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\app" />
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\env" />
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\port" />
       <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\deploy" />
-      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources\view\pages\app\nginx" />
-      <recent name="E:\xuanyuan_project\xuanyuan-base-spring-cloud\spring-boot-layui-demo\src\main\resources" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -494,7 +464,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Test (1)">
+  <component name="RunManager" selected="Spring Boot.Application">
     <configuration name="Kubes" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.c3stones.client.Kubes" />
       <module name="spring-boot-layui-demo" />
@@ -603,9 +573,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Test (1)" />
         <item itemvalue="Spring Boot.Application" />
         <item itemvalue="Application.Kubes" />
+        <item itemvalue="Application.Test (1)" />
         <item itemvalue="Application.SeataPod2" />
         <item itemvalue="Application.MySQLPod" />
       </list>
@@ -687,7 +657,8 @@
       <workItem from="1638236758403" duration="2385000" />
       <workItem from="1640239139713" duration="4165000" />
       <workItem from="1640571845298" duration="59281000" />
-      <workItem from="1641430446830" duration="37717000" />
+      <workItem from="1641430446830" duration="61667000" />
+      <workItem from="1641801543506" duration="3926000" />
     </task>
     <task id="LOCAL-00001" summary="修改判断问题">
       <created>1615864721264</created>
@@ -1011,11 +982,18 @@
       <option name="project" value="LOCAL" />
       <updated>1641283726286</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="添加vsftpd服务">
+      <created>1641534895569</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1641534895569</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1627369000" />
+    <option name="totallyTimeSpent" value="1655245000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1028,6 +1006,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.25872535" side_tool="true" weight="0.43193278" />
@@ -1044,29 +1023,29 @@
       <window_info anchor="right" id="JSF" order="4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49924356" weight="0.5973597" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.660066" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.28877887" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49924356" weight="0.28382838" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.29537955" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.36633664" />
       <window_info anchor="right" id="Palette&#9;" order="3" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="bottom" id="Java Enterprise" order="7" weight="0.1980198" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.30363035" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.74127465" visible="true" weight="0.3069307" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.22937293" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.74127465" visible="true" weight="0.25247526" />
       <window_info anchor="bottom" id="Spring" order="7" weight="0.27227724" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.40264025" />
       <window_info anchor="right" id="Jenkins" order="3" weight="0.32980332" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49804688" visible="true" weight="0.073373675" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49804688" visible="true" weight="0.26399395" />
       <window_info anchor="right" id="Bean Validation" order="3" />
       <window_info id="Web" order="2" sideWeight="0.50109893" side_tool="true" weight="0.25567323" />
       <window_info anchor="bottom" id="Apicloud Log" order="7" weight="0.3294893" />
       <window_info id="JRebel" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.38778877" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info id="Favorites" order="2" sideWeight="0.5029354" side_tool="true" weight="0.23071104" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.38778877" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="bottom" id="Message" order="0" />
     </layout>
@@ -1115,7 +1094,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="SHOW_DIRTY_RECURSIVELY" value="true" />
-    <MESSAGE value="优化配置添加虚拟机内存限制" />
     <MESSAGE value="更新" />
     <MESSAGE value="添加日志" />
     <MESSAGE value="添加python" />
@@ -1140,7 +1118,8 @@
     <MESSAGE value="修改NF问题" />
     <MESSAGE value="添加事件镜像" />
     <MESSAGE value="优化" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化" />
+    <MESSAGE value="添加vsftpd服务" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加vsftpd服务" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1164,284 +1143,19 @@
           <option name="timeStamp" value="156" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java</url>
-          <line>179</line>
+          <url>file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/IngressController.java</url>
+          <line>44</line>
           <properties />
-          <option name="timeStamp" value="209" />
+          <option name="timeStamp" value="222" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="216" />
+      <option name="time" value="223" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/config/WebConfigurer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/config/BeanConfig.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/config/ApplicationRunnerImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="18" column="35" selection-start-line="18" selection-start-column="35" selection-end-line="18" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/config/LoginInterceptor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="19" column="7" lean-forward="true" selection-start-line="19" selection-start-column="7" selection-end-line="19" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/http/HttpHarbor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
-          <caret line="46" column="17" lean-forward="true" selection-start-line="46" selection-start-column="17" selection-end-line="46" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1794" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/index.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/explain.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="4" column="57" lean-forward="true" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/EnvVarSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-131">
-          <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/EnvVar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="38" column="13" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/Config.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="15" column="32" lean-forward="true" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PortController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="41" column="29" lean-forward="true" selection-start-line="41" selection-start-column="29" selection-end-line="41" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod2.html" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/PodParameter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="26" column="39" selection-start-line="26" selection-start-column="19" selection-end-line="26" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPython.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-976">
-          <caret line="12" column="30" lean-forward="true" selection-start-line="12" selection-start-column="30" selection-end-line="12" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="140" column="45" selection-start-line="140" selection-start-column="41" selection-end-line="140" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/SeataPod.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Dockers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="314" column="57" lean-forward="true" selection-start-line="314" selection-start-column="57" selection-end-line="314" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/Pod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="48" column="13" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pods.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="45" lean-forward="true" selection-start-line="45" selection-end-line="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NacosPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="292" selection-start-line="292" selection-end-line="292" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="57" selection-start-line="57" selection-end-line="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployPod.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="64" selection-start-line="64" selection-end-line="64" />
-          <folding>
-            <element signature="n#style#0;n#label#2;n#div#2;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-client/4.11.0/kubernetes-client-4.11.0-sources.jar!/io/fabric8/kubernetes/client/dsl/internal/PodMetricOperationsImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="56" column="24" selection-start-line="56" selection-start-column="24" selection-end-line="56" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/PodSpecFluent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="424" column="49" lean-forward="true" selection-start-line="424" selection-start-column="49" selection-end-line="424" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="54" column="20" selection-start-line="54" selection-start-column="20" selection-end-line="56" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="18" column="42" lean-forward="true" selection-start-line="18" selection-start-column="42" selection-end-line="18" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/commons-net/commons-net/3.3/commons-net-3.3.jar!/org/apache/commons/net/ftp/FTP.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="9" column="43" selection-start-line="9" selection-start-column="28" selection-end-line="9" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/env/add.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="66" column="19" selection-start-line="66" selection-start-column="19" selection-end-line="66" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/env/list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2397">
-          <caret line="128" column="75" lean-forward="true" selection-start-line="128" selection-start-column="75" selection-end-line="128" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="93" column="75" lean-forward="true" selection-start-line="93" selection-start-column="75" selection-end-line="93" selection-end-column="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RedisPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-61">
-          <caret line="116" column="95" selection-start-line="116" selection-end-line="117" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="464">
-          <caret line="348" column="29" lean-forward="true" selection-start-line="348" selection-start-column="29" selection-end-line="348" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/ContainerFluent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="167" column="13" selection-start-line="167" selection-start-column="13" selection-end-line="167" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="440" column="62" lean-forward="true" selection-start-line="440" selection-start-column="62" selection-end-line="440" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/commons-net/commons-net/3.3/commons-net-3.3.jar!/org/apache/commons/net/ftp/FTPClient.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="90" column="19" selection-start-line="90" selection-start-column="19" selection-end-line="90" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/ServicePortFluent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="41" column="34" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/MySQLPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="175" column="61" lean-forward="true" selection-start-line="175" selection-start-column="61" selection-end-line="175" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/FastdfsPod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="124" column="32" selection-start-line="121" selection-start-column="26" selection-end-line="124" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/RabbitMQPod.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="625">
@@ -1449,24 +1163,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/ObjectMetaFluent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="31" column="29" lean-forward="true" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/service/Test.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
           <caret line="52" column="16" lean-forward="true" selection-start-line="52" selection-start-column="16" selection-end-line="52" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="71" column="24" lean-forward="true" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -1481,11 +1181,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
           <caret line="85" column="16" selection-start-line="85" selection-start-column="16" selection-end-line="87" selection-end-column="22" />
-          <folding>
-            <element signature="n#style#0;n#label#0;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#1;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#0;n#div#4;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1500,17 +1195,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
           <caret line="114" column="93" lean-forward="true" selection-start-line="114" selection-start-column="93" selection-end-line="114" selection-end-column="93" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#1;n#div#2;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#0;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#1;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#2;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#2;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#label#0;n#div#2;n#div#3;n#div#3;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1518,27 +1202,338 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="897">
           <caret line="174" column="39" lean-forward="true" selection-start-line="174" selection-start-column="39" selection-end-line="174" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-networking/4.11.0/kubernetes-model-networking-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/networking/v1beta1/Ingress.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="71" column="13" selection-start-line="71" selection-start-column="13" selection-end-line="71" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-networking/4.11.0/kubernetes-model-networking-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/networking/v1beta1/HTTPIngressRuleValueFluent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="41" column="38" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-networking/4.11.0/kubernetes-model-networking-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/networking/v1beta1/IngressBackendFluent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/java/app/jdk1.8.0_111/src.zip!/java/lang/String.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="2176" column="18" selection-start-line="2176" selection-start-column="18" selection-end-line="2176" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/ObjectMetaFluent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13">
+          <caret line="81" column="24" selection-start-line="81" selection-start-column="13" selection-end-line="81" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployMultiPod.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-102">
+          <caret line="63" column="30" lean-forward="true" selection-start-line="63" selection-start-column="30" selection-end-line="63" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="71" column="24" lean-forward="true" selection-start-line="71" selection-start-column="24" selection-end-line="71" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/NginxConfigController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="120" column="32" lean-forward="true" selection-start-line="120" selection-start-column="32" selection-end-line="120" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/IndexController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-199">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/ConfigController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppEnvController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-24">
+          <caret line="38" column="6" lean-forward="true" selection-start-line="38" selection-start-column="6" selection-end-line="38" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/K8sConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/add.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/docker/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="77" column="54" selection-start-line="77" selection-start-column="45" selection-end-line="77" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/docker/addConfigFile.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/AppDockerEnvController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="187" lean-forward="true" selection-start-line="187" selection-end-line="206" />
           <folding>
-            <element signature="e#984#1000#1" expanded="true" />
+            <element signature="e#1607#1608#0" expanded="true" />
+            <element signature="e#1658#1659#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/common/Response.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/list.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="40" column="34" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
+        <state relative-caret-position="327">
+          <caret line="106" column="41" lean-forward="true" selection-start-line="106" selection-start-column="41" selection-end-line="106" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-networking/4.11.0/kubernetes-model-networking-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/networking/v1beta1/IngressBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="11" column="11" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-client/4.11.0/kubernetes-client-4.11.0-sources.jar!/io/fabric8/kubernetes/client/dsl/Createable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/java/app/jdk1.8.0_111/src.zip!/java/io/File.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="166">
+          <caret line="840" column="19" selection-start-line="840" selection-start-column="19" selection-end-line="840" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/util/XYFileUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1109">
+          <caret line="18" column="7" lean-forward="true" selection-start-line="18" selection-start-column="7" selection-end-line="18" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/util/OpenFileUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="181" column="25" selection-start-line="181" selection-start-column="25" selection-end-line="181" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/addConfigFile.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="25" column="73" lean-forward="true" selection-start-line="25" selection-start-column="73" selection-end-line="25" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-core/4.11.0/kubernetes-model-core-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/Secret.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="50" column="13" selection-start-line="50" selection-start-column="13" selection-end-line="50" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/java/app/jdk1.8.0_111/src.zip!/java/util/Base64.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-31">
+          <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2683">
+          <caret line="141" column="26" lean-forward="true" selection-start-line="141" selection-start-column="26" selection-end-line="141" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/Kubes.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18550">
+          <caret line="773" column="28" selection-start-line="773" selection-start-column="28" selection-end-line="773" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/SSLController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1425">
+          <caret line="82" column="26" selection-start-line="82" selection-start-column="22" selection-end-line="82" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/commons-lang/commons-lang/2.6/commons-lang-2.6-sources.jar!/org/apache/commons/lang/StringUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5800">
+          <caret line="259" column="26" selection-start-line="259" selection-start-column="26" selection-end-line="259" selection-end-column="26" />
           <folding>
-            <element signature="e#485#486#0" expanded="true" />
-            <element signature="e#530#531#0" expanded="true" />
+            <element signature="e#9637#9638#0" expanded="true" />
+            <element signature="e#9685#9686#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/deploy/deployNginx2.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2100">
+          <caret line="84" column="30" selection-start-line="84" selection-start-column="30" selection-end-line="84" selection-end-column="30" />
+          <folding>
+            <element signature="n#style#0;n#label#0;n#div#6;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/app/ssl/add.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="700">
+          <caret line="28" column="26" selection-start-line="28" selection-start-column="26" selection-end-line="28" selection-end-column="26" />
+          <folding>
+            <element signature="n#style#0;n#input#0;n#div#0;n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#label#0;n#div#1;n#div#0;n#div#0;n#form#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/PodController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-4650">
+          <caret line="71" lean-forward="true" selection-start-line="71" selection-end-line="83" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/DeployController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-631">
+          <caret line="234" column="5" lean-forward="true" selection-start-line="234" selection-start-column="5" selection-end-line="234" selection-end-column="5" />
+          <folding>
+            <element signature="e#5852#5853#0" expanded="true" />
+            <element signature="e#5886#5887#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/EnvController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="246" column="26" lean-forward="true" selection-start-line="246" selection-start-column="26" selection-end-line="246" selection-end-column="26" />
+        <state relative-caret-position="212">
+          <caret line="122" selection-start-line="122" selection-end-line="130" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/SSLConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="9" column="3" selection-start-line="9" selection-start-column="3" selection-end-line="9" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/entity/Pages.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/common/Response.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="50" column="34" selection-start-line="50" selection-start-column="34" selection-end-line="50" selection-end-column="34" />
+          <folding>
+            <element signature="e#485#486#0" expanded="true" />
+            <element signature="e#530#531#0" expanded="true" />
+            <element signature="e#637#638#0" expanded="true" />
+            <element signature="e#683#684#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxSslPod.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="125">
+          <caret line="134" selection-start-line="134" selection-end-line="159" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/client/pod/NginxPod2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="199" column="46" selection-start-line="199" selection-start-column="46" selection-end-line="199" selection-end-column="46" />
+          <folding>
+            <element signature="e#1165#1181#1" expanded="true" />
+            <element signature="e#1221#1242#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-model-networking/4.11.0/kubernetes-model-networking-4.11.0-sources.jar!/io/fabric8/kubernetes/api/model/networking/v1beta1/IngressRule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="67" column="25" selection-start-line="67" selection-start-column="25" selection-end-line="67" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/oepn_project/repository/repository/io/fabric8/kubernetes-client/4.11.0/kubernetes-client-4.11.0-sources.jar!/io/fabric8/kubernetes/client/dsl/Filterable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="138">
+          <caret line="35" column="4" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/c3stones/controller/IngressController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="44" column="26" selection-start-line="44" selection-start-column="26" selection-end-line="44" selection-end-column="26" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/pages/pod/list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="507" column="42" selection-start-line="507" selection-start-column="42" selection-end-line="507" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/view/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="85" column="47" lean-forward="true" selection-start-line="85" selection-start-column="47" selection-end-line="85" selection-end-column="47" />
         </state>
       </provider>
     </entry>

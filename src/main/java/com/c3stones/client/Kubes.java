@@ -285,6 +285,12 @@ public class Kubes {
     public  Boolean deleteConf(String namesapce,String podName){
         return getKubeclinet().configMaps().inNamespace(namesapce).withName(podName).delete();
     }
+    public  Boolean deleteIngress(String namesapce,String name){
+        return getKubeclinet().network().ingresses().inNamespace(namesapce).withName(name).delete();
+    }
+    public  Boolean deleteSecret(String namesapce,String name){
+        return getKubeclinet().secrets().inNamespace(namesapce).withName(name).delete();
+    }
     public  Boolean deleteNamespace(String namesapce){
         return getKubeclinet().namespaces().withName(namesapce).delete();
     }
@@ -758,8 +764,24 @@ public class Kubes {
         Map<String,Integer> map = new HashMap<>();
 
         KubernetesClient kubeclinet = getKubeclinet2();
+        Secret secretBuilder = new SecretBuilder()
+                .withNewMetadata()
+                .withName("test")
+                .withNamespace("app-ssg")
+                .endMetadata()
+                .withType("kubernetes.io/tls")
+                .addToData("tls.key",Base64.getEncoder().encodeToString("222".getBytes()))
+                .addToData("tls.crt",Base64.getEncoder().encodeToString("22233".getBytes()))
+                .build();
+        kubeclinet.secrets().create(secretBuilder);
+        Base64.getEncoder().encodeToString("222".getBytes());
+        Base64.Encoder encoder = Base64.getEncoder();
+
+
+       /*
         PodList list = kubeclinet.pods().inNamespace("1478191349792313345").list();
         List<Pod> items1 = list.getItems();
+
         items1.stream().forEach(pod ->{
             String name = pod.getMetadata().getName();
             ResourceRequirements resources = pod.getSpec().getContainers().get(0).getResources();
@@ -801,7 +823,7 @@ public class Kubes {
 
         });
 
-
+*/
 
 /*        Deployment deployment = new Deployment();
         Map<String,Quantity> stringQuantityMap= new HashMap(2);
@@ -882,6 +904,17 @@ public class Kubes {
      */
     public static String getHomeConfigDir() {
         String dir = System.getProperty("user.home")+ File.separator + ".kube-deployment"+ File.separator +".k8s"+ File.separator+"configs";
+        if(!new File(dir).exists()){
+            new File(dir).mkdirs();
+        }
+        return dir;
+    }
+    /**
+     * ssl配置文件夹
+     * @return
+     */
+    public static String getHomeSSLDir() {
+        String dir = System.getProperty("user.home")+ File.separator + ".kube-deployment"+ File.separator +".ssl"+ File.separator+"configs";
         if(!new File(dir).exists()){
             new File(dir).mkdirs();
         }

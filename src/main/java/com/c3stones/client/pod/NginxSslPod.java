@@ -2,21 +2,22 @@ package com.c3stones.client.pod;
 
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
-import com.c3stones.util.OpenFileUtils;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
-import io.fabric8.kubernetes.api.model.networking.v1beta1.*;
+import io.fabric8.kubernetes.api.model.networking.v1beta1.HTTPIngressPath;
+import io.fabric8.kubernetes.api.model.networking.v1beta1.HTTPIngressPathBuilder;
+import io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress;
+import io.fabric8.kubernetes.api.model.networking.v1beta1.IngressBuilder;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @ClassName: NginxPod
@@ -26,7 +27,7 @@ import java.util.*;
  */
 @Slf4j
 @Component
-public class NginxPod2 extends BaseConfig {
+public class NginxSslPod extends BaseConfig {
 
     /***
      * labels
@@ -132,20 +133,49 @@ public class NginxPod2 extends BaseConfig {
         return kubes.getKubeclinet().services().create(build);
     }
 
+    private void ingress(String namespace,String name,String domain,String serviceName,Integer servicePort){
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+        Ingress ingress = new IngressBuilder()
+                .withNewMetadata()
+                .withNamespace(namespace)
+                .withName(name)
+                .endMetadata()
+                .withNewSpec()
+                .addNewRule()
+                .withHost(domain)
+                .withNewHttp()
+                .withPaths(new HTTPIngressPathBuilder()
+                        .withPath("/")
+                        .withNewBackend()
+                        .withServiceName(serviceName)
+                        .withNewServicePort(servicePort)
+                        .endBackend().build())
+                .endHttp()
+                .endRule()
+                .endSpec()
+
+                .build();
+        kubeclinet.network().ingresses().create(ingress);
+    }
+
+
+
     public static void main(String[] args) {
         String namespace="test2";
        // NginxPod.createNginx("app-app-test");
     }
 
 
-    public  void createNginx(String namespace){
+    public  void createNginx(String namespace,String domain){
         kubes.createNamespace(namespace);
-        String podName="nginx";
-        String configName="nginx";
-        String labelsName="nginx";
-        String portName="nginx";
+        String podName="nginxssl";
+        String configName="nginxssl";
+        String labelsName="nginxssl";
+        String portName="nginxssl";
         String image ="nginx";
-        // configMap(namespace,configName,configName);
+        //  ingress(String namespace,String name,String domain,String serviceName,Integer servicePort){
+      //  ingress(namespace,podName,domain,);
+
       //  create(namespace,podName,labelsName,image,81,podName);
         //  createService(namespace,podName,labelsName,81,portName);
     }
@@ -155,7 +185,6 @@ public class NginxPod2 extends BaseConfig {
         if (aBoolean){
             kubes.deleteService(namesapce,podName);
             kubes.deleteConf(namesapce,podName);
-
         }
     }
 
@@ -170,74 +199,5 @@ public class NginxPod2 extends BaseConfig {
                 ).build();
         kubes.getKubeclinet().configMaps().createOrReplace(configMap);
     }
-
-
-    public void ingress(String namespace,String name,String domain,String serviceName,Integer servicePort) throws FileNotFoundException {
-        KubernetesClient kubeclinet = kubes.getKubeclinet();
-        File file = new File(Kubes.getHomeSSLDir()+File.separator+domain);
-        String key = "";
-        String crt = "";
-        if (file.isDirectory()){
-            File[] files = file.listFiles();
-            for (int i = 0;i <files.length;i++){
-                File file1 = files[i];
-                String fileExtension = OpenFileUtils.getFileExtension(file1);
-                if ("key".equals(fileExtension)){
-                     key = OpenFileUtils.readFile(new FileInputStream(file1));
-                }else if("crt".equals(fileExtension)){
-                    crt = OpenFileUtils.readFile(new FileInputStream(file1));
-                }
-            }
-            tls(namespace,name,key,crt);
-        }
-        Map<String,String> map =new HashMap<>();
-       // map.put("kubernetes.io/ingress.class","nginx");
-        Ingress ingress = new IngressBuilder()
-                .withNewMetadata()
-                .withNamespace(namespace)
-               // .withAnnotations(map)
-                .addToLabels("app-ingress",podNginxPrefix+name)
-                .withName(podNginxPrefix+name)
-                .endMetadata()
-                .withNewSpec()
-                .addToTls(new IngressTLSBuilder().addToHosts(domain)
-                        .withNewSecretName(podNginxPrefix+name).build())
-                .addNewRule()
-                .withHost(domain)
-                .withNewHttp()
-                .withPaths(new HTTPIngressPathBuilder()
-                        .withPath("/")
-                        .withNewBackend()
-                        .withServiceName(podNginxPrefix+serviceName)
-                        .withNewServicePort(servicePort)
-                        .endBackend().build())
-                .endHttp()
-                .endRule()
-                .endSpec()
-                .build();
-        kubeclinet.network().ingresses().create(ingress);
-    }
-
-
-    public void tls(String namespace,String name,String key,String crt){
-       // System.out.println(crt);
-      // System.out.println(key);
-        KubernetesClient kubeclinet = kubes.getKubeclinet();
-        Secret secretBuilder = new SecretBuilder()
-                .withNewMetadata()
-                .withName(podNginxPrefix+name)
-                .addToLabels("app-secret","0")
-                .withNamespace(namespace)
-                .endMetadata()
-                .withType("kubernetes.io/tls")
-                .addToData("tls.key",Base64.getEncoder().encodeToString(key.getBytes()))
-                .addToData("tls.crt",Base64.getEncoder().encodeToString(crt.getBytes()))
-                .build();
-        kubeclinet.secrets().create(secretBuilder);
-    }
-
-
-
-
 
 }

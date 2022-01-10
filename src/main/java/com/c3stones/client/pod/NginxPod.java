@@ -125,10 +125,10 @@ public class NginxPod extends BaseConfig {
     public  void delete(String namesapce,String podName){
         Boolean aBoolean = kubes.deletePod(namesapce, podName);
         kubes.getKubeclinet().apps().deployments().inNamespace(namesapce).withName(podNginxPrefix+podName).delete();
-        if (aBoolean){
             kubes.deleteService(namesapce,podNginxPrefix+podName);
             kubes.deleteConf(namesapce,podNginxPrefix+podName);
-        }
+            kubes.deleteIngress(namesapce,podNginxPrefix+podName);
+            kubes.deleteSecret(namesapce,podNginxPrefix+podName);
     }
 
 

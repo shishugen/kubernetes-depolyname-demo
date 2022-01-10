@@ -19,6 +19,7 @@
         <li>环境管理</li>
 -->
         <li>前端管理</li>
+        <li>域名</li>
         <li>部署管理</li>
     </ul>
     <div class="layui-tab-content">
@@ -82,6 +83,21 @@
             </div>
         </div>
 
+
+
+        <!--  域名 -->
+        <div class="layui-tab-item">
+            <div class="layui-content">
+                <div class="layui-row">
+                    <div class="layui-card">
+                        <table class="layui-hide" id="table13" lay-filter="config"></table>
+                        <script type="text/html" id="operation13">
+                            <a class="layui-btn layui-btn-xs" lay-event="ingressOpen">打开</a>
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!--  deployment -->
 
 
@@ -236,6 +252,29 @@ table.render({
 	      ,{field:'podStatus', title: '容器状态', align: 'center',sort: true}
 	      ,{field:'date', title: '部署时间', align: 'center',sort: true}
 	      ,{title:'操作', align: 'center', toolbar: '#operation3', width:250}
+    	]
+   	]
+    ,response: {
+        statusCode: 200
+    }
+    ,parseData: function(res){
+	    console.log(res)
+    	return {
+    		"code": res.code
+            ,"msg": res.msg
+            ,"count": res.data.total
+            ,"data": res.data.records
+    	};
+    }
+});
+table.render({
+	id: 'table13'
+	,elem: '#table13'
+    ,url: '[[@{/ingress/listData}]]'
+    ,cols: [
+    	[
+	      ,{field:'host', title: '域名'}
+	      ,{title:'操作', align: 'center', toolbar: '#operation13', width:250}
     	]
    	]
     ,response: {
@@ -477,16 +516,20 @@ table.on('tool(config)', function(obj){
         });
      }else if(obj.event === 'delNginx') {
 
-    }else if(obj.event === "open"){
-      var list = obj.data.ports.split(",");
-      for (var i =0 ; i < list.length ; i++){
-          if(obj.data.podName == "env-nacos"){
-              window.open("http://"+obj.data.bindK8sIP+":"+list[i].split(":")[1]+"/nacos");
-          }else{
-              window.open("http://"+obj.data.bindK8sIP+":"+list[i].split(":")[1]);
-          }
-      }
-    }else if(obj.event ==='logs'){
+    }else if(obj.event === "open") {
+        var list = obj.data.ports.split(",");
+        for (var i = 0; i < list.length; i++) {
+            if (obj.data.podName == "env-nacos") {
+                window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1] + "/nacos");
+            } else {
+                window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1]);
+            }
+        }
+    }else if(obj.event === "ingressOpen"){
+           window.open("http://"+obj.data.host);
+       // window.open("http://www.baidu.com");
+
+     }else if(obj.event ==='logs'){
         console.log(obj.data.namespace)
         window.open('[[@{/}]]pod/logs?namespace='+obj.data.namespace+'&podName='+obj.data.podName)
 
@@ -559,7 +602,6 @@ table.on('tool(config)', function(obj){
                     errorHandle(data);
                 },
                 success : function(data) {
-
                     $(".searchTable .layui-btn").eq(0).click();
                 }
             });
