@@ -116,6 +116,19 @@
 							</div>
 						</div>
 					</div>
+					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;color: blueviolet;">
+						<legend>NFS配置</legend>
+					</fieldset>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label" style="width: 200px">NFS-可不配置</label>
+							<div class="layui-input-inline"  style="width: 400px;">
+								<select id="nfsList"  name="nfsName" style="width: 400px;">
+									<option value="">请选择</option>
+								</select>
+							</div>
+						</div>
+					</div>
 
 
 				</div>
@@ -195,6 +208,23 @@ $.ajax({
             if (val && item.name == val ){
                 $('#namespace').val(item.name)
             }
+        });
+        layui.form.render("select")
+    }
+});
+
+$.ajax({
+    url : "[[@{/}]]nfs/findList",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        console.log("data",data)
+        $.each(data.data, function (index, item) {
+            console.log("item",item)
+             $('#nfsList').append(new Option(item.namespace+"-"+item.name, item.name));// 下拉菜单里添加元素
         });
         layui.form.render("select")
     }

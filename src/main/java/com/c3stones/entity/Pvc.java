@@ -16,4 +16,6 @@ public class Pvc {
     private String name;
     private String namespace;
     private String data;
+    private String phase;
+
 }

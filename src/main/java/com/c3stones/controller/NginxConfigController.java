@@ -183,8 +183,8 @@ public class NginxConfigController {
             File[] files1 = files.listFiles();
             for (File f :files1){
                if(f.getName().equals(fileName)){
-                   System.gc();//启动jvm垃圾回收
                    f.delete();
+                   System.gc();//启动jvm垃圾回收
                    return Response.success("删除成功");
                 }
             }

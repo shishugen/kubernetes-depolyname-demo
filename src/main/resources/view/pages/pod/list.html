@@ -90,6 +90,17 @@
             <div class="layui-content">
                 <div class="layui-row">
                     <div class="layui-card">
+
+                        <div class="layui-form-item layui-form layui-card-body layui-form-pane" >
+                            <label class="layui-form-label">命名空间</label>
+                            <div class="layui-input-inline">
+                                <select id="namespace5" lay-filter="namespace5" lay-verify="required" class="layui-input" name="namespace5">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                            <button class="layui-btn" data-type="reload5">查询</button>
+                        </div>
+
                         <table class="layui-hide" id="table13" lay-filter="config"></table>
                         <script type="text/html" id="operation13">
                             <a class="layui-btn layui-btn-xs" lay-event="ingressOpen">打开</a>
@@ -148,6 +159,7 @@ var isDownload = true
 
 var form = layui.form;
 var namespace4 = '';
+var namespace5 = '';
 var namespace1 = '';
 var namespace2 = '';
 
@@ -168,11 +180,13 @@ $.ajax({
             $('#namespace4').append(new Option(item.name, item.name));// 下拉菜单里添加元素
             $('#namespace1').append(new Option(item.name, item.name));// 下拉菜单里添加元素
             $('#namespace2').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            $('#namespace5').append(new Option(item.name, item.name));// 下拉菜单里添加元素
             var val = $("#defaultNamespaceHidden").val();
             if (val && item.name == val ){
                 $('#namespace4').val(item.name)
                 $('#namespace2').val(item.name)
                 $('#namespace1').val(item.name)
+                $('#namespace5').val(item.name)
             }
         });
         layui.form.render("select")
@@ -191,6 +205,10 @@ form.on('select(namespace4)', function(data){
 ;form.on('select(namespace2)', function(data){
     console.log(data);
     namespace2 = data.value;
+});
+;form.on('select(namespace5)', function(data){
+    console.log(data);
+    namespace5 = data.value;
 });
 table.render({
 	id: 'harborTable'
@@ -274,9 +292,18 @@ table.render({
     ,cols: [
     	[
 	      ,{field:'host', title: '域名'}
-	      ,{title:'操作', align: 'center', toolbar: '#operation13', width:250}
+	      ,{title:'操作', align: 'center', toolbar: '#operation13'}
     	]
+
    	]
+    ,page: {
+        layout: ['prev', 'page', 'next', 'count', 'skip', 'limit']
+        ,limits:[10,20,50,100]
+        , limit: 20
+        ,groups: 5
+        ,first: false
+        ,last: false
+    }
     ,response: {
         statusCode: 200
     }
@@ -390,6 +417,13 @@ active = {
             where: {
                 namespace : namespace4,
                 version : $("input[name='version']").val()
+            }
+		}, 'data');
+	},
+    reload5: function() {
+		table.reload('table13', {
+            where: {
+                namespace : namespace5,
             }
 		}, 'data');
 	},
@@ -602,7 +636,7 @@ table.on('tool(config)', function(obj){
                     errorHandle(data);
                 },
                 success : function(data) {
-                    $(".searchTable .layui-btn").eq(0).click();
+                    active.reload4();
                 }
             });
         });

@@ -67,7 +67,8 @@ public class PvcController extends BaseConfig {
                 String namespace = metadata.getNamespace();
                 Quantity storage = pvc.getSpec().getResources().getRequests().get("storage");
                 String sto = storage.getAmount() + storage.getFormat();
-                Pvc pvc1 = new Pvc(sto,name,namespace,KubeUtils.StringFormatDate(metadata.getCreationTimestamp()));
+                String phase = pvc.getStatus().getPhase();
+                Pvc pvc1 = new Pvc(sto,name,namespace,KubeUtils.StringFormatDate(metadata.getCreationTimestamp()),phase);
                 list.add(pvc1);
            }
         }

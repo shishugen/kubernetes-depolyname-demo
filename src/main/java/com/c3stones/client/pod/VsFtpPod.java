@@ -70,27 +70,27 @@ public class VsFtpPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .withHostNetwork(true)
                 .addNewContainer().withName(podName).withImage(image)
               //  .withImagePullPolicy(policy)
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/vsftpd/").build())
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(21).build())
               //  .addToPorts(new ContainerPortBuilder().withName(portName+"1").withContainerPort(21110).build())
-                .addToPorts(new ContainerPortBuilder().withName(vsftpdNginxName).withContainerPort(80).build())
+                .addToPorts(new ContainerPortBuilder().withName(vsftpdNginxName).withContainerPort(20080).build())
                 .addToEnv(new EnvVarBuilder().withName("LOCAL_UMASK").withValue("000").build())
               //  .addToEnv(new EnvVarBuilder().withName("FTP_USER").withValue("myuser").build())
                // .addToEnv(new EnvVarBuilder().withName("FTP_PASS").withValue("mypass").build())
-               // .addToEnv(new EnvVarBuilder().withName("PASV_ADDRESS").withValue("10.49.0.12").build())
+               // .addToEnv(new EnvVarBuilder().withName("PASV_ADDRESS").withValue("139.9.41.14").build())
               //  .addToEnv(new EnvVarBuilder().withName("PASV_MAX_PORT").withValue("21110").build())
                // .addToEnv(new EnvVarBuilder().withName("PASV_MIN_PORT").withValue("21110").build())
-                /*.addToEnv(new EnvVarBuilder().withName("PASV_ADDRESS")
+                .addToEnv(new EnvVarBuilder().withName("PASV_ADDRESS")
                         .withValueFrom(new EnvVarSourceBuilder().withFieldRef(
                                 new ObjectFieldSelectorBuilder().withFieldPath("status.podIP").build()).build())
-                        .build())*/
-
+                        .build())
                 .addToEnv(new EnvVarBuilder().withName("FILE_OPEN_MODE").withValue("0777").build())
                 .withResources(resource)
                 .endContainer()
-                .withDnsPolicy("ClusterFirst")
+             //   .withDnsPolicy("ClusterFirst")
                 .addNewVolume()
                 .endVolume()
                 .withVolumes(new VolumeBuilder().withName(pvcName)
@@ -127,7 +127,7 @@ public class VsFtpPod extends BaseConfig {
                 .withNamespace(namespace)
                 .endMetadata()
                 .withNewSpec()
-                .withExternalTrafficPolicy("Local")
+               // .withExternalTrafficPolicy("Local")
                 .addNewPort()
                 //内网端口
                 .withPort(21)
@@ -135,21 +135,14 @@ public class VsFtpPod extends BaseConfig {
                 .withName(portName)
                 .withNodePort(nodePort)
                 .endPort()
-                //内网端口
-         /*      .addNewPort()
-                .withPort(21110)
-                .withProtocol("TCP")
-                .withName(portName+"1")
-                .endPort()*/
 
                 .addNewPort()
                 //内网端口
-                .withPort(80)
+                .withPort(20080)
                 .withName(portNginxName)
                 .withProtocol("TCP")
                  .withNodePort(nodeNginxPort)
                 .endPort()
-
                 .withType(type)
                 .addToSelector(LABELS_KEY, labelsValue).endSpec()
                 .build();

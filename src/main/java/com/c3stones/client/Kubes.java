@@ -7,10 +7,12 @@ import com.c3stones.util.OpenFileUtils;
 import com.sun.org.apache.xml.internal.utils.NameSpace;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.*;
+import io.fabric8.kubernetes.api.model.extensions.Ingress;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.ContainerMetrics;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.NodeMetricsList;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetrics;
 import io.fabric8.kubernetes.api.model.metrics.v1beta1.PodMetricsList;
+import io.fabric8.kubernetes.api.model.networking.v1beta1.*;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
@@ -282,6 +284,9 @@ public class Kubes {
     public  Boolean deletePvc(String namesapce,String name){
         return getKubeclinet().persistentVolumeClaims().inNamespace(namesapce).withName(name).delete();
     }
+    public  Boolean deletePv(String name){
+        return getKubeclinet().persistentVolumes().withName(name).delete();
+    }
     public  Boolean deleteConf(String namesapce,String podName){
         return getKubeclinet().configMaps().inNamespace(namesapce).withName(podName).delete();
     }
@@ -356,27 +361,52 @@ public class Kubes {
                 .build();
         return getKubeclinet().persistentVolumeClaims().createOrReplace(build);
     }
+
     /**
-     *
+     * 手动创建PVC
      * @param name
      * @param namespace
-     * @param storageClassName
      * @param storageSize
      * @return
      */
-    public  PersistentVolume createPV(String name, String namespace, String storageClassName ,Integer storageSize) {
+    public  PersistentVolumeClaim createPVC(String name, String namespace, Integer storageSize ) {
+        PersistentVolumeClaim build = new PersistentVolumeClaimBuilder()
+                .withNewMetadata()
+                .addToLabels("nfs-pvc","nfs-pvc")
+                .withName(name)
+                .withNamespace(namespace)
+                .endMetadata()
+                .withNewSpec()
+                .withAccessModes("ReadWriteMany")
+                .withNewResources().addToRequests("storage",new Quantity(storageSize.toString(),"Gi")).endResources().endSpec()
+                .build();
+        return getKubeclinet().persistentVolumeClaims().createOrReplace(build);
+    }
+
+
+        /**
+         *
+         * @param name
+         * @param namespace
+         * @param nfsAddr
+         * @param nfsPath
+         * @param storageSize
+         * @return
+         */
+    public  PersistentVolume createPV(String name, String namespace,String nfsAddr, String nfsPath ,Integer storageSize) {
         Map<String,Quantity> map = new HashMap(1);
-        map.put("storage",new Quantity(String.valueOf(storageSize),"G"));
+        map.put("storage",new Quantity(String.valueOf(storageSize),"Gi"));
         PersistentVolume build = new PersistentVolumeBuilder()
                 .withNewMetadata()
+                .addToLabels("nfs-pv","nfs-pv")
                 .withName(name)
                 .withNamespace(namespace)
                 .endMetadata()
                 .withNewSpec()
                 .withCapacity(map)
-                .withAccessModes("ReadOnlyMany")
-                .withStorageClassName(storageClassName)
-                .withNewNfs().withServer("192.168.0.218").withPath("/xuanyuan/nfs/data/test2/").endNfs()
+                .withAccessModes("ReadWriteMany")
+                .withPersistentVolumeReclaimPolicy("Delete")
+                .withNewNfs().withServer(nfsAddr).withPath(nfsPath).endNfs()
                 .endSpec()
                 .build();
         return getKubeclinet().persistentVolumes().createOrReplace(build);
@@ -757,27 +787,30 @@ public class Kubes {
         return new DefaultKubernetesClient(config);
     }
 
+    public static KubernetesClient getKubeclinetHauwei(){
+        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\hauwei\\121-37-27-47-PORT-5443");
+        Config config = new ConfigBuilder()
+                .build();
+        return new DefaultKubernetesClient(config);
+    }
 
+
+    public static void deleteingr(){
+        KubernetesClient kubeclinet = getKubeclinetHauwei();
+        kubeclinet.network().ingress().inNamespace("app-sys").withName("nginxdist-1").delete();
+    }
 
     @SneakyThrows
     public static void main(String[] args) {
-        Map<String,Integer> map = new HashMap<>();
+        KubernetesClient kubeclinet2 = getKubeclinet2();
+        Map<String,Quantity> map = new HashMap(1);
+        String storageSize = "2";
+        String name = "test-pv";
+        String namespace = "app-ssg";
+        String nfsAddr = "10.49.0.10";
+        String nfsPath = "/home/nfs/mount/";
 
-        KubernetesClient kubeclinet = getKubeclinet2();
-        Secret secretBuilder = new SecretBuilder()
-                .withNewMetadata()
-                .withName("test")
-                .withNamespace("app-ssg")
-                .endMetadata()
-                .withType("kubernetes.io/tls")
-                .addToData("tls.key",Base64.getEncoder().encodeToString("222".getBytes()))
-                .addToData("tls.crt",Base64.getEncoder().encodeToString("22233".getBytes()))
-                .build();
-        kubeclinet.secrets().create(secretBuilder);
-        Base64.getEncoder().encodeToString("222".getBytes());
-        Base64.Encoder encoder = Base64.getEncoder();
-
-
+        kubeclinet2.persistentVolumes().withName("testw").delete();
        /*
         PodList list = kubeclinet.pods().inNamespace("1478191349792313345").list();
         List<Pod> items1 = list.getItems();
@@ -931,6 +964,8 @@ public class Kubes {
         }
         return dir;
     }
+
+
 
     /**
      * K8S配置名

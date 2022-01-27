@@ -1,12 +1,11 @@
 package com.c3stones.controller;
 
-import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.common.Response;
-import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
-import io.fabric8.kubernetes.api.model.Secret;
-import io.fabric8.kubernetes.api.model.SecretList;
+import com.c3stones.entity.Pvc;
+import com.c3stones.util.KubeUtils;
+import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.networking.v1beta1.Ingress;
 import io.fabric8.kubernetes.api.model.networking.v1beta1.IngressRule;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -17,13 +16,10 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,35 +33,21 @@ import java.util.Map;
  */
 @Controller
 @Slf4j
-@RequestMapping(value = "ingress")
-public class IngressController {
+@RequestMapping(value = "nfs")
+public class NfsController {
 
 
     @Autowired
     private Kubes kubes;
 
-    @RequestMapping(value = "listData")
-    @ResponseBody
-    public Response<Pages> listData(String namespace) {
-        KubernetesClient kubeclinet = kubes.getKubeclinet();
-        List list = new ArrayList();
-        List<Ingress> items = null;
-        if (StringUtils.isNotBlank(namespace)){
-            items = kubeclinet.network().ingresses().inNamespace(namespace).withLabel("app-ingress").list().getItems();
-        }else{
-            items = kubeclinet.network().ingresses().withLabel("app-ingress").list().getItems();
-        }
-      if (items != null){
-          items.forEach(a->{
-              List<IngressRule> rules = a.getSpec().getRules();
-              IngressRule ingressRule = rules.get(0);
-              list.add(ingressRule);
-          });
-      }
-        Pages page = new Pages();
-        page.setRecords(list);
-        page.setTotal(list.size());
-        return Response.success(page);
+    /**
+     * 批量
+     *
+     * @return
+     */
+    @RequestMapping(value = "list")
+    public String list() {
+        return "pages/nfs/list";
     }
 
     /**
@@ -73,10 +55,80 @@ public class IngressController {
      *
      * @return
      */
-    @RequestMapping(value = "test/upload")
-    public String addMulti() {
-        return "pages/test/upload";
+    @RequestMapping(value = "add")
+    public String add() {
+        return "pages/nfs/add";
     }
+      /**
+     * 添加
+     *
+     * @return
+     */
+    @RequestMapping(value = "addNfs")
+    @ResponseBody
+    public Response addNfs(String namespace,String name,String nfsAddr,String nfsPath,Integer nfsSize) {
+        try {
+            kubes.createPV(name,namespace,nfsAddr,nfsPath,nfsSize);
+            kubes.createPVC(name,namespace,nfsSize);
+        }catch (Exception e){
+            delete(namespace,name);
+            e.printStackTrace();
+        }
+       return Response.success("OK");
+    }
+
+
+    @RequestMapping(value = "delete")
+    @ResponseBody
+    public Response delete(String namespace,String name) {
+        kubes.deletePvc(namespace,name);
+        kubes.deletePv(name);
+        return Response.success("OK");
+    }
+
+    @RequestMapping(value = "listData")
+    @ResponseBody
+    public Response<Pages> listData() {
+        List<Pvc> list = new ArrayList<>();
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+        PersistentVolumeClaimList list1 = kubeclinet.persistentVolumeClaims().withLabel("nfs-pvc").list();
+        List<PersistentVolumeClaim> items1 = list1.getItems();
+        for (PersistentVolumeClaim pvc:items1 ) {
+            ObjectMeta metadata = pvc.getMetadata();
+            String name = metadata.getName();
+                String namespace = metadata.getNamespace();
+                Quantity storage = pvc.getSpec().getResources().getRequests().get("storage");
+                String sto = storage.getAmount() + storage.getFormat();
+            String phase = pvc.getStatus().getPhase();
+            Pvc pvc1 = new Pvc(sto,name,namespace,KubeUtils.StringFormatDate(metadata.getCreationTimestamp()),phase);
+                list.add(pvc1);
+        }
+        Pages page = new Pages();
+        page.setRecords(list);
+        page.setTotal(list.size());
+        return Response.success(page);
+    }
+
+    @RequestMapping(value = "findList")
+    @ResponseBody
+    public Response findList() {
+        List<Pvc> list = new ArrayList<>();
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+        PersistentVolumeClaimList list1 = kubeclinet.persistentVolumeClaims().withLabel("nfs-pvc").list();
+        List<PersistentVolumeClaim> items1 = list1.getItems();
+        for (PersistentVolumeClaim pvc:items1 ) {
+            ObjectMeta metadata = pvc.getMetadata();
+            String name = metadata.getName();
+            String namespace = metadata.getNamespace();
+            Quantity storage = pvc.getSpec().getResources().getRequests().get("storage");
+            String sto = storage.getAmount() + storage.getFormat();
+            String phase = pvc.getStatus().getPhase();
+            Pvc pvc1 = new Pvc(sto,name,namespace,KubeUtils.StringFormatDate(metadata.getCreationTimestamp()),phase);
+            list.add(pvc1);
+        }
+        return Response.success(list);
+    }
+
 
     /**
      * pod

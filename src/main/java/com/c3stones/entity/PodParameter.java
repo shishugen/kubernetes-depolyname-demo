@@ -29,4 +29,21 @@ public class PodParameter {
 
 
 
+    private String image;
+    private String podName;
+    private String nacos;
+    private Integer port;
+    private Integer nodePort;
+    private Integer replicas;
+
+    private Integer nfs ;
+    private Integer memoryXmx;
+    private Integer memoryXms ;
+    private Integer health ;
+    private Integer nginxEnv;
+    private String seataNacosNamespace;
+
+
+
+
 }

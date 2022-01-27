@@ -158,12 +158,14 @@ public class BaseConfig<T> {
      * @return
      */
     public List<T> setPage(List<T> list, Integer limit, Integer page){
-        int count = list.size();
-        int pageNo=(page-1)*limit;
-        if (pageNo+limit > count) {
-            list = list.subList(pageNo,count);
-        }else {
-            list = list.subList(pageNo,pageNo+limit);
+        if (list != null && list.size() >0){
+            int count = list.size();
+            int pageNo=(page-1)*limit;
+            if (pageNo+limit > count) {
+                list = list.subList(pageNo,count);
+            }else {
+                list = list.subList(pageNo,pageNo+limit);
+            }
         }
         return list;
     }

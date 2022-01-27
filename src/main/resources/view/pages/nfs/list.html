@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <div class="layui-content">
+                <div class="layui-row">
+                    <div class="layui-card">
+                        <button class="layui-btn" data-type="reload">查询</button>
+                        <button class="layui-btn layui-btn-warm layui-btn-sm " data-type="add">添加</button>
+                        <table class="layui-hide" id="dataTable" lay-filter="config"></table>
+                        <script type="text/html" id="operation">
+                            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+<script>
+var element = layui.element;
+var table = layui.table;
+var layer = layui.layer;
+
+
+table.render({
+	id: 'table'
+	,elem: '#dataTable'
+    ,url: '[[@{/nfs/listData}]]'
+    ,cols: [
+    	[
+	       {field:'name', title: '名称'}
+	      ,{field:'namespace', title: '命名空间'}
+	      ,{field:'phase', title: '状态'}
+	      ,{field:'storage', title: '存储大小'}
+	      ,{field:'data', title: '创建时间'}
+	      ,{title:'操作', align: 'center', toolbar: '#operation', width:150}
+    	]
+   	]
+    ,response: {
+        statusCode: 200
+    }
+    ,parseData: function(res){
+	    console.log(res)
+    	return {
+    		"code": res.code
+            ,"msg": res.msg
+            ,"count": res.data.total
+            ,"data": res.data.records
+    	};
+    }
+});
+;
+
+
+active = {
+	reload: function() {
+		table.reload('table', {
+		}, 'data');
+	},
+	reset: function() {
+		$(".layui-input").val("");
+	},
+    add: function() {
+        layer.open({
+            type: 2,
+            area: ['100%', '80%'],
+            title: 'nfs添加',
+            content: '[[@{/}]]nfs/add'
+        });
+    },
+};
+
+// 按钮事件
+$('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+});
+
+
+//监听行工具事件
+table.on('tool(config)', function(obj){
+
+    var row = obj.data;
+    if(obj.event === 'del') {
+        layer.prompt({title: '输入删除密码，并确认', formType: 1}, function(pass, index){
+            layer.close(index);
+              if(pass === "654321"){
+                  console.log("正确")
+                  layer.confirm("确认删除   "+ row.name+"   吗？", {icon: 3, title: '提示'}, function (index) {
+                      layer.close(index);
+                      $.ajax({
+                          url: "[[@{/}]]nfs/delete",
+                          data: {'namespace': row.namespace,"name":row.name},
+                          type: "post",
+                          dataType: "json",
+                          error: function (data) {
+                              errorHandle(data);
+                          },
+                          success: function (data) {
+                              console.log(data)
+                              $(".searchTable .layui-btn").eq(0).click();
+                          }
+                      });
+                  });
+              }else{
+                  layer.msg('密码错误 您的密码 : '+pass);
+                  console.log("失败！")
+              }
+            //layer.msg('演示完毕！您的口令：'+ pass +'<br>您最后写下了：'+text);
+        });
+
+
+
+    }
+});
+
+
+
+//错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

@@ -1,5 +1,12 @@
 package com.c3stones.service;
 
+import com.obs.services.ObsClient;
+import com.obs.services.ObsConfiguration;
+import com.obs.services.exception.ObsException;
+import com.obs.services.model.ListPartsRequest;
+import com.obs.services.model.ListPartsResult;
+import com.obs.services.model.Multipart;
+import com.obs.services.model.PutObjectResult;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -19,79 +26,46 @@ public class Test {
 
 
 
+    private static final String endPoint = "https://obs.cn-north-4.myhuaweicloud.com";
 
-    static long whiteLine = 0;
-    static long comentLine = 0;
-    static long sormaLine = 0;
+    private static final String ak = "O3IGKD6PUIZWDQICF5YD";
 
+    private static final String sk = "emfI2NFCDfz13X30CyKUDnWmQMs6dmFIYRjVkk1s";
 
+    private static ObsClient obsClient;
+
+    private static String bucketName = "portal-video";
+
+    private static void listAllParts(String uploadId)
+            throws ObsException
+    {
+        System.out.println("Listing all parts......");
+        ListPartsRequest listPartsRequest = new ListPartsRequest(bucketName, "adfa2f07999584bac648e411d0bf780f.mp4\n", uploadId);
+        ListPartsResult partListing = obsClient.listParts(listPartsRequest);
+        for (Multipart part : partListing.getMultipartList())
+        {
+            System.out.println("\tPart#" + part.getPartNumber() + ", ETag=" + part.getEtag());
+        }
+        System.out.println();
+    }
 
     public static void main(String[] args) {
-        FTPClient fc = null;
         try {
-            //创建ftp客户端
-            fc = new FTPClient();
-            //设置连接地址和端口
-            // fc.connect("10.49.0.12", 31368);
-             fc.connect("10.49.0.12", 30021);
-           // fc.connect("139.9.46.153", 30021);
-            //设置用户和密码
-            boolean login = fc.login("myuser", "mypass");
+            ObsConfiguration config = new ObsConfiguration();
+            config.setSocketTimeout(30000);
+            config.setConnectionTimeout(10000);
+            config.setEndPoint(endPoint);
+            obsClient = new ObsClient(ak, sk, config);
+            listAllParts("0000017E907009F866D45D5B956E6E54");
 
-            //设置文件类型
-            fc.setFileType(FTP.BINARY_FILE_TYPE);
-            System.out.println("login=="+login);
-
-            //上传
-            boolean flag = fc.storeFile("test3377.jpg", new FileInputStream(new File("E:/test.jpg")));
-          //  fc.enterLocalPassiveMode();
-            // boolean b = fc.deleteFile("test.jpg");
-            FTPFile[] ftpFiles = fc.listFiles();
-            System.out.println(ftpFiles.length);
-            if (flag)
-                System.out.println("上传成功...");
-            else
-                System.out.println("上传失败...");
-        }catch (Exception e){
+        } catch (ObsException e) {
             e.printStackTrace();
         }
 
 
+
     }
 
-    private static void preas(File f){
-        BufferedReader br = null;
-        Boolean comPd = false;
-        try {
-            br = new BufferedReader(new FileReader(f));
-            String readLine = null;
-            while((readLine = br.readLine())!=null){
-                readLine = readLine.trim();
-                if(readLine.matches("^[\\s&&[^\\n]]*$")){
-                    whiteLine ++;
-                }else if(readLine.startsWith("/*")&&!readLine.endsWith("*/")){
-                    comentLine ++;
-                    comPd = true;
-                }else if(readLine.startsWith("/*")&&!readLine.endsWith("*/")){
-                    comentLine ++;
-                }else if(comPd){
-                    comentLine ++;
-                    if(readLine.endsWith("*/")){
-                        comPd = false;
-                    }
-                }else if(readLine.startsWith("//")){
-                    comentLine ++;
-                }else{
-                    sormaLine++;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+
 
 }

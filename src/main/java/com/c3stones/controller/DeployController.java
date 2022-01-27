@@ -298,7 +298,7 @@ public class DeployController  extends BaseConfig {
 	@ResponseBody
 	public Response<Boolean> pod(String namespace, String image,String podName,String nacos,Integer port,Integer nodePort,Integer replicas,
 	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health ,Integer nginxEnv,String seataNacosNamespace
-	) {
+	,String nfsName) {
 		System.out.println(namespace);
 		System.out.println(podName);
 		System.out.println(image);
@@ -331,9 +331,15 @@ public class DeployController  extends BaseConfig {
 		String pvcLogs = namespace+podName+"-logs";
 			kubes.createPVC(pvcLogs,namespace,nfsStorageClassName,12);
 			if(nfs == 1){
-					kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
+				String pvcName = "";
+					if (StringUtils.isNotBlank(nfsName)){
+						pvcName=nfsName;
+					}else{
+						pvcName=namespace+podName;
+						kubes.createPVC(pvcName,namespace,nfsStorageClassName,20);
+					}
 					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,serviceName,split[2],
-							nacosNamespace,namespace+podName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace)){
+							nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,serviceName,port,nodePort,isNginxEnv);
 						}
@@ -416,6 +422,7 @@ public class DeployController  extends BaseConfig {
 				kubes.deleteDeployments(namespace,podAppPrefix+podName);
 				kubes.deleteService(namespace,randomPortName);
 				kubes.deletePvc(namespace,namespace+podName);
+				//kubes.deletePv(namespace,namespace+podName);
 				e.printStackTrace();
 			}
 		}
