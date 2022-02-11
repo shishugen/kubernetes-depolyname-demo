@@ -62,7 +62,7 @@ table.render({
     ,page: {
         layout: ['prev', 'page', 'next', 'count', 'skip', 'limit']
         ,limits:[10,20,50,100]
-        , limit: 20
+        ,limit: 20
         ,groups: 5
         ,first: false
         ,last: false
@@ -149,7 +149,6 @@ active = {
             where: {
                 projectName : $("input[name='projectName']").val(),
                 version : $("input[name='version']").val()
-                ,page:1
         }
 		}, 'data');
 	},
