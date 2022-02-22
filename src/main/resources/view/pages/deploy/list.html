@@ -33,7 +33,7 @@
                     <button class="layui-btn layui-btn-normal layui-btn-sm" data-type="addNginx">前端新增</button>
                     <button class="layui-btn layui-btn-normal layui-btn-sm"  data-type="addJar">JAR新增</button>
                     <button class="layui-btn layui-btn-normal layui-btn-sm" data-type="addPython">Python新增</button>
-                    <button class="layui-btn layui-btn-danger layui-btn-sm"  data-type="batchDeleteImage">删除镜像</button>
+                    <button class="layui-btn layui-btn-danger layui-btn-sm"  id="checkboxBut"  data-type="batchDeleteImage">删除镜像</button>
                 </div>
 
 					<table class="layui-hide" id="harborDataTable" lay-filter="config"></table>
@@ -51,9 +51,32 @@
 var element = layui.element;
 var table = layui.table;
 var layer = layui.layer;
-
-
-
+var checkboxData = []
+$("#checkboxBut").hide()
+table.on('checkbox(config)', function(obj){
+   if (obj.type == 'all'){
+        if (obj.checked){
+            var checkStatus = table.checkStatus('harborTable')
+                ,data = checkStatus.data;
+            for (var i = 0; i < data.length;i++){
+                checkboxData.push(data[i])
+            }
+        }else{
+            checkboxData =[]
+        }
+   }else{
+       if(obj.checked){
+           checkboxData.push(obj.data)
+       }else{
+           checkboxData.splice(obj.data,1);
+       }
+   }
+   if (checkboxData.length > 0){
+       $("#checkboxBut").show()
+   } else{
+       $("#checkboxBut").hide()
+   }
+});
 
 table.render({
 	id: 'harborTable'
@@ -156,6 +179,7 @@ active = {
 		$(".layui-input").val("");
 	},
     batchDeleteImage : function(){ //获取选中数据
+
         var checkStatus = table.checkStatus('harborTable')
             ,data = checkStatus.data;
         var projectName =''

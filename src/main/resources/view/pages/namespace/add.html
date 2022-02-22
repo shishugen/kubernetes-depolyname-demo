@@ -18,8 +18,11 @@
 					<div class="layui-inline">
 						<label class="layui-form-label">命名空间</label>
 						<div class="layui-input-inline">
-							<input type="tel" name="name"   lay-verify="required" autocomplete="off" class="layui-input">
+							<input type="tel" name="name" maxlength="4" lay-verify="required" placeholder="最多输入4个字" autocomplete="off" class="layui-input">
 						</div>
+					</div>
+					<div class="layui-form-item">
+						<label style="width: 360px;color: blueviolet" class="layui-form-label">会自动添加app-前缀</label>
 					</div>
 					</div>
 				<div class="layui-form-item">

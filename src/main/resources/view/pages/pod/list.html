@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<div class="layui-tab layui-tab-card" >
+<div class="layui-tab layui-tab-brief" >
     <input id="defaultNamespaceHidden" hidden th:value="${defaultNamespace}"/>
 
     <ul class="layui-tab-title">
@@ -618,8 +618,7 @@ table.on('tool(config)', function(obj){
                     errorHandle(data);
                 },
                 success : function(data) {
-                    console.log(data)
-                    $(".searchTable .layui-btn").eq(0).click();
+                    active.reload4();
                 }
             });
         });

@@ -12,10 +12,7 @@ import com.c3stones.common.Response;
 import com.c3stones.entity.*;
 import com.c3stones.util.KubeUtils;
 import com.c3stones.util.OpenFileUtils;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.ServicePort;
-import io.fabric8.kubernetes.api.model.Volume;
+import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -283,7 +281,19 @@ public class DeployController  extends BaseConfig {
 		List<Volume> volumes = deployment.getSpec().getTemplate().getSpec().getVolumes();
 		if(volumes != null  && volumes.size() > 0){
 			volumes.forEach(a->{
-				kubeclinet.persistentVolumeClaims().inNamespace(namespace).withName(a.getName()).delete();
+                PersistentVolumeClaim persistentVolumeClaim = kubeclinet.persistentVolumeClaims().inNamespace(namespace).withName(a.getName()).get();
+                if (persistentVolumeClaim != null){
+                   ObjectMeta metadata = persistentVolumeClaim.getMetadata();
+                    Map<String, String> labels = metadata.getLabels();
+                    if (labels != null &&  labels.size() > 0){
+                        String s = labels.get("nfs-pvc");
+                        if (StringUtils.isBlank(s)){
+                            kubeclinet.persistentVolumeClaims().inNamespace(namespace).withName(a.getName()).delete();
+                        }
+                    }
+                }else{
+                    kubeclinet.persistentVolumeClaims().inNamespace(namespace).withName(a.getName()).delete();
+                }
 			});
 		}
 		return Response.success(true);

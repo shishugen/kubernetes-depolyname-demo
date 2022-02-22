@@ -19,6 +19,7 @@
         	<form class="layui-form layui-card-body layui-form-pane" method="post" th:action="@{/deploy/mepoyMultiPod}">
 				<div class="layui-form-item">
 					<div class="layui-form-item">
+
 						<input id="oldImage" th:value="${image}" hidden>
 						<label class="layui-form-label">镜像</label>
 						<div class="layui-input-block">
@@ -26,8 +27,11 @@
 								<option value="">请选择</option>
 							</select>-->
 							<input hidden id="image"name="images">
+							<div id="demo1" class="xm-select-demo"></div>
 
+<!--
 							<div id="demo2" class="xm-select-demo" th:width="100"></div>
+-->
 						</div>
 					</div>
 
@@ -125,6 +129,7 @@ layui.use('form', function(){
 });
 
 
+
 form.on('select(nacosList)', function(data){
     $("#nacosNamespace").empty()
     $("#seataNacosNamespace").empty()
@@ -152,7 +157,7 @@ form.on('select(nacosList)', function(data){
     }
 })
 
-var demo2=[]
+var demo1=[]
 
 $.ajax({
     url : "[[@{/}]]deploy/getNamespace",
@@ -182,16 +187,26 @@ $.ajax({
         errorHandle(data);
     },
     success : function(data) {
-        console.log(data)
-        var images = $("#oldImage").val();
-        console.log(images,"images")
 
-         demo2 = xmSelect.render({
-            el: '#demo2',
+         demo1 = xmSelect.render({
+             el: '#demo1',
+             toolbar: {
+                 show: true,
+                 showIcon: false,
+             },
+             filterable: true,
+             autoRow: true,
+             height:"400px",
+            data:data.data,
+            prop: { name: 'title' },
+        })
+        /* demo2 = xmSelect.render({
+             searchTips: "请输入船舶名称搜索",
+             filterable: true,
+             el: '#demo2',
             content: "<div id='transfer'></div>",
             height: 'auto',
             autoRow: true,
-            filterable: true,
             data: data.data,
             prop: { name: 'title' },
             on: function(data){
@@ -216,7 +231,7 @@ $.ajax({
                     demo2.delete(data)
                 }
             }
-        });
+        });*/
     }
 });
 
@@ -270,7 +285,7 @@ form.verify({
 
 // 提交表单
 form.on('submit(*)', function(data){
-    var checkPer = demo2.getValue('value');
+    var checkPer = demo1.getValue('value');
 	$("#image").val(checkPer)
     $(".layui-form").ajaxForm({
         error: function(data){
