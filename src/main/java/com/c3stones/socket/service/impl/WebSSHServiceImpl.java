@@ -142,7 +142,13 @@ public class WebSSHServiceImpl implements WebSSHService {
                 String s ="";
                 if(line.contains("INFO")){
                      s = "<p style=\"color: #0000FF\">" + line + "</p>";
-                }else if(line.contains("ERROR")){
+                }else if(line.contains("ERROR")
+                        ||line.contains("error")
+                        ||line.contains("Error")
+                        || line.contains("java:")
+                        ||line.contains("failed")
+                        ||line.contains("Failed")){
+                  //  System.out.println("ERROR==="+line);
                      s = "<p style=\"color: crimson\">" + line + "</p>";
                 }else{
                     s = "<p style=\"color: #009688\">" + line + "</p>";
