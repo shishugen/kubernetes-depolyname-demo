@@ -191,11 +191,11 @@ public class NginxPod2 extends BaseConfig {
             tls(namespace,name,key,crt);
         }
         Map<String,String> map =new HashMap<>();
-       // map.put("kubernetes.io/ingress.class","nginx");
+        map.put("nginx.ingress.kubernetes.io/proxy-body-size","500m");
         Ingress ingress = new IngressBuilder()
                 .withNewMetadata()
                 .withNamespace(namespace)
-               // .withAnnotations(map)
+                .withAnnotations(map)
                 .addToLabels("app-ingress",podNginxPrefix+name)
                 .withName(podNginxPrefix+name)
                 .endMetadata()
