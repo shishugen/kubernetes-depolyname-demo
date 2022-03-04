@@ -13,6 +13,7 @@ public class PodParameter {
 
     private String name;
     private String namespace;
+    private String labelsName;
     private String mysqlServer;
     private Integer mysqlPort;
     private String mysqlPwd;
@@ -42,6 +43,22 @@ public class PodParameter {
     private Integer health ;
     private Integer nginxEnv;
     private String seataNacosNamespace;
+    private String configName;
+
+    private String backFile;
+
+    /*
+     *数据库备份保留最后几天
+     */
+    private Integer backDay;
+    /**
+     * 多久备份一次
+     */
+    private Integer backDate;
+
+
+    private Integer nfsSize;
+
 
 
 

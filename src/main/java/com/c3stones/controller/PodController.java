@@ -235,6 +235,7 @@ public class PodController extends BaseConfig{
     public void downloadJar(String namespace, String podName, HttpServletResponse response ,HttpServletRequest request ) {
         InputStream read = kubes.getKubeclinet().pods().inNamespace(namespace)
                 .withName(podName).file("/app.jar").read();
+
         response.setContentType("application/octet-stream");
         String filename = request.getParameter("filename");
         response.setHeader("Content-disposition", "attachment; filename=" +new String((podName+".jar").getBytes("gb2312"),"ISO8859-1"));

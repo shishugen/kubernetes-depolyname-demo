@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane">
+				    <div class="layui-form-item">
+						<label class="layui-form-label">命名空间</label>
+						<div class="layui-input-inline">
+							<select id="namespace" lay-verify="required" lay-filter="namespace" name="namespace">
+								<option value="">请选择</option>
+							</select>
+						</div>
+						<label class="layui-form-label">备份服务</label>
+						<div class="layui-input-inline">
+							<select id="mysqlBackServer" lay-filter="mysqlBackServer" lay-verify="required" name="mysqlBackServer">
+								<option value="">请选择</option>
+							</select>
+						</div>
+
+						<label class="layui-form-label">选择文件</label>
+						<div class="layui-input-inline">
+							<select id="backFile" lay-verify="required" lay-search="" name="backFile">
+								<option value="">请选择</option>
+							</select>
+						</div>
+					</div>
+				<div class="layui-form-item">
+					<button type="button" id="download" data-type="download" class="layui-btn" lay-submit lay-filter="*">下载</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.render();
+});
+
+
+
+
+
+
+form.on('select(namespace)', function(data){
+    $("#mysqlBackServer").empty()
+    $('#mysqlBackServer').append(new Option("请选择",""));//
+	 $("#mysqlServer").empty()
+    $('#mysqlServer').append(new Option("请选择",""));//
+    console.log(data);
+    var namespace = data.value
+    $.ajax({
+        url : "[[@{/}]]pod/listEnvData",
+        type : "get",
+        data : {namespace:namespace,limit : 100, page:1},
+        dataType : "json",
+        error : function(data) {
+            errorHandle(data);
+        },
+        success : function(data) {
+            data = data.data.records;
+            $.each(data, function (index, item) {
+                if(item.podName.indexOf("remysqlback") != -1){
+                }else if(item.podName.indexOf("mysqlback") != -1) {
+                    $('#mysqlBackServer').append(new Option(item.namespace + "." + item.podName, item.namespace + "---" + item.podName));// 下拉菜单里添加元素
+                }
+            });
+            layui.form.render("select")
+        }
+    });
+
+})
+form.on('select(mysqlBackServer)', function(data){
+    $("#backFile").empty()
+    $('#backFile').append(new Option("请选择",""));// 下拉菜单里添加元素
+    console.log(data);
+    var strings = data.value.split("---");
+    console.log(strings);
+    if(strings != null && strings != ''){
+        $.ajax({
+            url : "[[@{/}]]env/findPodFile",
+            // type : "get",
+            dataType : "json",
+            data : {"namespace":strings[0],"podName":strings[1]},
+            error : function(data) {
+                errorHandle(data);
+            },
+            success : function(data) {
+                var  data =data.data
+                for (var i =0 ; i < data.length;i++){
+                    console.log(data[i]);
+                    $('#backFile').append(new Option(data[i],data[i]));// 下拉菜单里添加元素
+				}
+                layui.form.render("select")
+            }
+        });
+    }
+});
+
+$.ajax({
+    url : "[[@{/}]]deploy/getNamespace",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        $.each(data, function (index, item) {
+            $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
+
+$("#download").click(function(){
+    var fileName = $("#backFile").val();
+    var namespace = $("#namespace").val();
+    var namespaces = $("#mysqlBackServer").val();
+    var podName= namespaces.split("---");
+    console.log("jQuery",jQuery)
+    console.log("namespace",namespace)
+    console.log("mysqlBackServer",podName)
+    window.open("[[@{/}]]env/downloadFile?namespace="+namespace+"&podName="+podName[1]+"&fileName="+fileName)
+});
+
+
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

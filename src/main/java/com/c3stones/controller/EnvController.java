@@ -7,6 +7,7 @@ import com.c3stones.common.Response;
 import com.c3stones.entity.HarborImage;
 import com.c3stones.entity.Pages;
 import com.c3stones.entity.PodParameter;
+import com.c3stones.file.PodFile;
 import com.c3stones.http.HttpHarbor;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,6 +60,12 @@ public class EnvController extends BaseConfig {
 
     @Autowired
     private SeataPod2 seataPod ;
+
+    @Autowired
+    private MySQLBackPod mySQLBackPod ;
+
+    @Autowired
+    private PodFile podFile ;
 
     @Autowired
     private RedisPod redisPod ;
@@ -109,6 +119,28 @@ public class EnvController extends BaseConfig {
         return "pages/env/addSeata";
     }
     /**
+     * 新增
+     *
+     * @return
+     */
+    @RequestMapping(value = "addMySQLBack")
+    public String addMySQLBack() {
+        return "pages/env/addMySQLBack";
+    }
+
+     @RequestMapping(value = "download")
+    public String download() {
+        return "pages/env/download";
+    }   /**
+     * 新增
+     *
+     * @return
+     */
+    @RequestMapping(value = "reMySQL")
+    public String reMySQL() {
+        return "pages/env/reMySQL";
+    }
+    /**
      * 批量
      *
      * @return
@@ -127,6 +159,20 @@ public class EnvController extends BaseConfig {
         page.setRecords(harborList);
         page.setTotal(harborList.size());
         return Response.success(page);
+    }
+
+    @RequestMapping(value = "findPodFile")
+    @ResponseBody
+    public Response<List<String>> findPodFile(
+            String namespace,String podName
+    ) {
+        List<String> podFile = null;
+        try {
+            podFile = this.podFile.findPodFile(namespace, podName, "/db");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Response.success(podFile);
     }
 
 
@@ -185,6 +231,53 @@ public class EnvController extends BaseConfig {
            // kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+name).delete();
         }
         return Response.success(true);
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping(value = "createMySQLBack")
+    @ResponseBody
+    public Response<Boolean> createMySQLBack(PodParameter podParameter) {
+        Assert.notNull(podParameter.getNamespace(), "name不能为空");
+        try {
+            mySQLBackPod.create(podParameter);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Response.success(true);
+    }    /**
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping(value = "reMySQLBack")
+    @ResponseBody
+    public Response<Boolean> reMySQLBack(PodParameter podParameter) {
+        Assert.notNull(podParameter.getNamespace(), "name不能为空");
+        try {
+            mySQLBackPod.reMySQLBack(podParameter);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Response.success(true);
+    }
+    /**
+     *
+     * @param name
+     * @return
+     */
+    @RequestMapping(value = "downloadFile")
+    public void downloadFile(String namespace, String podName,String fileName, HttpServletResponse response , HttpServletRequest request ) {
+        Assert.notNull(namespace, "name不能为空");
+        try {
+            podFile.downloadFile(namespace,podName,"/db",fileName,response,request);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 
