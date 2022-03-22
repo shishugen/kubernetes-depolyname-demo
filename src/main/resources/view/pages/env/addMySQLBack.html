@@ -22,11 +22,15 @@
 								<option value="">请选择</option>
 							</select>
 						</div>
+						<label class="layui-form-label">容器名</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="podName" maxlength="15" minlength="2" lay-verify="required" style="width: 360px" placeholder="会自动添加mysqlback 只能小写加数字  " autocomplete="off" class="layui-input">
+						</div>
 					</div>
 
 
 					<div class="layui-form-item">
-						<label class="layui-form-label">MySQL配置</label>
+						<label class="layui-form-label">MySQL容器</label>
 						<div class="layui-input-inline">
 							<select id="mysqlServer" lay-verify="required" name="mysqlServer">
 								<option value="">请选择</option>
@@ -41,27 +45,52 @@
 							<input type="tel" name="mysqlPwd"   value="123456"  autocomplete="off" class="layui-input">
 						</div>
 					</div>
+					<fieldset class="layui-elem-field layui-field-title" style="color: mediumaquamarine">
+						<legend>备份类型</legend>
+					</fieldset>
+					<div class="layui-form-item">
+						<label class="layui-form-label">NFS</label>
+						<div class="layui-input-block">
+							<input type="radio" name="nfsType" lay-filter="nfsType" value="k8s" title="K8S集群" checked="">
+							<input type="radio" name="nfsType" lay-filter="nfsType" value="nfs" title="NFS路径">
+						</div>
+					</div>
+						<div class="layui-form-item" id="nfsConfig">
+							<fieldset class="layui-elem-field layui-field-title" style="color: mediumaquamarine">
+								<legend>NFS</legend>
+							</fieldset>
+							<label class="layui-form-label">NFS地址</label>
+							<div class="layui-input-inline">
+								<input type="tel" name="nfsServer"  placeholder="IP"  autocomplete="off" class="layui-input">
+							</div>
+							<label class="layui-form-label">NFS路径</label>
+							<div class="layui-input-inline">
+								<input type="tel" name="nfsPath" style="width: 460px" placeholder="全路径如：/data/nfs/mysqlback/"  autocomplete="off" class="layui-input">
+							</div>
+					    </div>
+
 
 					<div class="layui-form-item">
 						<label class="layui-form-label" style="width: 300px">多久备份一次(分钟)</label>
 						<div class="layui-input-inline">
-							<input type="number" name="backDate" lay-verify="required" value="1440" min="5" max="1440" autocomplete="off" class="layui-input">
+							<input type="number" name="backDate" id="backDate" lay-verify="required" value="60" min="30" max="1440" autocomplete="off" class="layui-input">
 						</div>
-						<label class="layui-form-label" style="width: 300px">保留几天备份数据</label>
+						<label class="layui-form-label" style="width: 300px">保留最新几天备份数据</label>
 						<div class="layui-input-inline">
 							<input type="number" name="backDay"  lay-verify="required" value="10" max="60" min="1" autocomplete="off" class="layui-input">
 						</div>
-						<label class="layui-form-label">挂载大小（G）</label>
-						<div class="layui-input-inline">
-							<input type="number" name="nfsSize"  lay-verify="required" value="50" max="200" min="10" autocomplete="off" class="layui-input">
-						</div>
+							<label class="layui-form-label"  id="nfsSizeLabel">挂载大小（G）</label>
+							<div class="layui-input-inline"  id="nfsSize" >
+								<input type="number" name="nfsSize" lay-verify="required" value="50" max="200" min="10" autocomplete="off" class="layui-input">
+							</div>
 					</div>
 
 				<div class="layui-form-item">
-					<label style="width: 560px;color: blueviolet" class="layui-form-label">备份建议： 60=1小时，120=2小时，730=半天， 1440 = 1天</label>
+					<label style="width: 300px;color: blueviolet" class="layui-form-label">建议备份：1小时备份一次</label>
+					<label style="width: 300px;color: blueviolet" class="layui-form-label">K8S集群,一个命名空间只支持一个备份</label>
 				</div>
 				<div class="layui-form-item">
-					<button type="submit" class="layui-btn" lay-submit lay-filter="*">开始部署</button>
+					<button type="submit" class="layui-btn" lay-submit lay-filter="*">开始备份</button>
 				</div>
 			</form>
 		</div>
@@ -70,11 +99,55 @@
 <script>
 var form = layui.form;
 var layer = layui.layer;
+var dropdown = layui.dropdown
 
 layui.use('form', function(){
     var form = layui.form;
     form.render();
 });
+
+//初演示 - 绑定输入框
+dropdown.render({
+    elem: '#backDate'
+    ,data: [
+    {
+       title: '半小时'
+		,value: 30
+       },{
+        title: '1小时'
+        ,value: 60
+    },{
+        title: '2小时'
+        ,value: 120
+    },{
+        title: '3小时'
+        ,value: 180
+    },{
+        title: '半天'
+        ,value: 720
+    },{
+        title: '一天'
+        ,value: 1440
+    }]
+    ,click: function(obj){
+        this.elem.val(obj.value);
+    }
+    ,style: 'width: 235px;'
+});
+
+$("#nfsConfig").hide();
+form.on('radio(nfsType)', function(data){
+    if (data.value == 'nfs'){
+        $("#nfsConfig").show();
+        $("#nfsSizeLabel").hide();
+        $("#nfsSize").hide();
+	} else{
+        $("#nfsConfig").hide();
+        $("#nfsSizeLabel").show();
+        $("#nfsSize").show();
+	}
+    console.log(data)
+})
 
 form.on('select(namespace)', function(data){
     $("#mysqlServer").empty()

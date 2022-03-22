@@ -63,7 +63,7 @@
 						</div>
 					</div>
 				<div class="layui-form-item">
-					<button type="submit" class="layui-btn" lay-submit lay-filter="*">开始恢复</button>
+					<button type="button" id="button" class="layui-btn" lay-submit lay-filter="reBack">开始恢复</button>
 				</div>
 			</form>
 		</div>
@@ -156,6 +156,50 @@ $.ajax({
     }
 });
 
+form.on('submit(reBack)', function(data){
+    console.log(data);
+    console.log(data.field);
+    layer.prompt({title: '输入恢复密码，并确认', formType: 1}, function(pass, index){
+        layer.close(index);
+        if(pass === "654321") {
+            console.log("正确")
+            layer.confirm("确认恢复吗？", {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                $.ajax({
+                    url : "[[@{/}]]env/reMySQLBack",
+                    data : data.field,
+                    type : "post",
+                    dataType : "json",
+                    async: false,
+                    error : function(data) {
+                        errorHandle(data);
+                    },
+                    success : function(data) {
+                        if(data.code == 200){
+                            parent.location.reload();
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            layer.msg("部署成功", {icon: 2});
+                        }else{
+                            console.log("data404",data)
+                            layer.msg(data.msg, {icon: 2});
+                        }
+                    }
+                });
+            });
+        }else{
+            layer.msg('失败');
+            console.log("失败！")
+        }
+    });
+
+
+
+
+
+
+
+});
 // 提交表单
 form.on('submit(*)', function(data){
     $(".layui-form").ajaxForm({

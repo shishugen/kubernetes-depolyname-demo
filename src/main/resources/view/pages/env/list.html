@@ -34,7 +34,6 @@
 -->
                                     <button class="layui-btn layui-btn-warm" data-type="addMulti">批量部署环境</button>
                                     <button class="layui-btn layui-btn-warm" data-type="addSeata">seata环境</button>
-                                    <button class="layui-btn layui-btn-warm" data-type="addMySQLBack">MySQL数据备份</button>
                                     <button class="layui-btn mysqlBack">
                                         MySQL备份与恢复
                                         <i class="layui-icon layui-icon-down layui-font-12"></i>
@@ -42,9 +41,20 @@
                                 </div>
                                 <table class="layui-hide" id="harborDataTable2" lay-filter="config"></table>
                                 <script type="text/html" id="operation2">
+                                    {{#  if(d.podName.indexOf("env-mysqlback") != -1 ){ }}
+                                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="view" title="查看">查看</a>
+                                    {{#  } }}
+
+                                    {{#  if(d.ports){ }}
+                                    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="open" title="打开">打开</a>
+                                    {{#  } }}
+
+<!--
                                     <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
+-->
                                     <a class="layui-btn layui-btn-xs" lay-event="logs">日志</a>
                                     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
                                 </script>
                             </div>
                         </div>
@@ -134,13 +144,18 @@ dropdown.render({
         title: '备份数据库'
         ,id: 100
     },{
-        title: '恢复数据库'
+        title: '在线恢复数据库'
         ,id: 101
     },
      {
         title: '下载备份数据'
          ,id: 102
-     }]
+     },
+     {
+        title: '线下恢复数据'
+         ,id: 103
+     }
+     ]
     ,click: function(obj){
          switch (obj.id){
              case 100:{
@@ -167,6 +182,15 @@ dropdown.render({
                      area: ['100%', '80%'],
                      title: '下载备份数据',
                      content: '[[@{/}]]env/download'
+                 });
+                 break;
+             }
+             case 103 : {
+                 layer.open({
+                     type: 2,
+                     area: ['100%', '80%'],
+                     title: '线下恢复数据',
+                     content: '[[@{/}]]env/localReMySQL'
                  });
                  break;
              }
@@ -237,6 +261,20 @@ table.on('tool(config)', function(obj) {
     }  else if(obj.event ==='logs') {
         console.log(obj.data.namespace)
         window.open('[[@{/}]]pod/logs?namespace=' + obj.data.namespace + '&podName=' + obj.data.podName)
+    } else if(obj.event ==='view') {
+        console.log(obj)
+        if (obj.data.nfsPath){
+            layer.msg('路径：'+obj.data.nfsPath+'<br> 服务：'+obj.data.nfsServer, {
+                time: 20000, //20s后自动关闭
+                btn: ['明白了', '知道了', '哦']
+            });
+        } else{
+            layer.msg('内部NFS配置无法查看', {
+                time: 20000, //20s后自动关闭
+                btn: ['明白了', '知道了', '哦']
+            });
+        }
+
     }
 })
 

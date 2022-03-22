@@ -810,7 +810,6 @@ public class Kubes {
         String nfsAddr = "10.49.0.10";
         String nfsPath = "/home/nfs/mount/";
 
-        kubeclinet2.persistentVolumes().withName("testw").delete();
        /*
         PodList list = kubeclinet.pods().inNamespace("1478191349792313345").list();
         List<Pod> items1 = list.getItems();

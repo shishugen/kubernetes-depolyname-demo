@@ -418,7 +418,18 @@ public class PodController extends BaseConfig{
         pod.setConfigName(svcName);
         pod.setNamespace(metadata.getNamespace());
         pod.setDate(KubeUtils.StringFormatDate(status.getStartTime()));
-
+        List<Volume> volumes = podSpec.getVolumes();
+        if(volumes != null && volumes.size() > 0){
+            volumes.forEach(v->{
+                NFSVolumeSource nfs = v.getNfs();
+                if (nfs != null){
+                    String path = nfs.getPath();
+                    String server = nfs.getServer();
+                    pod.setNfsPath(path);
+                    pod.setNfsServer(server);
+                }
+            });
+        }
         ///metadata.getLabels().get("app");
         Container container = podSpec.getContainers().get(0);
         String image = container.getImage();

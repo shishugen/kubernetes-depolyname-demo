@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+<div class="layui-row">
+    <div class="layui-card">
+        <form class="layui-form layui-card-body layui-form-pane " method="post" th:action="@{/env/localReMySQLBack}">
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="color: mediumaquamarine">
+                    <legend>目标MySQL</legend>
+                </fieldset>
+                <label class="layui-form-label">命名空间</label>
+                <div class="layui-input-inline">
+                    <select id="namespace" lay-verify="required"  name="namespace">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                <label class="layui-form-label">数据库地址</label>
+                <div class="layui-input-inline">
+                    <input type="tel" name="mysqlServer" id="mysqlServer" lay-verify="required" value="10.49.0.12" placeholder="数据库IP"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">数据库端口</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="mysqlPort" id="mySqlPort" lay-verify="required"value="3306" placeholder="数据库端口"  autocomplete="off" class="layui-input">
+                </div>
+                <label class="layui-form-label">用户</label>
+                <div class="layui-input-inline">
+                    <input type="tel" name="mysqlUser" id="mysqlUser" lay-verify="required" value="root" autocomplete="off" class="layui-input">
+                </div>
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-inline">
+                    <input type="tel" name="mysqlPwd"  id="mysqlPwd"  value="123456"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <fieldset class="layui-elem-field layui-field-title" style="color: mediumaquamarine">
+                    <legend>NFS</legend>
+                </fieldset>
+                <label class="layui-form-label">NFS地址</label>
+                <div class="layui-input-inline">
+                    <input type="tel" name="nfsServer"  lay-verify="required" value="" placeholder="IP"  autocomplete="off" class="layui-input">
+                </div>
+                <label class="layui-form-label">文件</label>
+                <div class="layui-input-inline">
+                    <input type="tel" name="nfsFileName"  lay-verify="required" value="" placeholder="文件名,*.gz"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">NFS路径</label>
+                <div class="layui-input-block">
+                    <input type="tel" name="nfsPath" id="nfsPath" lay-verify="required" value="" placeholder="全路径,不包含文件名"  autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-form-item">
+                    <label style="width: 560px;color: blueviolet" class="layui-form-label">完成恢复后在列表中请手动删除env-remysqlback……容器</label>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button type="button" class="layui-btn"  id="submit" lay-submit lay-filter="login">开始恢复</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    var form = layui.form;
+    var layer = layui.layer;
+
+
+    form.on('submit(login)', function(data){
+        console.log(data);
+        console.log(data);
+        console.log(data.field);
+        layer.prompt({title: '输入恢复密码，并确认', formType: 1}, function(pass, index){
+            layer.close(index);
+            if(pass === "654321") {
+                console.log("正确")
+                layer.confirm("确认恢复吗？", {icon: 3, title: '提示'}, function (index) {
+                    layer.close(index);
+                    $.ajax({
+                        url : "[[@{/}]]env/localReMySQLBack",
+                        data : data.field,
+                        type : "post",
+                        dataType : "json",
+                        async: false,
+                        error : function(data) {
+                            errorHandle(data);
+                        },
+                        success : function(data) {
+                            if(data.code == 200){
+                                parent.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                                layer.msg("部署成功", {icon: 2});
+                            }else{
+                                console.log("data404",data)
+                                layer.msg(data.msg, {icon: 2});
+                            }
+                        }
+                    });
+                });
+            }else{
+                layer.msg('失败');
+                console.log("失败！")
+            }
+        });
+
+
+        return false;
+    });
+    // 提交表单
+/*    form.on('submit(*)', function(data){
+
+        $(".layui-form").ajaxForm({
+            error: function(data){
+                errorHandle(data);
+            },
+            success: function(data) {
+                if(data.code == 200){
+                    parent.location.reload();
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                    layer.msg("创建中……", {icon: 2});
+                }else{
+                    console.log("data404",data)
+                    layer.msg(data.msg, {icon: 2});
+                }
+            }
+        });
+
+    });*/
+
+    $.ajax({
+        url : "[[@{/}]]deploy/getNamespace",
+        type : "get",
+        dataType : "json",
+        error : function(data) {
+            errorHandle(data);
+        },
+        success : function(data) {
+            $.each(data, function (index, item) {
+                $('#namespace').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            });
+            layui.form.render("select")
+        }
+    });
+
+    // 错误处理
+    function errorHandle(data) {
+        if (data.status == 404) {
+            layer.msg("请求资源不存在", {icon: 2});
+        } else {
+            layer.msg("服务端异常", {icon: 2});
+        }
+        return;
+    }
+</script>
+</html>

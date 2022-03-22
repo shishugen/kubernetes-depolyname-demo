@@ -46,6 +46,11 @@ public class PodParameter {
     private String configName;
 
     private String backFile;
+    private String nfsServer;
+    private String nfsPath;
+    private String nfsFileName;
+    //nfs k8s
+    private String nfsType;
 
     /*
      *数据库备份保留最后几天

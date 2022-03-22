@@ -50,6 +50,10 @@ public class Pods {
 
     private String images;
 
+    private String nfsPath;
+
+    private String nfsServer;
+
 
     public static void main(String[] args) {
         String nginxfile ="harbor.org/application/portal-task-server:3.0";
