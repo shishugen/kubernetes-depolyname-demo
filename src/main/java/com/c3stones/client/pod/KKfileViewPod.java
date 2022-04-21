@@ -51,7 +51,7 @@ public class KKfileViewPod extends BaseConfig {
     public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew, String kkfileviewHttps) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
-        map.put("memory",new Quantity("500M"));
+        map.put("memory",new Quantity("3000M"));
         resource.setLimits(map);
         String policy ="IfNotPresent";
         if (isAnew){
