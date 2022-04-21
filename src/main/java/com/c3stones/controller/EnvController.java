@@ -319,7 +319,7 @@ public class EnvController extends BaseConfig {
     public Response<Boolean> createMulti(String envList , String namespace,Integer fdfsPort,String guacamoleName,
                                          Integer mysqlNodePort,Integer nacosNodePort,Integer kkfileviewPort,
                                          Integer isUpdateImage,String kkfileviewHttps,Integer vsftpdPort,Integer vsftpdNginxPort,
-                                         Integer vsftpdSize ) {
+                                         Integer vsftpdSize ,PodParameter podParameter) {
         Assert.notNull(namespace, "name不能为空");
         Assert.notNull(envList, "envList不能为空");
         boolean isAnew = isUpdateImage == 1 ? true : false;
@@ -338,7 +338,6 @@ public class EnvController extends BaseConfig {
         if(kubes.checkSvc(vsftpdNginxPort)){
             return Response.error("端口已存在"+vsftpdNginxPort);
         }
-
         Arrays.stream(envList.split(",")).forEach(name->{
             switch (name){
                 case "mysql":
@@ -366,7 +365,7 @@ public class EnvController extends BaseConfig {
                     neo4JPod.create(namespace,isAnew);
                     break;
                 case "kkfileview":
-                    kKfileViewPod.create(namespace,kkfileviewPort,isAnew,kkfileviewHttps);
+                    kKfileViewPod.create(namespace,kkfileviewPort,isAnew,kkfileviewHttps,podParameter);
                     break;
                 case "vsftpd":
                     if (vsftpdSize > 500){

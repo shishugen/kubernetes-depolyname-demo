@@ -802,21 +802,18 @@ public class Kubes {
 
     @SneakyThrows
     public static void main(String[] args) {
-        KubernetesClient kubeclinet2 = getKubeclinet2();
-        Map<String,Quantity> map = new HashMap(1);
-        String storageSize = "2";
-        String name = "test-pv";
-        String namespace = "app-ssg";
-        String nfsAddr = "10.49.0.10";
-        String nfsPath = "/home/nfs/mount/";
+        KubernetesClient kubeclinet = getKubeclinet2();
+        Map<String,Integer> map = new HashMap(1);
 
-       /*
-        PodList list = kubeclinet.pods().inNamespace("1478191349792313345").list();
+
+        PodList list = kubeclinet.pods().list();
         List<Pod> items1 = list.getItems();
-
         items1.stream().forEach(pod ->{
-            String name = pod.getMetadata().getName();
-            ResourceRequirements resources = pod.getSpec().getContainers().get(0).getResources();
+            String name2 = pod.getMetadata().getName();
+            Container container = pod.getSpec().getContainers().get(0);
+
+            ResourceRequirements resources = container.getResources();
+
             Map<String, Quantity> capacity = resources.getLimits();
             if (capacity != null){
                 capacity.forEach((k, v)->{
@@ -824,8 +821,12 @@ public class Kubes {
                     switch (k){
                         case "memory":
                             String format = quantity.getFormat();
-                            int memory = Integer.valueOf(quantity.getAmount()) * memoryUnitFormat(format);
-                            map.put(name,memory);
+                            int memory2 = Integer.valueOf(quantity.getAmount()) * memoryUnitFormat(format);
+                            map.put(name2,memory2);
+                            break;
+                        case "cpu":
+                            int c = 1 * Integer.valueOf(quantity.getAmount());
+                            map.put("cpu-"+name2,c);
                             break;
                         default:
                     }
@@ -836,26 +837,36 @@ public class Kubes {
         List<PodMetrics> items = kubeclinet.top().pods().metrics().getItems();
 
         items.stream().forEach(a->{
-            String name = a.getMetadata().getName();
-            System.out.println(name);
+            String name3 = a.getMetadata().getName();
+            System.out.println("name3=="+name3);
             List<ContainerMetrics> containers = a.getContainers();
             containers.stream().forEach(b->{
                 Map<String, Quantity> usage = b.getUsage();
                 Quantity quantity2 = usage.get("memory");
+                Quantity cpuQuantity = usage.get("cpu");
+
                 String format2 = quantity2.getFormat();
                 if ( format2.endsWith("Ki")){
                     System.out.println(Integer.valueOf(quantity2.getAmount()) / 1024);
-                    Integer integer = map.get(name);
+                    Integer integer = map.get(name3);
                     if (integer != null && integer > 0){
                         System.out.println("最大"+integer);
                         System.out.println("当前"+Integer.valueOf(quantity2.getAmount()) / 1024);
                     }
+
                 }
+                String format = cpuQuantity.getFormat();
+                Integer integer = map.get("cpu-"+name3);
+                if (integer != null && integer > 0){
+                    System.out.println("CPU"+integer);
+                    System.out.println("CPU=="+Integer.valueOf(cpuQuantity.getAmount())/ 1024);
+                }
+                System.out.println("CPU单位："+format);
             });
 
         });
 
-*/
+
 
 /*        Deployment deployment = new Deployment();
         Map<String,Quantity> stringQuantityMap= new HashMap(2);

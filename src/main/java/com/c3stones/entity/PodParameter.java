@@ -65,7 +65,9 @@ public class PodParameter {
     private Integer nfsSize;
 
 
+    private String cron;
 
+    private String kkFileType;
 
 
 }

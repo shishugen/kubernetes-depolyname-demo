@@ -2,6 +2,7 @@ package com.c3stones.client.pod;
 
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
+import com.c3stones.entity.PodParameter;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
@@ -48,7 +49,7 @@ public class KKfileViewPod extends BaseConfig {
 
 
 
-    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew, String kkfileviewHttps) {
+    public  boolean createDeployment(String namespace, String podName, String labelsName, String image, Integer port, String portName, boolean isAnew, String kkfileviewHttps, PodParameter podParameter) {
         ResourceRequirements resource= new ResourceRequirements();
         Map<String,Quantity> map= new HashMap(1);
         map.put("memory",new Quantity("3000M"));
@@ -65,9 +66,29 @@ public class KKfileViewPod extends BaseConfig {
             EnvVar envVar2 = new EnvVar();
             envVar2.setName("KK_CONTEXT_PATH");
             envVar2.setValue("/preview");
+
             envVars.add(envVar);
             envVars.add(envVar2);
+
         }
+        EnvVar envVar3 = new EnvVar();
+        envVar3.setName("KK_CACHE_CLEAN_CRON");
+        envVar3.setValue(podParameter.getCron());
+
+        if(StringUtils.isNotBlank(podParameter.getCron())){
+            envVars.add(envVar3);
+            EnvVar envVar31 = new EnvVar();
+            envVar31.setName("KK_OFFICE_PREVIEW_SWITCH_DISABLED");
+            envVar31.setValue("true");
+            envVars.add(envVar31);
+        }
+        EnvVar envVar4 = new EnvVar();
+        envVar4.setName("KK_OFFICE_PREVIEW_TYPE");
+        envVar4.setValue(podParameter.getKkFileType());
+        if(StringUtils.isNotBlank(podParameter.getKkFileType())){
+            envVars.add(envVar4);
+        }
+
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(200),"M"));
         resource.setRequests(stringQuantityMap);
@@ -149,13 +170,13 @@ public class KKfileViewPod extends BaseConfig {
 
 
 
-    public void create(String namespace, Integer nodePort, boolean isAnew, String kkfileviewHttps){
+    public void create(String namespace, Integer nodePort, boolean isAnew, String kkfileviewHttps, PodParameter podParameter){
         String podName="kkfileview";
         String labelsName="kkfileview";
         String portName="kkfileview";
         try {
             kubes.createNamespace(namespace);
-            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8012,portName,isAnew,kkfileviewHttps);
+            createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,8012,portName,isAnew,kkfileviewHttps,podParameter);
             createService(namespace,podName,labelsName,8012,nodePort,portName);
         }catch (Exception e){
             e.printStackTrace();
