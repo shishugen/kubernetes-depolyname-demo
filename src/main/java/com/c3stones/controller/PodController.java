@@ -361,7 +361,7 @@ public class PodController extends BaseConfig{
         pod.setHostIp(hostIp);
         pod.setPodName(metadata.getName());
         pod.setPodStatus(getPodStatus(kubePod).getReason());
-
+        pod.setConfigName(svcName);
         pod.setNamespace(metadata.getNamespace());
         pod.setDate(KubeUtils.StringFormatDate(status.getStartTime()));
 

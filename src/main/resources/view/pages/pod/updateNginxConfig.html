@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane" method="post" th:action="@{/env/updateNginxConfigFile}">
+                 <input hidden id="namespace" name="namespace" th:value="${namespace}"/>
+                 <input hidden  id="name" name="name" th:value="${name}"/>
+				<div class="layui-form-item layui-form-text">
+					<label class="layui-form-label">普通文本域</label>
+					<div class="layui-input-block">
+						<textarea placeholder="请输入内容" rows="50"  id="configFile" name="configData" class="layui-textarea"></textarea>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
+
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+$.ajax({
+    url : "[[@{/}]]env/updateComfig",
+    type : "get",
+    dataType : "json",
+    data : {"namespace":$("#namespace").val(),"name":$("#name").val()},
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+       console.log(data)
+		if (data.code == 200){
+           $("#configFile").val(data.data)
+		}
+    }
+});
+
+layui.use('form', function(){
+    var form = layui.form;
+    form.render();
+});
+
+
+
+
+
+// 提交表单
+form.on('submit(*)', function(data){
+
+    $(".layui-form").ajaxForm({
+        error: function(data){
+            errorHandle(data);
+        },
+        success: function(data) {
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("修改成功", {icon: 2});
+            }else{
+                console.log("data404",data)
+                layer.msg(data.msg, {icon: 2});
+            }
+        }
+    });
+});
+
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

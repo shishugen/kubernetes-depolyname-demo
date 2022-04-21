@@ -11,7 +11,10 @@ import com.c3stones.exception.KubernetesException;
 import com.c3stones.file.PodFile;
 import com.c3stones.http.HttpHarbor;
 import com.c3stones.util.OpenFileUtils;
+import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.DoneableConfigMap;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -25,7 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: EnvController
@@ -134,7 +139,15 @@ public class EnvController extends BaseConfig {
      @RequestMapping(value = "download")
     public String download() {
         return "pages/env/download";
-    }   /**
+    }
+
+    @RequestMapping(value = "updateNginxConfig")
+    public String updateNginxConfig(String namespace,String name,Model model) {
+        model.addAttribute("namespace",namespace);
+        model.addAttribute("name",name);
+        return "pages/pod/updateNginxConfig";
+    }
+    /**
      * 新增
      *
      * @return
@@ -395,6 +408,32 @@ public class EnvController extends BaseConfig {
                 kubes.deleteConf(namespace,configName+"2");
             }
         return Response.success(true);
+    }
+    /** 删除
+     *
+     * @return
+     */
+    @RequestMapping(value = "updateComfig")
+    @ResponseBody
+    public Response<String> updateComfig(String name,String namespace) {
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+        ConfigMap configMap = kubeclinet.configMaps().inNamespace(namespace).withName(name).get();
+        Map<String, String> data = configMap.getData();
+        return Response.success("OK",data.get("nginx.conf"));
+    }
+    /** whnt
+     *
+     * @return
+     */
+    @RequestMapping(value = "updateNginxConfigFile")
+    @ResponseBody
+    public Response<String> updateNginxConfigFile(String name,String namespace,String configData) {
+        KubernetesClient kubeclinet = kubes.getKubeclinet();
+        Map<String,String> data = new HashMap<>(1);
+        data.put("nginx.conf",configData);
+        kubeclinet.configMaps().inNamespace(namespace).withName(name).edit().withData(data).done();
+        kubeclinet.apps().deployments().inNamespace(namespace).withName(name).rolling().restart();
+        return Response.success("ok");
     }
 
 

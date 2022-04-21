@@ -80,6 +80,7 @@
                         <table class="layui-hide" id="harborDataTable3" lay-filter="config"></table>
                         <script type="text/html" id="operation3">
                             <a class="layui-btn layui-btn-xs" lay-event="open">打开</a>
+                            <a class="layui-btn layui-badge" lay-event="updateConfig">修改配置</a>
                             <a class="layui-btn layui-btn-xs" lay-event="logs">日志</a>
                         </script>
                     </div>
@@ -567,10 +568,16 @@ table.on('tool(config)', function(obj){
            window.open("http://"+obj.data.host);
        // window.open("http://www.baidu.com");
 
-     }else if(obj.event ==='logs'){
+     }else if(obj.event ==='logs') {
         console.log(obj.data.namespace)
-        window.open('[[@{/}]]pod/logs?namespace='+obj.data.namespace+'&podName='+obj.data.podName)
-
+        window.open('[[@{/}]]pod/logs?namespace=' + obj.data.namespace + '&podName=' + obj.data.podName)
+    }else if(obj.event === 'updateConfig'){
+        layer.open({
+            type: 2,
+            area: ['100%', '80%'],
+            title: '前端新增',
+            content: '[[@{/}]]env/updateNginxConfig?namespace='+obj.data.namespace+"&name="+obj.data.configName
+        });
     }else if(obj.event ==='restart'){
         console.log(obj.data.namespace)
         layer.confirm("确认  "+obj.data.name+"  重启吗？", {icon: 3, title:'提示'}, function(index) {
