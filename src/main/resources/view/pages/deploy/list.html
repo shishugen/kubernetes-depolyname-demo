@@ -26,7 +26,8 @@
                             <input type="text"  id="version" name="version"style="width: 80px;" autocomplete="off" class="layui-input">
                         </div>
                     </div>
-                    <button class="layui-btn layui-btn-sm" id="reload" data-type="reload">查询</button>
+                    <button class="layui-btn layui-btn-sm"  id="reload" data-type="reload">查询</button>
+                    <button class="layui-btn layui-btn-sm" id="imageNot" title="多个用逗号分开，只支持版本" data-type="imageNot">反查询</button>
                     <button class="layui-btn layui-btn-warm layui-btn-sm " data-type="deployMultiPod">批量部署应用</button>
                     <button class="layui-btn layui-btn-warm layui-btn-sm" data-type="deployNginx">前端部署</button>
                     <button class="layui-btn layui-btn-warm layui-btn-sm" data-type="deployPython">Python部署</button>
@@ -171,7 +172,17 @@ active = {
 		table.reload('harborTable', {
             where: {
                 projectName : $("input[name='projectName']").val(),
-                version : $("input[name='version']").val()
+                version : $("input[name='version']").val(),
+                imageNot : 0
+        }
+		}, 'data');
+	},
+    imageNot: function() {
+		table.reload('harborTable', {
+            where: {
+                projectName : $("input[name='projectName']").val(),
+                version : $("input[name='version']").val(),
+                imageNot : 1
         }
 		}, 'data');
 	},

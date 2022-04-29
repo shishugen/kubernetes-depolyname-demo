@@ -26,9 +26,6 @@
 					<button type="button"  class="layui-btn" id="test9">开始制作</button>
 				</div>
 
-
-
-
 				<div class="layui-form-item">
 
 				</div>
@@ -57,12 +54,12 @@
 				</div>
 
 				<div>
-					<div class="layui-form-item" style="width: 300px" >
+					<div class="layui-form-item" style="width: 800px" >
 						<div class="layui-inline">
 							<div  id="successData" style="color: blue">成功后镜像列表</div>
 						</div>
 						<div class="layui-inline">
-							<div id="errorData"  style="color: red;display: none">失败上传镜像</div>
+							<div id="errorData"  style="color: red;">失败上传镜像</div>
 						</div>
 					</div>
 				</div>
@@ -113,16 +110,17 @@ var uploadInst = upload.render({
         $('#aborted').val(1+number);
     }
     ,done: function(res,index, upload){
-        if(res.code == 200){
+        console.log("res",res)
+        if(res.code === 200){
            // $('#state').val("制作完成"); //图片链接（base64）
             $("#successData").append ('<p>'+res.data.successData[0]+'</p>')
             var number = 1+Number($('#successful').val());
             $('#successful').val(number);
              layer.msg('制作成功');
         }else{
-           // $("#errorData").css("display","block");//显示div
-            //$("#errorData").append ('<p>'+res.data.errorData[0]+'</p>')
-           //  layer.msg('制作失败');
+            $("#errorData").css("display","block");//显示div
+            $("#errorData").append ('<p>'+res.data.errorData[0]+'</p>')
+             layer.msg('制作失败');
         }
     }
   });

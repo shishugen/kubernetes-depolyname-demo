@@ -77,9 +77,9 @@ public class HttpHarbor extends BaseConfig {
         return responseEntity;
     }
 
-    public List<HarborImage> harborList(String harborProjectName ,String version){
-
+    public List<HarborImage> harborList(String harborProjectName ,String version ,boolean is){
         List<HarborImage> harborList = new ArrayList();
+        List<HarborImage> notHarborList = new ArrayList();
         JSONArray jsonObject = harborClient.getForObject(harborUrl+"/api/projects?name="+ BaseConfig.initConfig().getHarborImageProjectName(), JSONArray.class);
         if(jsonObject != null && jsonObject.size() > 0){
             JSONObject objectJSONObject = jsonObject.getJSONObject(0);
@@ -98,23 +98,26 @@ public class HttpHarbor extends BaseConfig {
                     harbor.setImageName(name);
                     harbor.setVersion(harborVersion.getName());
                      if(StringUtils.isNotBlank(harborProjectName) && StringUtils.isNotBlank(version)){
-                         if(name.contains(harborProjectName)&&harborVersion.getName().contains(version)){
+                         if(name.contains(harborProjectName)&&isContains(harborVersion.getName(),version)){
                              harborList.add(harbor);
+                         }else{
+                             notHarborList.add(harbor);
                          }
                      }else if(StringUtils.isNotBlank(harborProjectName) ){
                          if(name.contains(harborProjectName)){
                              harborList.add(harbor);
+                         }else{
+                             notHarborList.add(harbor);
                          }
                      }else if(StringUtils.isNotBlank(version)){
-                         if( harborVersion.getName().contains(version)){
+                         if(isContains(harborVersion.getName(),version)){
                              harborList.add(harbor);
+                         }else{
+                             notHarborList.add(harbor);
                          }
                      } else{
                          harborList.add(harbor);
                      }
-
-
-
                    /* if(StringUtils.isNotBlank(version)){
                         if (harborVersion.getName().equals(version)){
                             harborList.add(harbor);
@@ -125,6 +128,17 @@ public class HttpHarbor extends BaseConfig {
                 }
             }
         }
-        return harborList;
+        return is?notHarborList:harborList;
+    }
+
+    private boolean isContains(String name,String versions){
+        String[] split = versions.split(",");
+        boolean is = false;
+        for (int q = 0; q <split.length; q++){
+            if (name.contains(split[q])){
+                 is =true;
+            }
+        }
+        return is;
     }
 }

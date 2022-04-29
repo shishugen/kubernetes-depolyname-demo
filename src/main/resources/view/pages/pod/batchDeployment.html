@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script   prefix="c" th:src="@{http://java.sun.com/jsp/jstl/core}"></script>
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <script th:src="@{/jquery/jquery-form.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-row">
+    	<div class="layui-card">
+        	<form class="layui-form layui-card-body layui-form-pane">
+				<div class="layui-form-item" id="podNames">
+					<input id="oldImages" th:value="${images}" hidden />
+					<input id="namespaces" name="namespaces" th:value="${namespace}" hidden />
+					<input id="names" name="names" hidden th:value="${names}"/>
+					<input id="replicas" name="replicas" hidden th:value="${replicas}"/>
+				<div class="layui-form-item">
+					<button type="button" class="layui-btn" data-type="submit">提交</button>
+				</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+var form = layui.form;
+var layer = layui.layer;
+var nameList;
+layui.use('form', function(){
+    var harborLisst;
+    $.ajax({
+        url : "[[@{/}]]harbor/list",
+        type : "get",
+        dataType : "json",
+        error : function(data) {
+            errorHandle(data);
+        },
+        success : function(data) {
+            console.log(data)
+            harborLisst =data.data
+            var  names = $("#names").val()
+            var  oldImages = $("#oldImages").val()
+            var  replicas = $("#replicas").val()
+            var oldImageList = oldImages.split(",");
+             nameList = names.split(",");
+            var  nameListArr = replicas.split(",");
+
+
+            var html = '';
+            for (var i = 0; i < nameList.length-1; i++){
+                html+='<div class="layui-form-item">'
+                html+= '<label class="layui-form-label" style="width:65px ">名称</label>'
+                html+='<div class="layui-input-inline" style="width:280px">'
+                html+='<input type="tel"  id="name'+i+'" value="'+nameList[i]+'" name="name'+i+'"   disabled autocomplete="off" class="layui-input">'
+                html+='</div>'
+
+                html+='  <label class="layui-form-label" style="width:65px ">镜像</label>'
+                html+='   <div class="layui-input-inline" style="width: 400px">'
+                html+='   <select id="image'+i+'" lay-search=""   name="image'+i+'">'
+				//console.log(oldImageList[i],findName(oldImageList[i],data.data))
+                $.each(data.data, function (index, item) {
+                    if (oldImageList[i] == item.imageName+":"+item.version){
+                        html+=' <option  selected="" value="'+item.imageName+":"+item.version+'">'+item.imageName+":"+item.version+'</option>'
+					}else if(oldImageList[i].split(":")[0].indexOf(item.imageName) != -1){
+                        html+=' <option value="'+item.imageName+":"+item.version+'">'+item.imageName+":"+item.version+'</option>'
+                    }
+                });
+                html+='   </select>'
+                html+='   </div>'
+                html+='   <label class="layui-form-label">服务数量</label>'
+                html+='   <div class="layui-input-inline" style="width: 100px;">'
+                html+='  <input type="number" id="replicas'+i+'" name="replicas'+i+'" th:min="1" value="'+nameListArr[i]+'"   th:max="6" placeholder="" autocomplete="off" class="layui-input">'
+                html+='  </div>'
+                html+='</div>'
+            }
+            $("#podNames").append(html);
+            layui.form.render("select")
+
+
+
+
+        }
+    });
+
+
+
+
+});
+
+active = {
+    submit: function () {
+        var podNameArr='', imageArr='',replicasArr='';
+        for (var i = 0; i < nameList.length-1; i++){
+            podNameArr+=$("#name"+i).val()+",";
+            imageArr+=$("#image"+i).val()+",";
+            replicasArr+=$("#replicas"+i).val()+",";
+        }
+        layer.confirm("确定修改吗？", {icon: 3, title:'提示'}, function(index) {
+            layer.close(index);
+			$.ajax({
+				url : "[[@{/}]]deploy/batchUpdateDeploy",
+				type : "post",
+				data:{deploynames:podNameArr,images:imageArr,replicas:replicasArr,namespaces:$("#namespaces").val()},
+				dataType : "json",
+				error : function(data) {
+					errorHandle(data);
+				},
+				success : function(data) {
+                    layer.msg("成功", {icon: 1});
+				}
+			 });
+        });
+
+    }
+}
+// 按钮事件
+$('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+});
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

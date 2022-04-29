@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+<div>
+    <input id="namespace" name="namespace" hidden th:value="${namespace}"/>
+    <input id="podName" name="podName" hidden th:value="${podName}"/>
+    <div class="layui-form-item">
+        <label style="width: 560px;color: blueviolet" class="layui-form-label">DJK上传解压后</label>
+    </div>
+	<div class="" style="padding-left: 20px">
+        <span id="fileSize" class="layui-badge">数量:</span>
+
+        <button class="layui-btn layui-btn-warm layui-btn-sm " data-type="findData">批量删除</button>
+        <button type="button" class="layui-btn layui-btn-sm" data-type="reload">刷新</button>
+        <div class="layui-input-inline">
+            <input type="tel" name="cmd"  id="cmd"  style="width: 180px"  class="layui-input">
+        </div>
+        <button type="button" class="layui-btn layui-btn-sm" data-type="send">发送</button>
+
+    </div>
+
+	<div id="test1" class="demo-tree demo-tree-box" style="width: 40%; height: 500px;float: left; overflow: scroll;">
+    </div>
+       <div style="width: 50%;float: right">
+        <div class="layui-upload-drag" style="width: 80%"  id="test4" >
+            <i class="layui-icon"></i>
+            <p>点击上传，或将文件拖拽到此处</p>
+        </div>
+            <button type="button"  class="layui-btn" id="updateJar">开始上传</button>
+            <div style="width: 80%" >
+                <div  id="successData" style="color: blue;float:left">成功列表</div>
+                <div id="errorData"  style="color: red; float: right">失败列表</div>
+            </div>
+       </div>
+
+</div>
+</body>
+<script>
+    var upload = layui.upload
+    var   tree = layui.tree
+layui.use('tree', function(){
+       tree = layui.tree,
+           upload = layui.upload,
+    //渲染
+    $.ajax({
+        url : "[[@{/}]]nfsJar/findPodFile",
+        type : "get",
+        data : {namespace:$("#namespace").val(),podName :$("#podName").val() },
+        dataType : "json",
+        error : function(data) {
+            errorHandle(data);
+        },
+        success : function(data) {
+            $("#fileSize").append(data.data.length)
+            var inst1 = tree.render({
+                elem: '#test1',  //绑定元素
+				id:"file",
+                showLine: false,
+                showCheckbox:true
+                ,data: data.data
+            });
+        }
+    })
+
+    upload.render({
+        elem: '#test4'
+        ,url: '[[@{/}]]nfsJar/upload' //改成您自己的上传接口
+        ,accept: 'file' //普通文件
+        ,auto: false
+        ,bindAction: '#updateJar'
+        ,multiple: true
+        ,exts: 'jar|gz' //只允许上传压缩文件
+        ,data:{
+            podName: function(){
+                return $('#namespace').val()+$('#podName').val();
+            },
+            namespace: function(){
+                return $('#namespace').val();
+            }
+        }
+        ,allDone: function(obj){ //当文件全部被提交后，才触发
+            $('#updateJar').removeClass("layui-btn-disabled").attr("disabled",false);
+        }
+
+        ,before: function(obj){
+            layer.msg('上传中……');
+            $('#updateJar').addClass("layui-btn-disabled").attr("disabled",true);
+            $("#successData").html("成功列表");
+            $("#errorData").html("失败列表");
+        }
+        ,error: function(index, upload){
+        }
+        ,done: function(res,index, upload){
+            if(res.code == 200){
+                // $('#state').val("制作完成"); //图片链接（base64）
+                $("#successData").append ('<p>'+res.data+'</p>')
+                var number = 1+Number($('#successful').val());
+                $('#successful').val(number);
+                layer.msg('成功');
+            }else{
+                $("#errorData").css("display","block");//显示div
+                $("#errorData").append ('<p>'+res.data+'</p>')
+                  layer.msg('失败');
+            }
+        }
+    });
+
+
+});
+
+
+
+    active = {
+        findData: function () {
+            var checkedData = tree.getChecked('file'); //获取选中节点的数据
+            var files = '';
+            checkedData.forEach(function(file){
+                files +=file.id+","
+            })
+            layer.confirm("确认删除   "+ files+"   吗？", {icon: 3, title: '提示'}, function (index) {
+                    layer.close(index);
+            $.ajax({
+                url : "[[@{/}]]nfsJar/deleteFile",
+                type : "post",
+                data : {fileNames:files,namespace:$("#namespace").val(),podName :$("#namespace").val()+$("#podName").val() },
+                dataType : "json",
+                error : function(data) {
+                    errorHandle(data);
+                },
+                success : function(data) {
+                    layer.msg('成功');
+                }
+            })
+            })
+        }
+        ,reload: function(){
+            $.ajax({
+                url : "[[@{/}]]nfsJar/findPodFile",
+                type : "get",
+                data : {namespace:$("#namespace").val(),podName :$("#podName").val() },
+                dataType : "json",
+                error : function(data) {
+                    errorHandle(data);
+                },
+                success : function(data) {
+                    $("#fileSize").append(data.data.length)
+                    var inst1 = tree.render({
+                        elem: '#test1',  //绑定元素
+                        id:"file",
+                        showLine: false,
+                        showCheckbox:true
+                        ,data: data.data
+                    });
+                }
+            })
+            //重载实例
+            tree.reload('file', {
+            });
+        },
+        send:function () {
+            $.ajax({
+                url : "[[@{/}]]nfsJar/cmd",
+                type : "post",
+                data : {namespace:$("#namespace").val(),podName :$("#namespace").val()+$("#podName").val() ,cmd:$("#cmd").val() },
+                dataType : "json",
+                error : function(data) {
+                    errorHandle(data);
+                },
+                success : function(data) {
+                    layer.msg('成功');
+                }
+            })
+
+
+
+        }
+    }
+
+    // 按钮事件
+    $('.layui-btn').on('click', function(){
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    });
+
+
+
+// 提交表单
+form.on('submit(*)', function(data){
+    $(".layui-form").ajaxForm({
+        error: function(data){
+            errorHandle(data);
+        },
+        success: function(data) {
+            if(data.code == 200){
+                parent.location.reload();
+                var index = parent.layer.getFrameIndex(window.name);
+                parent.layer.close(index);
+                layer.msg("成功", {icon: 1});
+            }else{
+                layer.msg(data.msg, {icon: 2});
+			}
+        }
+    });
+});
+
+
+
+
+// 错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

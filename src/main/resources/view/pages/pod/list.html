@@ -138,6 +138,7 @@
                             <button class="layui-btn"id="namespace" data-type="reload4">查询</button>
                             <button class="layui-btn layui-btn-danger" data-type="deleteDeployment">批量删除</button>
                             <button class="layui-btn layui-btn-danger" data-type="restartDeployment">批量重启</button>
+                            <button class="layui-btn layui-btn-danger" data-type="batchDeployment">批量修改</button>
                         </div>
                         <table class="layui-hide" id="harborDataTable4" lay-filter="config"></table>
                         <script type="text/html" id="operation4">
@@ -472,6 +473,28 @@ active = {
             });
         });
     }  ,
+    batchDeployment:function(){
+        var checkStatus = table.checkStatus('harborTable4')
+            ,data = checkStatus.data;
+        var names =''
+        var namespaces =''
+        var images =''
+        var replicasArr =''
+        for (var i = 0 ; i < data.length; i++){
+            names +=data[i].name+",";
+            namespaces +=data[i].namespace+",";
+            images +=data[i].image+",";
+            replicasArr +=data[i].replicas+",";
+        }
+        console.log("data",data)
+        console.log("images",images)
+        layer.open({
+            type: 2,
+            area: ['100%', '80%'],
+            title: '批量修改',
+            content: '[[@{/}]]deploy/batchDeployment?names='+names+"&namespaces="+namespaces+"&images="+images+"&replicas="+replicasArr
+        });
+    },
     restartDeployment : function(){ //获取选中数据
         var checkStatus = table.checkStatus('harborTable4')
             ,data = checkStatus.data;

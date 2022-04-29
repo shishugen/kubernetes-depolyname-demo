@@ -19,6 +19,12 @@ import java.util.Properties;
 public class BaseConfig<T> {
 
     /**
+     * libs
+     */
+    public final static String PVC_LIBS_LABEL ="JAVA-LIBS";
+
+
+    /**
      * 判断pod是否为网关
      */
     public static String GATEWAY_API_KEY="GATEWAY_API";

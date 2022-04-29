@@ -2,6 +2,7 @@ package com.c3stones.client;
 
 import com.c3stones.common.Response;
 import com.c3stones.entity.Namespaces;
+import com.c3stones.entity.PodParameter;
 import com.c3stones.util.KubeUtils;
 import com.c3stones.util.OpenFileUtils;
 import com.sun.org.apache.xml.internal.utils.NameSpace;
@@ -148,22 +149,27 @@ public class Kubes {
     /***
      * 创建 pod
      * @param namespace
-     * @param podName
-     * @param image
+     * @param pvcName
      * @return
      */
-    public  boolean createPod(String namespace, String podName, String image ,String nacos,String nacosNamespace){
-            Pod pod = new PodBuilder().withNewMetadata().withName(podName).withNamespace(namespace).addToLabels(LABELS_KEY, podName).endMetadata()
-                    .withNewSpec().withContainers(new ContainerBuilder()
+    public  boolean createPod(String namespace, String pvcName){
+        String podName = namespace+pvcName;
+        Volume jar = new VolumeBuilder() .withName(pvcName)
+                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build();
+        VolumeMount volumeLogs = new VolumeMount();
+        volumeLogs.setName(pvcName);
+        volumeLogs.setMountPath("/home/");
+            Pod pod = new PodBuilder().withNewMetadata().withName(podName).withNamespace(namespace)
+                    .addToLabels(LABELS_KEY, podName).endMetadata()
+                    .withNewSpec().withVolumes(jar)
+                    .withContainers(new ContainerBuilder()
+                            .withVolumeMounts(volumeLogs)
+                           .withCommand("sleep","3600")
                             .withName(podName)
-                            .withImage(image)
-                            .withImagePullPolicy("Always")
-                            .addToEnv(new EnvVarBuilder().withName("NAMESPACE").withValue(nacosNamespace).build())
-                            .addToEnv(new EnvVarBuilder().withName("NACOS_PORT").withValue("8848").build())
-                            .addToEnv(new EnvVarBuilder().withName("NACOS_IP").withValue(nacos).build())
+                            .withImage("ssgssg/base-mini:jdk8")
                             .build())
                     .endSpec().build();
-            Pod newPod = getKubeclinet().pods().create(pod);
+            Pod newPod = getKubeclinet().pods().createOrReplace(pod);
         return true;
     }
 
@@ -332,23 +338,20 @@ public class Kubes {
         return falg.get();
     }
 
-    /**
-     *
-     * @param name
-     * @param namespace
-     * @param storageClassName
-     * @param storageSize
-     * @return
-     */
-    public  PersistentVolumeClaim createPVC(String name, String namespace, String storageClassName, Integer storageSize ) {
+    public  PersistentVolumeClaim createPVC(String name, String namespace,String label, String storageClassName, Integer storageSize ) {
         if(check(name,namespace)){
             return get(name,namespace);
         }
         Map<String,Quantity> map = new HashMap(1);
         map.put("storage",new Quantity(String.valueOf(storageSize),"G"));
+        Map<String,String> labels = new HashMap(1);
+        if (StringUtils.isNotBlank(label)){
+            labels.put(label,label);
+        }
         PersistentVolumeClaim build = new PersistentVolumeClaimBuilder()
                 .withNewMetadata()
                 .withName(name)
+                .withLabels(labels)
                 .withNamespace(namespace)
                 .endMetadata()
                 .withNewSpec()
@@ -360,6 +363,18 @@ public class Kubes {
                 .endSpec()
                 .build();
         return getKubeclinet().persistentVolumeClaims().createOrReplace(build);
+
+    }
+    /**
+     *
+     * @param name
+     * @param namespace
+     * @param storageClassName
+     * @param storageSize
+     * @return
+     */
+    public  PersistentVolumeClaim createPVC(String name, String namespace, String storageClassName, Integer storageSize ) {
+     return this.createPVC(name,namespace,null,storageClassName,storageSize);
     }
 
     /**
@@ -423,13 +438,23 @@ public class Kubes {
 
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
-                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth,String seataNacosNamespace) {
+                                     String nacos , String nacosNamespace,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth,String seataNacosNamespace
+    ,PodParameter podParameter) {
         Container container =
-                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
+                createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace,podParameter);
         Map<String,String> labels = new HashMap<>();
         labels.put(LABELS_KEY,randomPortName);
         if(port != null && port.equals(8888)){
             labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
+        }
+        List<Volume> lists = new ArrayList<>();
+        Volume log = new VolumeBuilder() .withName(pvcLogs)
+                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build()).build();
+        lists.add(log);
+        if (StringUtils.isNotBlank(podParameter.getPvcName())){
+            Volume jar = new VolumeBuilder() .withName(podParameter.getPvcName())
+                    .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(podParameter.getPvcName()).build()).build();
+            lists.add(jar);
         }
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
@@ -448,10 +473,7 @@ public class Kubes {
                 .endMetadata()
                 .withNewSpec()
                 .withContainers(container)
-                .addNewVolume()
-                .withName(pvcLogs)
-                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build())
-                .endVolume()
+                .addAllToVolumes(lists)
                 .addNewVolume()
                 .withName("date-config").withNewHostPath().withNewPath("/etc/localtime").endHostPath()
                 .endVolume()
@@ -463,14 +485,27 @@ public class Kubes {
     }
 
     public  boolean createDeployment(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,String nacos ,
-                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth,String seataNacosNamespace) {
-        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
+                                     String nacosNamespace,String pvcName,Integer memoryXmx,Integer memoryXms,String pvcLogs,boolean isHealth,String seataNacosNamespace,PodParameter podParameter) {
+        Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace,podParameter);
 
         Map<String,String> labels = new HashMap<>();
         labels.put(LABELS_KEY,randomPortName);
         if(port != null &&port.equals(8888)){
             labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
         }
+        List<Volume> lists = new ArrayList<>();
+        Volume tmp = new VolumeBuilder() .withName(pvcName)
+                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build();
+        Volume log = new VolumeBuilder() .withName(pvcLogs)
+                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build()).build();
+        lists.add(tmp);
+        lists.add(log);
+        if (StringUtils.isNotBlank(podParameter.getPvcName())){
+            Volume jar = new VolumeBuilder() .withName(podParameter.getPvcName())
+                    .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(podParameter.getPvcName()).build()).build();
+            lists.add(jar);
+        }
+
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -496,15 +531,7 @@ public class Kubes {
                 .withNewSpec()
                 .withTerminationGracePeriodSeconds(60L)
                 .withContainers(container)
-                .addNewVolume()
-                .withName(pvcName)
-                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build())
-                .endVolume()
-
-                .addNewVolume()
-                .withName(pvcLogs)
-                .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcLogs).build())
-                .endVolume()
+                .addAllToVolumes(lists)
                 .addNewVolume()
                 .withName("date-config").withNewHostPath().withNewPath("/etc/localtime").endHostPath()
                 .endVolume()
@@ -530,7 +557,7 @@ public class Kubes {
      * @return
      */
     private  Container createContainer(String appName,String image,Integer ports,String serviceName,String nacos ,String nacosNamespace,String pvcName
-    ,Integer memoryXmx,Integer memoryXms,String pvcLogs, boolean isHealth,String seataNacosNamespace){
+    ,Integer memoryXmx,Integer memoryXms,String pvcLogs, boolean isHealth,String seataNacosNamespace,PodParameter podParameter){
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
@@ -543,7 +570,15 @@ public class Kubes {
         resource.setLimits(map);
 
         List<String> cmdList = new ArrayList<>();
-        cmdList.add("java");
+
+        if (StringUtils.isNotBlank(podParameter.getPvcName())){
+            cmdList.add("/libs/jdk/bin/java");
+        }else{
+            cmdList.add("java");
+        }
+        if (StringUtils.isNotBlank(podParameter.getPvcName())){
+            cmdList.add("-Dloader.path=/libs/");
+        }
         cmdList.add("-jar");
         container.setCommand(cmdList);
         List<String> arrayList = new ArrayList<>();
@@ -551,10 +586,8 @@ public class Kubes {
         arrayList.add("-Xmx"+memoryXmx+"m");
         arrayList.add("/app.jar");
         container.setArgs(arrayList);
-
         resource.setRequests(requests);
         container.setResources(resource);
-
         Probe probe = new Probe();
         HTTPGetAction httpGetAction = new HTTPGetAction();
         httpGetAction.setPath("/health");
@@ -572,15 +605,15 @@ public class Kubes {
         httpGetAction2.setScheme("HTTP");
         probe2.setHttpGet(httpGetAction2);
         //容器启动后多久开始探测
-        probe2.setInitialDelaySeconds(30);
+        probe2.setInitialDelaySeconds(60);
         //表示容器必须在2s内做出相应反馈给probe，否则视为探测失败
-        probe2.setTimeoutSeconds(5);
+        probe2.setTimeoutSeconds(10);
         // 探测周期，每30s探测一次
-        probe2.setPeriodSeconds(20);
+        probe2.setPeriodSeconds(40);
         // 连续探测1次成功表示成功
-        probe2.setSuccessThreshold(1);
+        probe2.setSuccessThreshold(2);
         //连续探测3次失败表示失败
-        probe2.setFailureThreshold(3);
+        probe2.setFailureThreshold(6);
         if(isHealth){
             container.setReadinessProbe(probe2);
             container.setLivenessProbe(probe);
@@ -642,6 +675,13 @@ public class Kubes {
         volumeLogs.setName(pvcLogs);
         volumeLogs.setMountPath("/logs/");
         volumeMounts.add(volumeLogs);
+
+      if (StringUtils.isNotBlank(podParameter.getPvcName())){
+          VolumeMount volumejar = new VolumeMount();
+          volumejar.setName(podParameter.getPvcName());
+          volumejar.setMountPath("/libs/");
+          volumeMounts.add(volumejar);
+      }
 
         VolumeMount volumeDate = new VolumeMount();
         volumeDate.setName("date-config");
@@ -802,8 +842,20 @@ public class Kubes {
 
     @SneakyThrows
     public static void main(String[] args) {
+        String[] comArr = new String[10];
+        comArr[0]="tar2";
+        comArr[1]="-zxvf";
+        comArr[2]="/jdk.tar.gz";
         KubernetesClient kubeclinet = getKubeclinet2();
-        Map<String,Integer> map = new HashMap(1);
+        ExecWatch exec = kubeclinet.pods().inNamespace("app-sys").withName("app-sysapp-sys-test-libs")
+                .redirectingInput().exec("tar","-zxvf","/jdk.tar.gz","-C","/home/");
+
+        InputStream errorChannel = exec.getErrorChannel();
+        System.out.println("99999");
+
+
+
+/*        Map<String,Integer> map = new HashMap(1);
 
 
         PodList list = kubeclinet.pods().list();
@@ -864,7 +916,7 @@ public class Kubes {
                 System.out.println("CPU单位："+format);
             });
 
-        });
+        });*/
 
 
 

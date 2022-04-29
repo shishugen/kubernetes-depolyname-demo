@@ -16,7 +16,7 @@ import java.util.Locale;
 @Slf4j
 public class DateUtils {
 
-    private static final SimpleDateFormat  FORMAT  = new SimpleDateFormat("yyyy-MM-dd' : 'HH:mm:ss");
+    private static final SimpleDateFormat  FORMAT  = new SimpleDateFormat("yyyy-MM-dd':'HH:mm:ss");
     private static final SimpleDateFormat FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 

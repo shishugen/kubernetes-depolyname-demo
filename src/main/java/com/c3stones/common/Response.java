@@ -51,6 +51,15 @@ public class Response<T> {
 	public static <T> Response<T> success(T data) {
 		return new Response<T>(200, null, data);
 	}
+	/**
+	 * 成功响应
+	 *
+	 * @param data 响应数据
+	 * @return
+	 */
+	public static <T> Response<T> successCode(T data,Integer code) {
+		return new Response<T>(code, null, data);
+	}
 
 	/**
 	 * 成功响应

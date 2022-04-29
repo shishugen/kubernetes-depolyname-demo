@@ -179,7 +179,7 @@ public class EnvController extends BaseConfig {
     @RequestMapping(value = "listData")
     @ResponseBody
     public Response<Pages<HarborImage>> listData() {
-        List<HarborImage> harborList = httpHarbor.harborList(harborImageEnvProjectName,null);
+        List<HarborImage> harborList = httpHarbor.harborList(harborImageEnvProjectName,null,false);
         Pages page = new Pages();
         page.setRecords(harborList);
         page.setTotal(harborList.size());

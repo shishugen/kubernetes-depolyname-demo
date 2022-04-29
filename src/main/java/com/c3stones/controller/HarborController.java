@@ -45,9 +45,11 @@ public class HarborController extends  BaseConfig<HarborImage>{
 
     @RequestMapping(value = "listData")
     @ResponseBody
-    public Response<Pages<HarborImage>> listData(String projectName,String version,Integer limit,Integer page){
+    public Response<Pages<HarborImage>> listData(String projectName,String version,Integer limit,Integer page,Integer imageNot){
         Pages pages = new Pages();
-        List<HarborImage> harborList = httpHarbor.harborList(projectName,version);
+
+        List<HarborImage> harborList = httpHarbor.harborList(projectName,version,imageNot==1?true:false);
+
         pages.setRecords(super.setPage(harborList,limit,page));
         pages.setTotal(harborList.size());
         return Response.success(pages);
@@ -56,8 +58,7 @@ public class HarborController extends  BaseConfig<HarborImage>{
     @RequestMapping(value = "list")
     @ResponseBody
     public Response<List<HarborImage>> list(){
-
-         List<HarborImage> harborList = httpHarbor.harborList( BaseConfig.initConfig().getHarborImageProjectName(),null);
+         List<HarborImage> harborList = httpHarbor.harborList( BaseConfig.initConfig().getHarborImageProjectName(),null,false);
         return Response.success(harborList);
     }
 
@@ -68,7 +69,7 @@ public class HarborController extends  BaseConfig<HarborImage>{
     @RequestMapping(value = "multiList")
     @ResponseBody
     public Response<JSONArray> multiList(String projectName,String version){
-         List<HarborImage> harborList = httpHarbor.harborList(projectName,version);
+         List<HarborImage> harborList = httpHarbor.harborList(projectName,version,false);
          JSONArray jsonArray = new JSONArray();
         harborList.stream().forEach(a->{
             JSONObject jsonObject = new JSONObject();

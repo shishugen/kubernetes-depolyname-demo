@@ -39,7 +39,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">命名空间</label>
 						<div class="layui-input-inline">
-							<select id="namespace" lay-verify="required" name="namespace">
+							<select id="namespace" lay-filter="namespace" lay-verify="required" name="namespace">
 								<option value="">请选择</option>
 							</select>
 						</div>
@@ -96,15 +96,24 @@
 								<input type="radio" name="nfs" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
 							</div>
 						</div>
-
 						<div class="layui-inline">
 							<label class="layui-form-label" style="width: 200px">是否健康检查 /health</label>
 							<div class="layui-input-inline">
-								<input type="radio" name="health" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
-								<input type="radio" name="health" value="1" title="是"><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="0" title="否" ><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="1" title="是" checked=""><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
 							</div>
 						</div>
 					</div>
+
+					<div class="layui-form-item">
+					<label class="layui-form-label">轻量级部署</label>
+					<div class="layui-input-inline">
+						<select id="pvcName"   name="pvcName">
+							<option value="">请选择</option>
+						</select>
+					</div>
+					</div>
+
 
 				</div>
 				<div class="layui-form-item">
@@ -129,6 +138,31 @@ layui.use('form', function(){
 });
 
 
+
+form.on('select(namespace)', function(data){
+
+    $("#pvcName").empty()
+    $('#pvcName').append(new Option("请选择",""));// 下拉菜单里添加元素
+    $.ajax({
+        url : "[[@{/}]]nfsJar/getByNamespace",
+        type : "get",
+        data:{'namespace':data.value},
+        dataType : "json",
+        error : function(data) {
+            errorHandle(data);
+        },
+        success : function(data) {
+            console.log(data);
+            $.each(data.data, function (index, item) {
+                $('#pvcName').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            });
+            layui.form.render("select")
+        }
+    });
+
+
+
+})
 
 form.on('select(nacosList)', function(data){
     $("#nacosNamespace").empty()
@@ -187,7 +221,6 @@ $.ajax({
         errorHandle(data);
     },
     success : function(data) {
-
          demo1 = xmSelect.render({
              el: '#demo1',
              toolbar: {
@@ -245,7 +278,6 @@ $.ajax({
     success : function(data) {
         console.log(data)
         $.each(data, function (index, item) {
-
             $('#nacosList').append(new Option(item.nacosName,item.bindK8sIP+"---"+item.ports+"---"+item.serviceName));// 下拉菜单里添加元素
             if(index == 0){
                 $('#nacosList').val(item.bindK8sIP+"---"+item.ports+"---"+item.serviceName)

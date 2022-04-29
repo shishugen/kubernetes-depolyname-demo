@@ -10,6 +10,7 @@ import com.c3stones.client.pod.NginxPod;
 import com.c3stones.client.pod.NginxPod2;
 import com.c3stones.common.Response;
 import com.c3stones.entity.*;
+import com.c3stones.exception.KubernetesException;
 import com.c3stones.util.KubeUtils;
 import com.c3stones.util.OpenFileUtils;
 import io.fabric8.kubernetes.api.model.*;
@@ -173,6 +174,21 @@ public class DeployController  extends BaseConfig {
 		model.addAttribute("defaultNamespace",defaultNamespace);
         return "pages/deploy/deployMultiPod";
     }
+
+	/**
+	 * 批量修改
+	 * @param model
+	 * @param image
+	 * @return
+	 */
+    @RequestMapping(value = "batchDeployment")
+	public String batchDeployment( Model model,String names,String namespaces,String images,String replicas) {
+        model.addAttribute("names", names);
+        model.addAttribute("namespace", namespaces);
+        model.addAttribute("images", images);
+        model.addAttribute("replicas", replicas);
+        return "pages/pod/batchDeployment";
+    }
 		/**
 	 * deployPod
 	 *
@@ -262,6 +278,34 @@ public class DeployController  extends BaseConfig {
 		return Response.success(true);
 	}
 
+	@RequestMapping(value = "batchUpdateDeploy")
+	@ResponseBody
+	public Response<Boolean> batchUpdateDeploy(String deploynames ,String namespaces ,String images,String replicas) {
+		Assert.notNull(deploynames, "deployname不能为空");
+		Assert.notNull(namespaces, "namespace不能为空");
+		Assert.notNull(images, "image不能为空");
+		Assert.notNull(replicas, "replicas不能为空");
+		System.out.println("image===>"+images);
+		System.out.println("deployname===>"+deploynames);
+		System.out.println("namespace===>"+namespaces);
+		System.out.println("replicas===>"+replicas);
+		KubernetesClient kubeclinet = kubes.getKubeclinet();
+		String[] deploynamesArr = deploynames.split(",");
+		String[] namespacesArr = namespaces.split(",");
+		String[] imagesArr = images.split(",");
+		String[] replicasArr = replicas.split(",");
+		for (int i = 0; i<deploynamesArr.length; i++){
+			kubeclinet.apps().deployments().inNamespace(namespacesArr[i]).withName(deploynamesArr[i]).edit()
+					.editSpec().withReplicas(Integer.valueOf(replicasArr[i])).editTemplate().editSpec().editContainer(0)
+					.withImage(harborImagePrefix+"/"+imagesArr[i])
+					.endContainer().endSpec().endTemplate().endSpec().done();
+		}
+		return Response.success(true);
+	}
+
+
+
+
 	@RequestMapping(value = "delDeployment")
 	@ResponseBody
 	public Response<Boolean> delDeployment(String deployname ,String namespace) {
@@ -272,12 +316,11 @@ public class DeployController  extends BaseConfig {
 		KubernetesClient kubeclinet = kubes.getKubeclinet();
         Deployment deployment = kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).get();
         Boolean delete = kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).delete();
-        kubes.deleteService(namespace,deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
-        kubes.deleteIngress(namespace,deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
-        kubes.deleteSecret(namespace,deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY));
-
+		String s1 = deployment.getSpec().getTemplate().getMetadata().getLabels().get(LABELS_KEY);
+		kubes.deleteService(namespace, s1);
+        kubes.deleteIngress(namespace, s1);
+        kubes.deleteSecret(namespace, s1);
 		kubeclinet.configMaps().inNamespace(namespace).withName(deployname).delete();
-
 		List<Volume> volumes = deployment.getSpec().getTemplate().getSpec().getVolumes();
 		if(volumes != null  && volumes.size() > 0){
 			volumes.forEach(a->{
@@ -287,7 +330,8 @@ public class DeployController  extends BaseConfig {
                     Map<String, String> labels = metadata.getLabels();
                     if (labels != null &&  labels.size() > 0){
                         String s = labels.get("nfs-pvc");
-                        if (StringUtils.isBlank(s)){
+                        String jar = labels.get(PVC_LIBS_LABEL);
+                        if (StringUtils.isBlank(s) && StringUtils.isBlank(jar)){
                             kubeclinet.persistentVolumeClaims().inNamespace(namespace).withName(a.getName()).delete();
                         }
                     }
@@ -308,7 +352,7 @@ public class DeployController  extends BaseConfig {
 	@ResponseBody
 	public Response<Boolean> pod(String namespace, String image,String podName,String nacos,Integer port,Integer nodePort,Integer replicas,
 	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health ,Integer nginxEnv,String seataNacosNamespace
-	,String nfsName) {
+	,String nfsName,PodParameter podParameter) {
 		System.out.println(namespace);
 		System.out.println(podName);
 		System.out.println(image);
@@ -345,11 +389,12 @@ public class DeployController  extends BaseConfig {
 					if (StringUtils.isNotBlank(nfsName)){
 						pvcName=nfsName;
 					}else{
-						pvcName=namespace+podName;
+						//pvcName=namespace+podName;
+						pvcName=namespace+"test-no";
 						kubes.createPVC(pvcName,namespace,nfsStorageClassName,20);
 					}
 					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,serviceName,split[2],
-							nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace)){
+							nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace,podParameter)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,serviceName,port,nodePort,isNginxEnv);
 						}
@@ -357,7 +402,7 @@ public class DeployController  extends BaseConfig {
 					}
 				}else{
 					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,serviceName,split[2],
-							nacosNamespace, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace)){
+							nacosNamespace, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace,podParameter)){
 						if(nodePort != null  && port != null) {
 							kubes.createService(namespace,serviceName,port,nodePort,isNginxEnv);
 						}
@@ -381,8 +426,8 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "mepoyMultiPod")
 	@ResponseBody
 	public Response<JSONObject> mepoyMultiPod(String namespace, String images,String nacos,Integer replicas,
-	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health,String seataNacosNamespace
-	) {
+	String nacosNamespace,Integer nfs ,Integer memoryXmx,Integer memoryXms , Integer health,String seataNacosNamespace,
+	PodParameter podParameter) {
 		Assert.notNull(memoryXmx, "memoryXmx不能为空");
 		Assert.notNull(memoryXms, "memoryXms不能为空");
 		System.out.println(namespace);
@@ -418,11 +463,14 @@ public class DeployController  extends BaseConfig {
 				}else {
 					image = harborImagePrefix + "/"+image;
 					if(nfs == 1){
-						kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
+						String pvcName=namespace+podName;
+						//kubes.createPVC(namespace+podName,namespace,nfsStorageClassName,20);
+						kubes.createPVC(pvcName,namespace,nfsStorageClassName,20);
 						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace,
-								namespace+podName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
+								pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace, podParameter);
 					}else{
-						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace);
+						kubes.createDeployment(namespace,namespace,podName,replicas,image,null,randomPortName,split[2],nacosNamespace,
+								memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace,podParameter);
 					}
 					jsonObject.put("success",++success);
 				}
@@ -672,6 +720,7 @@ public class DeployController  extends BaseConfig {
 	 * 上传文件
 	 *
 	 * @param file
+	 * @param isMini 最小化镜像 1
 	 * @return
 	 */
 	@RequestMapping("/upload")
@@ -688,18 +737,31 @@ public class DeployController  extends BaseConfig {
             String 	homeDir = null;
             String originalFilename = null;
             try {
-                originalFilename = file[i].getOriginalFilename();
-                String name = KubeUtils.randomPortName();
-                homeDir = Dockers.getHomeImagesDir()+File.separator+name;
-                new File(homeDir).mkdirs();
-                log.info("制作目录--> homeDir : {}",homeDir);
-                  multipartFileToFile(file[i],homeDir);
-                 dockers.writeDockerfile(originalFilename,homeDir);
-                 dockers.upload(homeDir, originalFilename.substring(0,originalFilename.indexOf(".")),version);
-                successList.add(originalFilename);
-                harborImage.setSuccessData(successList);
+				originalFilename = file[i].getOriginalFilename();
+				String name = KubeUtils.randomPortName();
+				homeDir = Dockers.getHomeImagesDir() + File.separator + name;
+				new File(homeDir).mkdirs();
+				log.info("制作目录--> homeDir : {}", homeDir);
+				multipartFileToFile(file[i], homeDir);
+				long size = file[i].getSize();
+				if ((size / 1024 / 1024)  >= 2 ){
+					dockers.writeDockerfile(originalFilename, homeDir);
+				}else{
+					//最小化镜像
+					dockers.writeDockerfileMini(originalFilename, homeDir);
+				}
+				dockers.upload(homeDir, originalFilename.substring(0, originalFilename.indexOf(".")), version);
+				successList.add(originalFilename);
+				harborImage.setSuccessData(successList);
+			}catch (Exception e){
+				errorList.add(originalFilename);
+				harborImage.setErrorData(errorList);
+				return Response.successCode(harborImage,201);
             }finally {
-                OpenFileUtils.removeTempFile(homeDir);
+            	try {
+					OpenFileUtils.removeTempFile(homeDir);
+				}catch (Exception e){
+				}
             }
         }
 		log.info("制作镜像成功");

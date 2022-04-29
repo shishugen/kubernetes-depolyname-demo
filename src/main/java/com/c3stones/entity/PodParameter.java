@@ -69,5 +69,7 @@ public class PodParameter {
 
     private String kkFileType;
 
+    private String pvcName;
+
 
 }
