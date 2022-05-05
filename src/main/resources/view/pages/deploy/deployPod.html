@@ -30,7 +30,7 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">命名空间</label>
 						<div class="layui-input-inline">
-							<select id="namespace" lay-verify="required" name="namespace">
+							<select id="namespace" lay-verify="required" lay-filter="namespace" name="namespace">
 								<option value="">请选择</option>
 							</select>
 						</div>
@@ -111,9 +111,18 @@
 						<div class="layui-inline">
 							<label class="layui-form-label" style="width: 200px">是否健康检查 /health </label>
 							<div class="layui-input-inline">
-								<input type="radio" name="health" value="0" title="否" checked=""><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
-								<input type="radio" name="health" value="1" title="是"  ><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="0" title="否" ><div class="layui-unselect layui-form-radio layui-form-radioed"><i class="layui-anim layui-icon"></i></div>
+								<input type="radio" name="health" value="1" title="是" checked="" ><div class="layui-unselect layui-form-radio"><i class="layui-anim layui-icon"></i></div>
 							</div>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">轻量级部署</label>
+						<div class="layui-input-inline">
+							<select id="pvcName"   name="pvcName">
+								<option value="">请选择</option>
+							</select>
 						</div>
 					</div>
 					<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;color: blueviolet;">
@@ -136,7 +145,7 @@
                     <label style="width: 560px" class="layui-form-label">网关8888,桌面9095，终端9096， 8888->30888 ; 9095->30395; 9096->30396; </label>
                 </div>
 				<div class="layui-form-item">
-					<button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
+					<button type="submit" class="layui-btn" lay-submit lay-filter="*">提交2</button>
 				</div>
 			</form>
 		</div>
@@ -154,6 +163,29 @@ layui.use('form', function(){
     var form = layui.form;
     form.render();
 });
+
+
+form.on('select(namespace)', function(data){
+    $("#pvcName").empty()
+    $('#pvcName').append(new Option("请选择",""));// 下拉菜单里添加元素
+    $.ajax({
+        url : "[[@{/}]]nfsJar/getByNamespace",
+        type : "get",
+        data:{'namespace':data.value},
+        dataType : "json",
+        error : function(data) {
+            errorHandle(data);
+        },
+        success : function(data) {
+            console.log(data);
+            $.each(data.data, function (index, item) {
+                $('#pvcName').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+            });
+            layui.form.render("select")
+        }
+    });
+
+})
 
 form.on('select(nacosList)', function(data){
     $("#nacosNamespace").empty()
@@ -184,8 +216,7 @@ form.on('select(nacosList)', function(data){
             }
         });
     }
-
-}
+    }
 
 );
 form.on('select(image)', function(data){

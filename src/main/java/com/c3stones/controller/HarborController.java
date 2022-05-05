@@ -48,7 +48,14 @@ public class HarborController extends  BaseConfig<HarborImage>{
     public Response<Pages<HarborImage>> listData(String projectName,String version,Integer limit,Integer page,Integer imageNot){
         Pages pages = new Pages();
 
-        List<HarborImage> harborList = httpHarbor.harborList(projectName,version,imageNot==1?true:false);
+
+        System.out.println("httpHarbor"+httpHarbor);
+        System.out.println("imageNot"+imageNot);
+        boolean is = false;
+        if (imageNot != null){
+            is=imageNot==1?true:false;
+        }
+        List<HarborImage> harborList = httpHarbor.harborList(projectName,version,is);
 
         pages.setRecords(super.setPage(harborList,limit,page));
         pages.setTotal(harborList.size());

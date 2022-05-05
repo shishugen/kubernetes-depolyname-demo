@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.c3stones</groupId>
 	<artifactId>kubernetes-deployment</artifactId>
@@ -20,16 +20,16 @@
 			<artifactId>commons-net</artifactId>
 			<version>3.3</version>
 		</dependency>
-	<!--	<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>3.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>-->
+		<!--	<dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>3.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <scope>runtime</scope>
+            </dependency>-->
 		<dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
@@ -71,15 +71,15 @@
 
 
 		<!--  k8s  -->
-	<!--	<dependency>
-			<groupId>io.fabric8</groupId>
-			<artifactId>kubernetes-client</artifactId>
-&lt;!&ndash;
-			<version>4.11.0</version>
-&ndash;&gt;
-			<version>5.4.1</version>
+		<!--	<dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-client</artifactId>
+    &lt;!&ndash;
+                <version>4.11.0</version>
+    &ndash;&gt;
+                <version>5.4.1</version>
 
-		</dependency>-->
+            </dependency>-->
 
 		<!-- https://mvnrepository.com/artifact/io.fabric8/kubernetes-client -->
 		<dependency>
@@ -208,54 +208,16 @@
 			<version>1.2.76</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.huaweicloud</groupId>
-			<artifactId>esdk-obs-java-bundle</artifactId>
-			<version>[3.21.8,)</version>
-		</dependency>
+
 	</dependencies>
+
 	<build>
-	<plugins>
-		<!-- 指定启动类，将依赖打成外部jar包 -->
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-jar-plugin</artifactId>
-			<configuration>
-				<archive>
-					<!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
-					<addMavenDescriptor>false</addMavenDescriptor>
-					<manifest>
-						<!-- 是否要把第三方jar加入到类构建路径 -->
-						<addClasspath>true</addClasspath>
-						<!-- 外部依赖jar包的最终位置 -->
-						<classpathPrefix>lib/</classpathPrefix>
-						<!-- 项目启动类 -->
-						<mainClass>com.c3stones.Application</mainClass>
-					</manifest>
-				</archive>
-			</configuration>
-		</plugin>
-		<!--拷贝依赖到jar外面的lib目录-->
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-dependency-plugin</artifactId>
-			<executions>
-				<execution>
-					<id>copy-lib</id>
-					<phase>package</phase>
-					<goals>
-						<goal>copy-dependencies</goal>
-					</goals>
-					<configuration>
-						<outputDirectory>target/libs</outputDirectory>
-						<excludeTransitive>false</excludeTransitive>
-						<stripVersion>false</stripVersion>
-						<includeScope>runtime</includeScope>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
-	</plugins>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>

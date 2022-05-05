@@ -744,7 +744,7 @@ public class DeployController  extends BaseConfig {
 				log.info("制作目录--> homeDir : {}", homeDir);
 				multipartFileToFile(file[i], homeDir);
 				long size = file[i].getSize();
-				if ((size / 1024 / 1024)  >= 2 ){
+				if ((size / 1024 / 1024)  >= 10 ){
 					dockers.writeDockerfile(originalFilename, homeDir);
 				}else{
 					//最小化镜像

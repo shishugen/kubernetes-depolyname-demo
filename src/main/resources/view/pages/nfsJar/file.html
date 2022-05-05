@@ -17,15 +17,14 @@
         <label style="width: 560px;color: blueviolet" class="layui-form-label">DJK上传解压后</label>
     </div>
 	<div class="" style="padding-left: 20px">
-        <span id="fileSize" class="layui-badge">数量:</span>
+        <span id="fileSize" class="layui-badge"></span>
 
         <button class="layui-btn layui-btn-warm layui-btn-sm " data-type="findData">批量删除</button>
         <button type="button" class="layui-btn layui-btn-sm" data-type="reload">刷新</button>
         <div class="layui-input-inline">
             <input type="tel" name="cmd"  id="cmd"  style="width: 180px"  class="layui-input">
         </div>
-        <button type="button" class="layui-btn layui-btn-sm" data-type="send">发送</button>
-
+        <button type="button" class="layui-btn layui-btn-sm" data-type="send">初始化JDK环境，只初始化一次</button>
     </div>
 
 	<div id="test1" class="demo-tree demo-tree-box" style="width: 40%; height: 500px;float: left; overflow: scroll;">
@@ -60,7 +59,8 @@ layui.use('tree', function(){
             errorHandle(data);
         },
         success : function(data) {
-            $("#fileSize").append(data.data.length)
+            $("#fileSize").html('');
+            $("#fileSize").append("数量:"+data.data.length)
             var inst1 = tree.render({
                 elem: '#test1',  //绑定元素
 				id:"file",
@@ -152,7 +152,8 @@ layui.use('tree', function(){
                     errorHandle(data);
                 },
                 success : function(data) {
-                    $("#fileSize").append(data.data.length)
+                    $("#fileSize").html("");
+                    $("#fileSize").append("数量:"+data.data.length)
                     var inst1 = tree.render({
                         elem: '#test1',  //绑定元素
                         id:"file",

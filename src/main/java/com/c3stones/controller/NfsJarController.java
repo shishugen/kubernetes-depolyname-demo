@@ -92,7 +92,7 @@ public class NfsJarController  extends BaseConfig {
     public Response addNfs(String namespace,String name,Integer nfsSize) {
         try {
              kubes.createPVC(namespace + "-" + name, namespace, PVC_LIBS_LABEL, nfsStorageClassName, nfsSize);
-             kubes.createPod(namespace, name);
+            // kubes.createPod(namespace, name);
         }catch (Exception e){
             delete(namespace,name);
             e.printStackTrace();
