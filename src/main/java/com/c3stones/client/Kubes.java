@@ -42,12 +42,13 @@ import java.util.function.Consumer;
  */
 @Component
 @Slf4j
-public class Kubes {
+public class Kubes extends BaseConfig {
 
     /***
      * labels
      */
     private  static  String LABELS_KEY = "app";
+
 
     @Value("${pod.namespace.prefix}")
     private String podNamespacePrefix;
@@ -61,7 +62,7 @@ public class Kubes {
     public  KubernetesClient getKubeclinet() {
         String file = null;
         try {
-            file = OpenFileUtils.readFileByChars(getHomeConfigFile().getPath());
+            file = OpenFileUtils.readFileByChars(getK8sHomeConfigFile().getPath());
             if(StringUtils.isNotBlank(file)) {
                 return new DefaultKubernetesClient(Config.fromKubeconfig(file));
             }
@@ -443,6 +444,8 @@ public class Kubes {
         Container container =
                 createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,null, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace,podParameter);
         Map<String,String> labels = new HashMap<>();
+        String jarName = image.substring(image.lastIndexOf("/")+1, image.lastIndexOf(":"));
+        labels.put(LABELS_JAR_NAME,jarName);
         labels.put(LABELS_KEY,randomPortName);
         if(port != null && port.equals(8888)){
             labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
@@ -489,7 +492,9 @@ public class Kubes {
         Container container = createContainer(appName, image,port,randomPortName,nacos , nacosNamespace,pvcName, memoryXmx, memoryXms,pvcLogs,isHealth,seataNacosNamespace,podParameter);
 
         Map<String,String> labels = new HashMap<>();
+        String jarName = image.substring(image.lastIndexOf("/")+1, image.lastIndexOf(":"));
         labels.put(LABELS_KEY,randomPortName);
+        labels.put(LABELS_JAR_NAME,jarName);
         if(port != null &&port.equals(8888)){
             labels.put(BaseConfig.GATEWAY_API_KEY,BaseConfig.GATEWAY_API_VALUE);
         }
@@ -842,17 +847,13 @@ public class Kubes {
 
     @SneakyThrows
     public static void main(String[] args) {
-        String[] comArr = new String[10];
-        comArr[0]="tar2";
-        comArr[1]="-zxvf";
-        comArr[2]="/jdk.tar.gz";
-        KubernetesClient kubeclinet = getKubeclinet2();
-        ExecWatch exec = kubeclinet.pods().inNamespace("app-sys").withName("app-sysapp-sys-test-libs")
-                .redirectingInput().exec("tar","-zxvf","/jdk.tar.gz","-C","/home/");
-
-        InputStream errorChannel = exec.getErrorChannel();
-        System.out.println("99999");
-
+        String image ="harbor.org/application/test-conet:2.1";
+        int i = image.lastIndexOf("/");
+        int endIndex = image.lastIndexOf(":");
+        System.out.println(i);
+        System.out.println(image.length());
+        String substring = image.substring(i+1, endIndex);
+        System.out.println(substring);
 
 
 /*        Map<String,Integer> map = new HashMap(1);
@@ -1033,7 +1034,7 @@ public class Kubes {
      * K8S配置名
      * @return
      */
-    public static File getHomeConfigFile() {
+    public static File getK8sHomeConfigFile() {
         File file = null;
         String dir = System.getProperty("user.home") +File.separator + ".kube-deployment"+ File.separator + ".k8s";
         try {

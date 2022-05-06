@@ -23,6 +23,8 @@ public class BaseConfig<T> {
      */
     public final static String PVC_LIBS_LABEL ="JAVA-LIBS";
 
+    public final static  String LABELS_JAR_NAME = "JAR_NAME";
+
 
     /**
      * 判断pod是否为网关

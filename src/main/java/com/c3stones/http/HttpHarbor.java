@@ -97,6 +97,11 @@ public class HttpHarbor extends BaseConfig {
                     harbor.setCreated(DateUtils.StringFormat(harborRepositories.getUpdateTime()));
                     harbor.setImageName(name);
                     harbor.setVersion(harborVersion.getName());
+                    try {
+                        int i = harborVersion.getSize() / 1024 / 1024;
+                        harbor.setSize(i);
+                    }catch (Exception e){
+                    }
                      if(StringUtils.isNotBlank(harborProjectName) && StringUtils.isNotBlank(version)){
                          if(name.contains(harborProjectName)&&isContains(harborVersion.getName(),version)){
                              harborList.add(harbor);

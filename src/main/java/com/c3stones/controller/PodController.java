@@ -39,6 +39,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: PodController
@@ -233,12 +234,26 @@ public class PodController extends BaseConfig{
     @SneakyThrows
     @RequestMapping(value = "downloadJar")
     public void downloadJar(String namespace, String podName, HttpServletResponse response ,HttpServletRequest request ) {
+
+        Pod pod = kubes.getKubeclinet().pods().inNamespace(namespace)
+                .withName(podName).get();
+        Map<String, String> labels = pod.getMetadata().getLabels();
+        String jarName = "";
+        if (labels!=null){
+            String name = labels.get(LABELS_JAR_NAME);
+            if (StringUtils.isNotBlank(name)){
+                jarName =name;
+            }else{
+                jarName =podName;
+            }
+        }else{
+            jarName =podName;
+        }
         InputStream read = kubes.getKubeclinet().pods().inNamespace(namespace)
                 .withName(podName).file("/app.jar").read();
-
         response.setContentType("application/octet-stream");
         String filename = request.getParameter("filename");
-        response.setHeader("Content-disposition", "attachment; filename=" +new String((podName+".jar").getBytes("gb2312"),"ISO8859-1"));
+        response.setHeader("Content-disposition", "attachment; filename=" +new String((jarName+".jar").getBytes("gb2312"),"ISO8859-1"));
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         try {

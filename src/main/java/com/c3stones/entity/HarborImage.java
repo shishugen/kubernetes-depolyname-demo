@@ -28,6 +28,8 @@ public class HarborImage {
 
     private String version;
 
+    private Integer size;
+
     private String created;
 
 

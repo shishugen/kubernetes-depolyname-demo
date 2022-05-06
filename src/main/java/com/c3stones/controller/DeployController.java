@@ -389,8 +389,7 @@ public class DeployController  extends BaseConfig {
 					if (StringUtils.isNotBlank(nfsName)){
 						pvcName=nfsName;
 					}else{
-						//pvcName=namespace+podName;
-						pvcName=namespace+"test-no";
+						pvcName=namespace+podName;
 						kubes.createPVC(pvcName,namespace,nfsStorageClassName,20);
 					}
 					if(kubes.createDeployment(namespace,namespace,podName,replicas,image,port,serviceName,split[2],

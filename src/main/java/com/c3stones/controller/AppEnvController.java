@@ -63,7 +63,7 @@ public class AppEnvController {
                 if(StringUtils.isNotBlank(file)){
                     K8sConfig k8sConfig = new K8sConfig();
                     Config config = Config.fromKubeconfig(file);
-                    File file1  = Kubes.getHomeConfigFile();
+                    File file1  = Kubes.getK8sHomeConfigFile();
                     FileInputStream stream1 = new FileInputStream(file1);
                     String s = OpenFileUtils.readFile(stream1);
                     if(StringUtils.isNotBlank(s)){
