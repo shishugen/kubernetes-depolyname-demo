@@ -12,12 +12,15 @@
 	<script th:src="@{/layui/layui.all.js}"></script>
 	<script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
 </head>
-<body class="login-wrap">
+<body class="login-wrap"  >
     <div class="login-container">
         <form class="login-form">
         	<div class="input-group text-center text-gray">
-        		<h2>欢迎登录</h2>
+        		<h2>k8s部署管理平台</h2>
         	</div>
+           <!-- <div class="input-group text-center text-gray">
+        		<h2>欢迎登录</h2>
+        	</div>-->
             <div class="input-group">
                 <input type="text" id="username" class="input-field">
                 <label for="username" class="input-label">
@@ -33,8 +36,15 @@
             <button type="button" class="login-button">登录<i class="ai ai-enter"></i></button>
         </form>
     </div>
+
+
 </body>
 </html>
+<style>
+    {
+    background-image:url('/static/images/logo.jpg');
+    }
+</style>
 <script>
 layui.define(['element'],function(exports){
     var $ = layui.$;

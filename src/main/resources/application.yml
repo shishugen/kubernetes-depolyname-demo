@@ -28,3 +28,23 @@ management:
         web:
             exposure:
                 include: '*'
+# 信息安全
+security:
+  web:
+    excludes:
+      - /login
+      - /logout
+      - /images/**
+      - /jquery/**
+      - /layui/**
+  xss:
+    enable: true
+    excludes:
+      - /login
+      - /logout
+      - /images/*
+      - /jquery/*
+      - /layui/*
+  csrf:
+    enable: true
+    excludes:

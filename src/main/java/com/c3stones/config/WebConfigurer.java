@@ -11,13 +11,27 @@ import lombok.Setter;
 
 /**
  * Web配置类
- * 
- * @author CL
+ *
+ * @author ssg
  *
  */
+@Configuration
+@ConfigurationProperties(prefix = "security.web")
+public class WebConfigurer implements WebMvcConfigurer {
 
-public class WebConfigurer   {
 
+    /**
+     * 忽略的URL
+     */
+    @Setter
+    private List<String> excludes;
 
+    /**
+     * 配置拦截器
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**").excludePathPatterns(excludes);
+    }
 
 }
