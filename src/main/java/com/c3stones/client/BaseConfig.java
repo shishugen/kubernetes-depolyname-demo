@@ -2,6 +2,7 @@ package com.c3stones.client;
 
 
 import com.c3stones.entity.Config;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,6 +53,29 @@ public class BaseConfig<T> {
     protected static String pythonRely ;
     protected static String bindK8sIP ;
     protected static String defaultNamespace ;
+    protected static String k8sNetPort ;
+    protected static String k8sNetNodePort ;
+    /**
+     * 邮件地址
+     */
+    protected static String mailHost ;
+
+    /**
+     * 邮件端口
+     */
+    protected static Integer mailPort ;
+
+    protected static String mailUser ;
+
+    protected static String mailPass;
+
+    protected static String mailPerson;
+
+    protected static String mailSubject;
+
+    protected static String checkHarborIp;
+
+    protected static String checkNfsIp;
 
     private static void getConfig(){
         Properties pro = new Properties();
@@ -78,7 +102,11 @@ public class BaseConfig<T> {
     }
 
     public static Config setConfig(Properties pro){
-         dockerPort =Integer.valueOf(pro.getProperty("docker.port"));
+        String property = pro.getProperty("docker.port");
+        if (StringUtils.isNotBlank(property)){
+            dockerPort =Integer.valueOf(property);
+        }
+
          harborUser =pro.getProperty("harbor.user");
          harborPassword = pro.getProperty("harbor.password");
          harborUrl = pro.getProperty("harbor.url");
@@ -94,11 +122,22 @@ public class BaseConfig<T> {
          pythonRely = pro.getProperty("python.rely");
         bindK8sIP = pro.getProperty("bindK8sIP");
         defaultNamespace = pro.getProperty("defaultNamespace");
+        k8sNetPort = pro.getProperty("k8sNetPort");
+        k8sNetNodePort = pro.getProperty("k8sNetNodePort");
+        mailHost = pro.getProperty("mail.host");
+        mailPort = Integer.valueOf(pro.getProperty("mail.port","25"));
+        mailUser = pro.getProperty("mail.user");
+        mailPass = pro.getProperty("mail.pass");
+        mailPerson = pro.getProperty("mail.person");
+        mailSubject = pro.getProperty("mail.subject");
+        checkNfsIp = pro.getProperty("check.nfs.ip");
+        checkHarborIp = pro.getProperty("check.harbor.ip");
          //harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
          harborImageEnvPrefix = harborImageEnvProjectName;
         return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
                 ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString()
-                ,nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString(),pythonRely,bindK8sIP,defaultNamespace);
+                ,nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString(),pythonRely,bindK8sIP,defaultNamespace
+        ,k8sNetPort,k8sNetNodePort,mailHost,mailPort,mailUser,mailPass,mailPerson,mailSubject,checkHarborIp,checkNfsIp);
 
     }
 

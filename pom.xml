@@ -31,11 +31,6 @@
                 <scope>runtime</scope>
             </dependency>-->
 		<dependency>
-			<groupId>cn.hutool</groupId>
-			<artifactId>hutool-all</artifactId>
-			<version>5.4.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
@@ -208,6 +203,31 @@
 			<version>1.2.76</version>
 		</dependency>
 
+
+        <!-- 工具箱 -->
+		<dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>5.8.1</version>
+		</dependency>
+
+		<!-- 发邮件 -->
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-quartz</artifactId>
+		</dependency>
+
+
+
+		<!-- hadoop -->
+
+		<!-- HBase客户端 -->
 
 	</dependencies>
 

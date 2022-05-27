@@ -1,5 +1,6 @@
 package com.c3stones.config;
 
+import cn.hutool.cron.CronUtil;
 import com.c3stones.client.BaseConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -24,7 +25,6 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
             file.mkdirs();
         }
         BaseConfig.initConfig();
-
         log.info("启动完成……");
     }
 }

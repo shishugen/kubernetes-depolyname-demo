@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet" />
+    <link th:href="@{/layui/css/view.css}" rel="stylesheet" />
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
+    <title></title>
+</head>
+<body class="layui-view-body">
+	<div class="layui-content">
+	    <div class="layui-row">
+			<div class="">
+                手动检查 ：
+                <div class="layui-inline mr10" style="width: 300px">
+                    <input class="layui-input" id="host" name="host" placeholder="192.168.88.80:22" autocomplete="off">
+                </div>
+				<button class="layui-btn" data-type="checkNet">检查</button>
+
+                <table class="layui-hide" id="dataTable" lay-filter="config"></table>
+
+                <script type="text/html" id="operation">
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="check">检查端口</a>
+                </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+<script>
+var element = layui.element;
+var table = layui.table;
+var layer = layui.layer;
+
+
+table.render({
+	id: 'table'
+	,elem: '#dataTable'
+    ,url: '[[@{/node/listData}]]'
+    ,cols: [
+    	[
+	      {field:'nodeName', title: '节点名称'}
+	      ,{field:'master', title: 'isMaster'}
+	      ,{field:'nodeIp', title: '节点IP'}
+	      ,{field:'status', title: '状态'}
+	      ,{field:'k8sVersion', title: 'k8s版本'}
+	      ,{field:'dockerVersion', title: 'docker版本'}
+	      ,{field:'osImage', title: '操作系统'}
+	      ,{title:'操作', align: 'center', toolbar: '#operation'}
+    	]
+   	]
+    ,response: {
+        statusCode: 200
+    }
+    ,parseData: function(res){
+	    console.log(res)
+    	return {
+    		"code": res.code
+            ,"msg": res.msg
+            ,"data": res.data
+    	};
+    }
+});
+
+
+active = {
+
+    checkNet: function() {
+        layer.msg('正常检查……');
+         var host = $("#host").val().split(":");
+        $.ajax({
+            url: "[[@{/}]]node/checkHost",
+            data: {'host': host[0], 'port':host[1]},
+            type: "post",
+            dataType: "json",
+            error: function (data) {
+                errorHandle(data);
+            },
+            success: function (data) {
+                console.log(data)
+                if (data.code === 200) {
+                    if (data.data === true){
+                        layer.msg('端口正常');
+                    }else{
+                        layer.msg("端口异常", {icon: 2});
+                    }
+                }
+            }
+        });
+    },
+	reset: function() {
+		$(".layui-input").val("");
+	}
+};
+
+// 按钮事件
+$('.layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+});
+
+
+//监听行工具事件
+table.on('tool(config)', function(obj){
+    var row = obj.data;
+    console.log(row)
+    if(obj.event === 'check') {
+        layer.msg('正常检查……');
+          $.ajax({
+              url: "[[@{/}]]node/checkNet",
+              data: {'host': row.nodeIp,isMaster:row.master},
+              type: "post",
+              dataType: "json",
+              error: function (data) {
+                  errorHandle(data);
+              },
+              success: function (data) {
+                  console.log(data)
+                  console.log(data.data.error)
+                  console.log(data.data.success)
+                  if (data.code === 200){
+
+                      var ports =''
+                      data.data.success.forEach(function (node) {
+                         console.log("port",node.port)
+                          ports +=node.port+'<br>'
+                      })
+                      var errorPorts =''
+                      data.data.error.forEach(function (node) {
+                          console.log("port",node.port)
+                          errorPorts +=node.port+'<br>'
+                      })
+                      if (data.data.error.length ==0){
+                          errorPorts='无'
+                      }
+                      //示范一个公告层
+                      layer.open({
+                          type: 1
+                          ,title: false //不显示标题栏
+                          ,closeBtn: false
+                          ,area: '300px;'
+                          ,shade: 0.8
+                          ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                          ,btn: ['知道了']
+                          ,btnAlign: 'c'
+                          ,moveType: 1 //拖拽模式，0或者1
+                          ,content: '<div style="padding: 30px; line-height: 22px; background-color: #e2e2e2; color: #2f4056; font-weight: 300;">' +
+                          '节点IP  : ' +row.nodeIp+'<br>'
+                          +'<div style="color: #177ce3;" ><samp  style="font-size: 18px">正常端口</samp> <br>' +ports+'</div>'
+
+                          +'<br><div style="color: #e21c3d "><samp  style="font-size: 18px">异常端口</samp> <br>' +errorPorts+'</div>'
+
+                          ,success: function(layero){
+                          }
+                      });
+
+                  }
+                 // $(".searchTable .layui-btn").eq(0).click();
+              }
+          });
+
+
+
+
+
+
+    }
+});
+
+
+
+//错误处理
+function errorHandle(data) {
+	if (data.status == 404) {
+		layer.msg("请求资源不存在", {icon: 2});
+	} else {
+		layer.msg("服务端异常", {icon: 2});
+	}
+	return;
+}
+</script>
+</html>

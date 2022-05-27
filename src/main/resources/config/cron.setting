@@ -1,0 +1,2 @@
+#[com.c3stones.task]
+#K8sMain.test = */1 * * * *

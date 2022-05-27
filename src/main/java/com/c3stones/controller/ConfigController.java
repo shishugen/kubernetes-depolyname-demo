@@ -80,7 +80,17 @@ public class ConfigController {
             pro.setProperty("nfs.storage.neo4j.size",config.getNfsNeo4jStorageSize());
             pro.setProperty("python.rely",config.getPythonRely());
             pro.setProperty("bindK8sIP",config.getBindK8sIP());
+            pro.setProperty("k8sNetPort",config.getK8sNetPort());
+            pro.setProperty("k8sNetNodePort",config.getK8sNetNodePort());
             pro.setProperty("defaultNamespace",config.getDefaultNamespace());
+            pro.setProperty("mail.host",config.getMailHost());
+            pro.setProperty("mail.port",config.getMailPort().toString());
+            pro.setProperty("mail.user",config.getMailUser());
+            pro.setProperty("mail.pass",config.getMailPass());
+            pro.setProperty("mail.subject",config.getMailSubject());
+            pro.setProperty("mail.person",config.getMailPerson());
+            pro.setProperty("check.harbor.ip",config.getCheckHarborIp());
+            pro.setProperty("check.nfs.ip",config.getCheckNfsIp());
             pro.store(outputStream,"保存");
             BaseConfig.setConfig(pro);
         } catch (Exception e) {

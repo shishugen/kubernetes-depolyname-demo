@@ -1,6 +1,7 @@
 package com.c3stones.client;
 
 import com.c3stones.common.Response;
+import com.c3stones.entity.K8sNode;
 import com.c3stones.entity.Namespaces;
 import com.c3stones.entity.PodParameter;
 import com.c3stones.util.KubeUtils;
@@ -49,6 +50,9 @@ public class Kubes extends BaseConfig {
      */
     private  static  String LABELS_KEY = "app";
 
+    private static String nodeType ="Ready";
+
+    private static String kubeletReady ="KubeletReady";
 
     @Value("${pod.namespace.prefix}")
     private String podNamespacePrefix;
@@ -173,39 +177,6 @@ public class Kubes extends BaseConfig {
             Pod newPod = getKubeclinet().pods().createOrReplace(pod);
         return true;
     }
-
-
-
-        /***
-         * 创建 pod
-         * @param namespace
-         * @param podName
-         * @param image
-         * @return
-         */
-        public  boolean createPod(String namespace, String podName, String image , Integer port,String portName,String nacos,String nacosNamespace,String seataNacosNamespace){
-               /* ContainerPort[] arr = new ContainerPort[ports.size()];
-                for (int i = 0 ; i < ports.size(); i++ ) {
-                    ContainerPort build = new ContainerPortBuilder().withName(podName).withContainerPort(ports.get(i)).build();
-                    arr[i] = build;
-                }*/
-                Pod pod = new PodBuilder().withNewMetadata().withName(podName).withNamespace(namespace).addToLabels(LABELS_KEY, portName).endMetadata()
-                        .withNewSpec().withContainers(new ContainerBuilder()
-                                .withName(podName)
-                                .withImage(image)
-                                .withImagePullPolicy("Always")
-                                .addToEnv(new EnvVarBuilder().withName("NAMESPACE").withValue(nacosNamespace).build())
-                                .addToEnv(new EnvVarBuilder().withName("NACOS_PORT").withValue("8848").build())
-                                .addToEnv(new EnvVarBuilder().withName("NACOS_IP").withValue(nacos).build())
-                                .addToEnv(new EnvVarBuilder().withName("SEATA_NAMESPACE").withValue(seataNacosNamespace).build())
-                                .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
-                                .build())
-                        .endSpec().build();
-                Pod newPod = getKubeclinet().pods().create(pod);
-                System.out.println(newPod);
-            return true;
-        }
-
 
 
     public  Service createService(String namespace, String serviceName, Integer port,Integer nodePort,boolean isNginxEnv){
@@ -610,15 +581,15 @@ public class Kubes extends BaseConfig {
         httpGetAction2.setScheme("HTTP");
         probe2.setHttpGet(httpGetAction2);
         //容器启动后多久开始探测
-        probe2.setInitialDelaySeconds(60);
+        probe2.setInitialDelaySeconds(30);
         //表示容器必须在2s内做出相应反馈给probe，否则视为探测失败
-        probe2.setTimeoutSeconds(10);
+        probe2.setTimeoutSeconds(5);
         // 探测周期，每30s探测一次
-        probe2.setPeriodSeconds(40);
+        probe2.setPeriodSeconds(30);
         // 连续探测1次成功表示成功
-        probe2.setSuccessThreshold(2);
+        probe2.setSuccessThreshold(1);
         //连续探测3次失败表示失败
-        probe2.setFailureThreshold(6);
+        probe2.setFailureThreshold(3);
         if(isHealth){
             container.setReadinessProbe(probe2);
             container.setLivenessProbe(probe);
@@ -800,30 +771,55 @@ public class Kubes extends BaseConfig {
         return true;
     }
 
-    /**
-     * 单位换算
-     * @param format
-     * @return
-     */
-    private static Integer memoryUnitFormat(String format){
-        Integer num = 1;
-        switch (format){
-            case "G":
-                num  = num * 1000;
-                break;
-            case "Mi" :
-                num  = num * 1;
-                break;
-            case "m":
-                num  = num * 1;
-                break;
-            case "mi":
-                num  = num * 1;
-                break;
-            default:
+    public List<K8sNode> findNode(){
+        KubernetesClient kubeclinet2 = getKubeclinet();
+        List<Node> nodeList = kubeclinet2.nodes().list().getItems();
+        String masterIp = kubeclinet2.getMasterUrl().getHost();
+        List<K8sNode> k8sNodeList = new ArrayList<>();
+        for(Node node : nodeList){
+            K8sNode k8sNode = new K8sNode();
+            NodeStatus status = node.getStatus();
+            ObjectMeta metadata = node.getMetadata();
+            //是否为主节点
+            String isMaster = metadata.getLabels().get("node-role.kubernetes.io/master");
+            if(isMaster != null){
+                k8sNode.setMaster(true);
+            }else{
+                k8sNode.setMaster(false);
+            }
+            k8sNode.setNodeName(metadata.getName());
+            NodeSystemInfo nodeInfo = status.getNodeInfo();
+            k8sNode.setDockerVersion(nodeInfo.getContainerRuntimeVersion());
+            k8sNode.setOsImage(nodeInfo.getOsImage());
+            k8sNode.setK8sVersion(nodeInfo.getKubeletVersion());
+            List<NodeAddress> addresses = status.getAddresses();
+            for(NodeAddress address : addresses){
+                String nodeIp = address.getAddress();
+                if("InternalIP".equals(address.getType())){
+                    k8sNode.setNodeIp(nodeIp);
+                }
+            }
+            List<NodeCondition> conditions = status.getConditions();
+            for(NodeCondition condition : conditions){
+                String type = condition.getType();
+                if (nodeType.equals(type)){
+                    if(kubeletReady.equals(condition.getReason())){
+                        //正常
+                        k8sNode.setStatus(nodeType);
+                    }else{
+                        //不正常
+                        k8sNode.setStatus(condition.getReason());
+                    }
+                }
+            }
+            k8sNodeList.add(k8sNode);
         }
-        return num;
+        return k8sNodeList;
     }
+
+
+
+
 
     public static KubernetesClient getKubeclinet2(){
         System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\kube-test-config-10");
@@ -847,13 +843,44 @@ public class Kubes extends BaseConfig {
 
     @SneakyThrows
     public static void main(String[] args) {
-        String image ="harbor.org/application/test-conet:2.1";
-        int i = image.lastIndexOf("/");
-        int endIndex = image.lastIndexOf(":");
-        System.out.println(i);
-        System.out.println(image.length());
-        String substring = image.substring(i+1, endIndex);
-        System.out.println(substring);
+        KubernetesClient kubeclinet2 = getKubeclinet2();
+        List<Node> nodeList = kubeclinet2.nodes().list().getItems();
+        String masterIp = kubeclinet2.getMasterUrl().getHost();
+        String nodeType ="Ready";
+        String kubeletReady ="KubeletReady";
+        for(Node node : nodeList){
+            K8sNode k8sNode = new K8sNode();
+            NodeStatus status = node.getStatus();
+            k8sNode.setNodeName(node.getMetadata().getName());
+            NodeSystemInfo nodeInfo = status.getNodeInfo();
+            k8sNode.setDockerVersion(nodeInfo.getContainerRuntimeVersion());
+            k8sNode.setOsImage(nodeInfo.getOsImage());
+            k8sNode.setK8sVersion(nodeInfo.getKubeletVersion());
+            List<NodeAddress> addresses = status.getAddresses();
+            for(NodeAddress address : addresses){
+                String nodeIp = address.getAddress();
+               if("InternalIP".equals(address.getType())){
+                   k8sNode.setNodeIp(nodeIp);
+                }
+            }
+            List<NodeCondition> conditions = status.getConditions();
+            for(NodeCondition condition : conditions){
+                String type = condition.getType();
+                if (nodeType.equals(type)){
+                    if(kubeletReady.equals(condition.getReason())){
+                        //正常
+                        k8sNode.setStatus(nodeType);
+                    }else{
+                        //不正常
+                        k8sNode.setStatus(condition.getReason());
+                    }
+                }
+            }
+            System.out.println(k8sNode);
+
+        }
+
+
 
 
 /*        Map<String,Integer> map = new HashMap(1);
@@ -1098,7 +1125,7 @@ public class Kubes extends BaseConfig {
                 if(config.getMasterUrl().equals(masterUrl)){
                     FileOutputStream fileOutputStream = null;
                     try {
-                     fileOutputStream = new FileOutputStream(getHomeConfigFile());
+                     fileOutputStream = new FileOutputStream(Kubes.getK8sHomeConfigFile());
                     fileOutputStream.write(file.getBytes());
                     }finally {
                         fileOutputStream.flush();

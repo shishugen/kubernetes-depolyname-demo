@@ -34,13 +34,50 @@ public class Config {
     private String bindK8sIP ;
 
     private String defaultNamespace ;
+    /**
+     * K8S群集端口
+     */
+    private String k8sNetPort;
+
+    /**
+     * K8S群集端口 子节点
+     */
+    private String k8sNetNodePort ;
+
+
+    /**
+     * 邮件地址
+     */
+    private String mailHost ;
+
+    /**
+     * 邮件端口
+     */
+    private Integer mailPort ;
+
+    private String mailUser ;
+
+    private String mailPass;
+
+    private String mailPerson;
+
+    private String checkHarborIp;
+
+    private String checkNfsIp;
+
+    /**
+     * 主题
+     */
+    private String mailSubject;
 
 
     public Config(Integer dockerPort, String harborUser, String harborPassword, String harborUrl,
                   String harborImagePrefix, String harborImageProjectName, String harborImageEnvProjectName,
                   String nfsStorageClassName, String nfsMySqlStorageSize, String nfsNacosStorageSize,
                   String nfsMqStorageSize, String nfsFdfsStorageSize,String nfsNeo4jStorageSize,
-                  String pythonRely,String bindK8sIP,String defaultNamespace) {
+                  String pythonRely,String bindK8sIP,String defaultNamespace,String k8sNetPort,
+                  String k8sNetNodePort,String mailHost,Integer mailPort,String mailUser,String mailPass,String
+                          mailPerson,String mailSubject,String checkHarborIp,String checkNfsIp) {
         this.dockerPort = dockerPort;
         this.harborUser = harborUser;
         this.harborPassword = harborPassword;
@@ -57,5 +94,15 @@ public class Config {
         this.pythonRely = pythonRely;
         this.bindK8sIP = bindK8sIP;
         this.defaultNamespace = defaultNamespace;
+        this.k8sNetPort = k8sNetPort;
+        this.k8sNetNodePort = k8sNetNodePort;
+        this.mailHost = mailHost;
+        this.mailUser = mailUser;
+        this.mailPort = mailPort;
+        this.mailPass = mailPass;
+        this.mailPerson = mailPerson;
+        this.mailSubject = mailSubject;
+        this.checkHarborIp = checkHarborIp;
+        this.checkNfsIp = checkNfsIp;
     }
 }
