@@ -110,7 +110,8 @@ public class NacosPod extends BaseConfig {
         String pvcName =namespace + podName;
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNacosStorageSize);
         Deployment newDeployment = new DeploymentBuilder()
-                .withNewMetadata()
+                .withNewMetadata().addNewFinalizer("foregroundDeletion")
+               // .withDeletionTimestamp()
                 .withName(podEnvPrefix+podName)
                 .withNamespace(namespace)
                 .endMetadata()

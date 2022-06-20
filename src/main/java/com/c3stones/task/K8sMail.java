@@ -241,23 +241,20 @@ public class K8sMail {
     }
 
     public static void main(String[] args) {
-      /*  MailAccount account = new MailAccount();
-        account.setHost("smtp.qq.com");
+        MailAccount account = new MailAccount();
+        account.setHost("mail.xuanyuan.com.cn");
         account.setPort(25);
         account.setAuth(true);
-        account.setFrom("576108653@qq.com");
-        account.setUser("576108653@qq.com");
-        account.setPass("yuszxblylmicbbaj");
+        account.setFrom("sxzx@gupt.net");
+        account.setUser("sxzx@gupt.net");
+        account.setPass("Cb@123");
         //标题
         String subject ="K8S群集故障";
         //内容
        String content ="K8S群集故障，请及时处理……以下节点无法正常运行请检查：";
                 MailUtil.send(account, CollUtil.newArrayList("576108653@qq.com"),
-                subject, content, false);*/
-        String ipByHost = NetUtil.getIpByHost("192.168.26.233");
-        System.out.println(ipByHost);
-        boolean open = NetUtil.isOpen(NetUtil.buildInetSocketAddress(ipByHost, Integer.valueOf(20048)), 200);
-        System.out.println(open);
+                subject, content, false);
+
     }
 
 

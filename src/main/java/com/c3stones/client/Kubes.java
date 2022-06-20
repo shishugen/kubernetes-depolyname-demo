@@ -844,41 +844,8 @@ public class Kubes extends BaseConfig {
     @SneakyThrows
     public static void main(String[] args) {
         KubernetesClient kubeclinet2 = getKubeclinet2();
-        List<Node> nodeList = kubeclinet2.nodes().list().getItems();
-        String masterIp = kubeclinet2.getMasterUrl().getHost();
-        String nodeType ="Ready";
-        String kubeletReady ="KubeletReady";
-        for(Node node : nodeList){
-            K8sNode k8sNode = new K8sNode();
-            NodeStatus status = node.getStatus();
-            k8sNode.setNodeName(node.getMetadata().getName());
-            NodeSystemInfo nodeInfo = status.getNodeInfo();
-            k8sNode.setDockerVersion(nodeInfo.getContainerRuntimeVersion());
-            k8sNode.setOsImage(nodeInfo.getOsImage());
-            k8sNode.setK8sVersion(nodeInfo.getKubeletVersion());
-            List<NodeAddress> addresses = status.getAddresses();
-            for(NodeAddress address : addresses){
-                String nodeIp = address.getAddress();
-               if("InternalIP".equals(address.getType())){
-                   k8sNode.setNodeIp(nodeIp);
-                }
-            }
-            List<NodeCondition> conditions = status.getConditions();
-            for(NodeCondition condition : conditions){
-                String type = condition.getType();
-                if (nodeType.equals(type)){
-                    if(kubeletReady.equals(condition.getReason())){
-                        //正常
-                        k8sNode.setStatus(nodeType);
-                    }else{
-                        //不正常
-                        k8sNode.setStatus(condition.getReason());
-                    }
-                }
-            }
-            System.out.println(k8sNode);
 
-        }
+
 
 
 

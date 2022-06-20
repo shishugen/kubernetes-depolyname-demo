@@ -16,9 +16,12 @@
         	<form class="layui-form layui-card-body layui-form-pane" method="post">
 				<div class="layui-form-item">
 
-					<label class="layui-form-label">地址</label>
+
+					<label class="layui-form-label">地址2
+						<a href="javascript:;">[[${user?.nickname}]]</a>
+					</label>
 					<div class="layui-input-inline">
-						<input type="tel" name="host"  id="host"  autocomplete="off" class="layui-input">
+						<input type="tel" name="host"  id="host" th:value="${user?.nickname}" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">端口</label>
 					<div class="layui-input-inline">
