@@ -12,18 +12,13 @@
 <body class="layui-view-body">
 	<div class="layui-content">
 	    <div class="layui-row">
-
-
                 <div class="layui-inline">
-
-
                     <label class="layui-form-label" style="width: 60px">
                         <a href="javascript:;">[[${user}]]</a>
                         镜像前缀</label>
                     <div class="layui-inline mr10">
                         <input type="tel" id="projectName" name="projectName" th:value="${harborImageProjectName}" class="layui-input">
                     </div>
-
                     <div class="layui-inline">
                         <label class="layui-form-label" style="width: 40px; padding-left: 0px">版本</label>
                         <div class="layui-input-inline">
@@ -173,13 +168,17 @@ active = {
 
 
 
-	reload: function() {
+	reload: function(page) {
 		table.reload('harborTable', {
             where: {
                 projectName : $("input[name='projectName']").val(),
                 version : $("input[name='version']").val(),
-                imageNot : 0
-        }
+                imageNot : 0,
+               // page:page
+        },
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
 		}, 'data');
 	},
     imageNot: function() {
@@ -187,8 +186,11 @@ active = {
             where: {
                 projectName : $("input[name='projectName']").val(),
                 version : $("input[name='version']").val(),
-                imageNot : 1
-        }
+                imageNot : 1,
+        },
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
 		}, 'data');
 	},
 	reset: function() {

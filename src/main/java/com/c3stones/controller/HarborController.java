@@ -47,10 +47,7 @@ public class HarborController extends  BaseConfig<HarborImage>{
     @ResponseBody
     public Response<Pages<HarborImage>> listData(String projectName,String version,Integer limit,Integer page,Integer imageNot){
         Pages pages = new Pages();
-
-
-        System.out.println("httpHarbor"+httpHarbor);
-        System.out.println("imageNot"+imageNot);
+        System.out.println("page==="+page);
         boolean is = false;
         if (imageNot != null){
             is=imageNot==1?true:false;
