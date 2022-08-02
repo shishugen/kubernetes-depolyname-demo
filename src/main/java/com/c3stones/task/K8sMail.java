@@ -51,6 +51,9 @@ public class K8sMail {
     private  Kubes kubes;
 
 
+
+
+
     @Scheduled(cron = "${mail.cron}")
     public void task() {
         Config config = BaseConfig.initConfig();

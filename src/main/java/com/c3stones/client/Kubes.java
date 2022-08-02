@@ -825,6 +825,13 @@ public class Kubes extends BaseConfig {
         System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\kube-test-config-10");
         Config config = new ConfigBuilder()
                 .build();
+
+        return new DefaultKubernetesClient(config);
+    }
+    public static KubernetesClient getKubeclinet3(){
+        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\192.168.115.106/k8s.txt");
+        Config config = new ConfigBuilder()
+                .build();
         return new DefaultKubernetesClient(config);
     }
 
@@ -843,7 +850,26 @@ public class Kubes extends BaseConfig {
 
     @SneakyThrows
     public static void main(String[] args) {
-        KubernetesClient kubeclinet2 = getKubeclinet2();
+        KubernetesClient kubeclinet2 = getKubeclinet3();
+        List<Pod> items = kubeclinet2.pods().list().getItems();
+        System.out.println("items"+items.size());
+        String podName = "test";
+        String namespace = "default";
+
+        ResourceRequirements resource= new ResourceRequirements();
+        Map<String,Quantity> map= new HashMap(2);
+        //map.put("cpu",new Quantity("m"));
+        map.put("nvidia.com/gpu",new Quantity("2"));
+        resource.setLimits(map);
+
+        Pod pod = new PodBuilder().withNewMetadata().withName(podName).withNamespace(namespace).addToLabels(LABELS_KEY, podName).endMetadata()
+                .withNewSpec().withContainers(new ContainerBuilder()
+                        .withName(podName)
+                        //.withImage("harbor.org/lixingqiao/centos7_vnc_desktop:v1.0")
+                        .withImage("harbor.org/library/pytorch1.9-jupyter-cuda10.2:debug-1.5.1")
+                        .withResources(resource).build()).endSpec().build();
+        Pod newPod = kubeclinet2.pods().create(pod);
+
 
 
 

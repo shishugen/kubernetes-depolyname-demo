@@ -93,6 +93,17 @@ public class PodController extends BaseConfig{
     public String add() {
         return "pages/pod/add";
     }
+    /**
+     * test
+     *
+     * @return
+     */
+    @RequestMapping(value = "testList")
+    public String testList() {
+        return "pages/pod/add";
+    }
+
+
 
 
     @RequestMapping(value = "downloadNginxConf")

@@ -172,9 +172,8 @@ public class Dockers extends BaseConfig{
         outputStream.write(separator.getBytes());
 */
 
-
-        outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
-        outputStream.write(separator.getBytes());
+      //  outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
+       // outputStream.write(separator.getBytes());
 
         outputStream.write("RUN apk add --no-cache tzdata".getBytes());
         outputStream.write(separator.getBytes());
@@ -385,8 +384,6 @@ public class Dockers extends BaseConfig{
         authConfig.withUsername(harborUser);
         authConfig.withPassword(harborPassword);
         authConfig.withRegistryAddress(harborUrl);
-        PullImageResultCallback exec = dockerClient.pullImageCmd("").exec(new PullImageResultCallback());
-
         log.info("harborUrl ……harborUser……harborPassword …… :{} {}:{} ",harborUrl,harborUser,harborPassword);
         try {
             dockerClient.pushImageCmd(imageName)

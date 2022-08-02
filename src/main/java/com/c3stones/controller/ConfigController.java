@@ -91,6 +91,7 @@ public class ConfigController {
             pro.setProperty("mail.person",config.getMailPerson());
             pro.setProperty("check.harbor.ip",config.getCheckHarborIp());
             pro.setProperty("check.nfs.ip",config.getCheckNfsIp());
+            pro.setProperty("check.namespaces",config.getCheckNamespaces());
             pro.store(outputStream,"保存");
             BaseConfig.setConfig(pro);
         } catch (Exception e) {

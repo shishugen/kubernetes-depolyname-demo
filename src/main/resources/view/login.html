@@ -12,28 +12,36 @@
 	<script th:src="@{/layui/layui.all.js}"></script>
 	<script th:src="@{/jquery/jquery-2.1.4.min.js}"></script>
 </head>
-<body class="login-wrap"  >
+<body class="login-wrap" th:onkeydown="on_return()">
     <div class="login-container">
         <form class="login-form">
         	<div class="input-group text-center text-gray">
         		<h2>k8s部署管理平台</h2>
         	</div>
+
            <!-- <div class="input-group text-center text-gray">
         		<h2>欢迎登录</h2>
         	</div>-->
             <div class="input-group">
-                <input type="text" id="username" class="input-field">
+                <input type="text" id="username" placeholder="用户名" class="input-field">
                 <label for="username" class="input-label">
-                    <span class="label-title">用户名</span>
+                    <span class="label-title"></span>
                 </label>
             </div>
             <div class="input-group">
-                <input type="password" id="password" class="input-field">
-                <label for="password" class="input-label">
-                    <span class="label-title">密码</span>
+                 <label for="password" class="input-label">
                 </label>
+                    <input type="password" id="password" placeholder="密码" class="input-field">
             </div>
-            <button type="button" class="login-button">登录<i class="ai ai-enter"></i></button>
+                <div class="layui-form-item" pane="">
+                    <label class="layui-form-label">记住密码</label>
+                    <div class="layui-input-block" style="top: 12px">
+                        <input type="checkbox" id="isPass" name="isPass" lay-skin="primary" title="记住密码" checked >
+                    </div>
+
+                </div>
+
+            <button type="button"   onClick='login()' class="login-button">登录<i class="ai ai-enter"></i></button>
         </form>
     </div>
 
@@ -56,20 +64,27 @@ layui.define(['element'],function(exports){
         }
     })
     exports('login');
+    $("#username").val(localStorage.getItem("usernameK8s"))
+    $("#password").val(localStorage.getItem("passwordK8s"))
 });
 
-// 登录
+
+function on_return() {
+    if (window.event.keyCode == 13) {
+        this.login()
+    }
+}
 var layer = layui.layer;
-$(".login-button").click(function() {
-	var username = $("#username").val();
-	var password = $("#password").val();
-	if (isEmpty(username) || isEmpty(password)) {
-		layer.msg("用户名或密码不能为空", {icon: 2});
-		return ;
-	}
-	
-	var loading = layer.load(1, {shade: [0.3, '#fff']});
-	$.ajax({
+// 登录
+function login() {
+    var username = $("#username").val();
+    var password = $("#password").val();
+    if (isEmpty(username) || isEmpty(password)) {
+        layer.msg("用户名或密码不能为空", {icon: 2});
+        return ;
+    }
+    var loading = layer.load(1, {shade: [0.3, '#fff']});
+    $.ajax({
         url : "[[@{/}]]login",
         data : {username : username, password : password},
         type : "post",
@@ -77,15 +92,22 @@ $(".login-button").click(function() {
         error : function(data) {
         },
         success : function(data) {
-        	layer.close(loading);
-        	if (data.code == 200) {
-        		location.href = "[[@{/}]]index";
-        	} else {
-        		layer.msg(data.msg, {icon: 2});
-        	}
+            layer.close(loading);
+            if (data.code == 200) {
+                if ($("#isPass").is(":checked")){
+                    localStorage.setItem("usernameK8s",username)
+                    localStorage.setItem("passwordK8s",password)
+                }else{
+                    localStorage.setItem("usernameK8s","")
+                    localStorage.setItem("passwordK8s","")
+                }
+                location.href = "[[@{/}]]index";
+            } else {
+                layer.msg(data.msg, {icon: 2});
+            }
         }
-	});
-});
+    });
+}
 
 function isEmpty(n) {
 	if (n == null || n == '' || typeof(n) == 'undefined') {

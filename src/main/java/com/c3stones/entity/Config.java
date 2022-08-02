@@ -70,6 +70,11 @@ public class Config {
      */
     private String mailSubject;
 
+    /**
+     * 检查命名空间
+     */
+    private String checkNamespaces;
+
 
     public Config(Integer dockerPort, String harborUser, String harborPassword, String harborUrl,
                   String harborImagePrefix, String harborImageProjectName, String harborImageEnvProjectName,
@@ -77,7 +82,7 @@ public class Config {
                   String nfsMqStorageSize, String nfsFdfsStorageSize,String nfsNeo4jStorageSize,
                   String pythonRely,String bindK8sIP,String defaultNamespace,String k8sNetPort,
                   String k8sNetNodePort,String mailHost,Integer mailPort,String mailUser,String mailPass,String
-                          mailPerson,String mailSubject,String checkHarborIp,String checkNfsIp) {
+                          mailPerson,String mailSubject,String checkHarborIp,String checkNfsIp,String checkNamespaces) {
         this.dockerPort = dockerPort;
         this.harborUser = harborUser;
         this.harborPassword = harborPassword;
@@ -104,5 +109,6 @@ public class Config {
         this.mailSubject = mailSubject;
         this.checkHarborIp = checkHarborIp;
         this.checkNfsIp = checkNfsIp;
+        this.checkNamespaces = checkNamespaces;
     }
 }

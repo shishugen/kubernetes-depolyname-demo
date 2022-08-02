@@ -131,7 +131,9 @@ public class MySQLPod extends BaseConfig {
                 .endVolume()
                 .withVolumes(new VolumeBuilder().withName(pvcName)
                         .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
-                .endSpec().endTemplate().endSpec().build();
+
+                .endSpec().endTemplate()
+        .endSpec().build();
         kubes.getKubeclinet().apps().deployments().createOrReplace(newDeployment);
         return true;
     }

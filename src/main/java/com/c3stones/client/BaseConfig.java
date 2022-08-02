@@ -19,6 +19,9 @@ import java.util.Properties;
  */
 public class BaseConfig<T> {
 
+    public  static  String LABELS_KEY_TEST = "app-test-memory2";
+
+
     /**
      * libs
      */
@@ -77,6 +80,8 @@ public class BaseConfig<T> {
 
     protected static String checkNfsIp;
 
+    protected static String checkNamespaces;
+
     private static void getConfig(){
         Properties pro = new Properties();
         InputStream inputStream = null;
@@ -132,12 +137,13 @@ public class BaseConfig<T> {
         mailSubject = pro.getProperty("mail.subject");
         checkNfsIp = pro.getProperty("check.nfs.ip");
         checkHarborIp = pro.getProperty("check.harbor.ip");
+        checkNamespaces = pro.getProperty("check.namespaces");
          //harborImageEnvPrefix = harborImagePrefix + "/" + harborImageEnvProjectName;
          harborImageEnvPrefix = harborImageEnvProjectName;
         return new Config(dockerPort,harborUser,harborPassword,harborUrl,harborImagePrefix,harborImageProjectName
                 ,harborImageEnvProjectName,nfsStorageClassName,nfsMySqlStorageSize.toString(),nfsNacosStorageSize.toString()
                 ,nfsMqStorageSize.toString(),nfsFdfsStorageSize.toString(),nfsNeo4jStorageSize.toString(),pythonRely,bindK8sIP,defaultNamespace
-        ,k8sNetPort,k8sNetNodePort,mailHost,mailPort,mailUser,mailPass,mailPerson,mailSubject,checkHarborIp,checkNfsIp);
+        ,k8sNetPort,k8sNetNodePort,mailHost,mailPort,mailUser,mailPass,mailPerson,mailSubject,checkHarborIp,checkNfsIp,checkNamespaces);
 
     }
 

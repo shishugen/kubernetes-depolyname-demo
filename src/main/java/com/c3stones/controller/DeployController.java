@@ -753,6 +753,7 @@ public class DeployController  extends BaseConfig {
 				successList.add(originalFilename);
 				harborImage.setSuccessData(successList);
 			}catch (Exception e){
+                e.printStackTrace();
 				errorList.add(originalFilename);
 				harborImage.setErrorData(errorList);
 				return Response.successCode(harborImage,201);

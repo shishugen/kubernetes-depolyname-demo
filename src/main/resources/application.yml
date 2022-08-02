@@ -2,7 +2,7 @@ server:
   port: 8089
   servlet:
     session:
-      timeout: 1800s
+      timeout: 86400s
 spring:
   thymeleaf:
     prefix: classpath:/view/

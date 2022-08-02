@@ -60,7 +60,7 @@ public class LoginController {
 		queryUser.setNickname("管理员");
 		if (loginAdmin.equals(user.getUsername()) &&loginPass.equals(user.getPassword())){
 			session.setAttribute("user", queryUser);
-            session.setMaxInactiveInterval(60 * 1 * 60 * 24);
+           //session.setMaxInactiveInterval(60 * 1 * 60 * 24);
 			return Response.success("登录成功", queryUser);
 		}else{
 			return Response.error("用户名或密码错误");
