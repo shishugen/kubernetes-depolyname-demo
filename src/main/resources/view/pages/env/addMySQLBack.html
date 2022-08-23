@@ -73,11 +73,11 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label" style="width: 300px">多久备份一次(分钟)</label>
 						<div class="layui-input-inline">
-							<input type="number" name="backDate" id="backDate" lay-verify="required" value="60" min="30" max="1440" autocomplete="off" class="layui-input">
+							<input type="number" name="backDate" id="backDate" lay-verify="required" value="60" min="30" max="43200" autocomplete="off" class="layui-input">
 						</div>
 						<label class="layui-form-label" style="width: 300px">保留最新几天备份数据</label>
 						<div class="layui-input-inline">
-							<input type="number" name="backDay"  lay-verify="required" value="10" max="60" min="1" autocomplete="off" class="layui-input">
+							<input type="number" name="backDay"  lay-verify="required" value="10" max="365" min="1" autocomplete="off" class="layui-input">
 						</div>
 							<label class="layui-form-label"  id="nfsSizeLabel">挂载大小（G）</label>
 							<div class="layui-input-inline"  id="nfsSize" >

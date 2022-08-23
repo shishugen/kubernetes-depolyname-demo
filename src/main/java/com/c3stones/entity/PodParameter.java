@@ -70,6 +70,7 @@ public class PodParameter {
     private String kkFileType;
 
     private String pvcName;
+    private Integer neo4jNodePort;
 
 
 }

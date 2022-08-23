@@ -249,6 +249,7 @@ table.on('tool(config)', function(obj) {
 
     }if(obj.event === "open") {
         var list = obj.data.ports.split(",");
+        console.log(list)
         for (var i = 0; i < list.length; i++) {
             if (obj.data.podName.indexOf("env-nacos") != -1) {
                 window.open("http://" + obj.data.bindK8sIP + ":" + list[i].split(":")[1] + "/nacos");

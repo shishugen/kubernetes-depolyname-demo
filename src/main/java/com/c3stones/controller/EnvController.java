@@ -351,6 +351,9 @@ public class EnvController extends BaseConfig {
         if(kubes.checkSvc(vsftpdNginxPort)){
             return Response.error("端口已存在"+vsftpdNginxPort);
         }
+        if(kubes.checkSvc(vsftpdNginxPort)){
+            return Response.error("端口已存在"+podParameter.getNeo4jNodePort());
+        }
         Arrays.stream(envList.split(",")).forEach(name->{
             switch (name){
                 case "mysql":
@@ -375,7 +378,7 @@ public class EnvController extends BaseConfig {
                     guacdPod.createGuacamole(namespace,guacamoleName,isAnew);
                     break;
                 case "neo4j":
-                    neo4JPod.create(namespace,isAnew);
+                    neo4JPod.create(namespace,isAnew,podParameter.getNeo4jNodePort());
                     break;
                 case "kkfileview":
                     kKfileViewPod.create(namespace,kkfileviewPort,isAnew,kkfileviewHttps,podParameter);

@@ -262,8 +262,8 @@ public class Dockers extends BaseConfig{
         outputStream.write(s1.getBytes());
         outputStream.write(separator.getBytes());
 
-        outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
-        outputStream.write(separator.getBytes());
+      //  outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
+      //  outputStream.write(separator.getBytes());
 
         String unzip = "RUN unzip "+ fileName;
         outputStream.write(unzip.getBytes());

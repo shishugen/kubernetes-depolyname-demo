@@ -65,6 +65,12 @@
 								<input  type="number" name="mysqlNodePort"  placeholder="30000-32766"  th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
 							</div>
 						</div>
+						<div class="layui-inline" style="display:none" id="neo4jNodePort">
+							<div class="layui-form-label" style="width: 170px">Neo4j访问端口</div>
+							<div class="layui-input-inline" >
+								<input  type="number" name="neo4jNodePort"  placeholder="30000-32766"  th:min="30000" th:max="32766"  autocomplete="off" class="layui-input">
+							</div>
+						</div>
 					</div>
 
 					<div class="layui-form-item">
@@ -195,6 +201,9 @@ var demo1 = xmSelect.render({
                      $("#vsftpd").attr("style","display:block;");//隐藏div
                      $("input[name='vsftpdPort']").val(30021);//
                      $("input[name='vsftpdNginxPort']").val(30821);//
+                  }else if ('neo4j'== change[i].value){
+                     $("#neo4jNodePort").attr("style","display:block;");//隐藏div
+                     $("input[name='neo4jNodePort']").val(30687);//
                  }
 			}
         //取消
@@ -219,7 +228,10 @@ var demo1 = xmSelect.render({
                     $("#vsftpd").attr("style","display:none;");//隐藏div
                     $("input[name='vsftpdPort']").val("");//
                     $("input[name='vsftpdNginxPort']").val("");//
-                }
+                }else if ('neo4j'== change[i].value){
+                $("#neo4jNodePort").attr("style","display:none;");//隐藏div
+                $("input[name='neo4jNodePort']").val("");//
+            }
             }
         }
         if(arr.length == 0){

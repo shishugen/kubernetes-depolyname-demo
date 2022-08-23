@@ -52,25 +52,25 @@ public class Neo4JPod extends BaseConfig {
      * @return
      */
     public  boolean create(String namespace, String podName, String labelsName , String image , Integer port,String portName ){
-            String pvcName =namespace + podName;
-            kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNeo4jStorageSize);
-            Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
-                    .withNewSpec().withContainers(new ContainerBuilder()
-                            .withName(labelsName)
-                            .withImage(image)
-                           // .withImagePullPolicy("Always")
-                          //  .withImagePullPolicy("IfNotPresent")
-                            .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/data/").build())
-                            .withCommand("/sbin/tini","-g")
-                            .addToArgs("/docker-entrypoint.sh","neo4j")
-                            .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
-                            .addToPorts(new ContainerPortBuilder().withName(portName+"1").withContainerPort(7474).build())
-                            .build())
-                    .withVolumes(new VolumeBuilder().withName(pvcName)
-                            .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
-                    .endSpec().build();
-            Pod newPod = kubes.getKubeclinet().pods().create(pod);
-            System.out.println(newPod);
+        String pvcName =namespace + podName;
+        kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNeo4jStorageSize);
+        Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, labelsName).endMetadata()
+                .withNewSpec().withContainers(new ContainerBuilder()
+                        .withName(labelsName)
+                        .withImage(image)
+                        // .withImagePullPolicy("Always")
+                        //  .withImagePullPolicy("IfNotPresent")
+                        .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/data/").build())
+                        .withCommand("/sbin/tini","-g")
+                        .addToArgs("/docker-entrypoint.sh","neo4j")
+                        .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
+                        .addToPorts(new ContainerPortBuilder().withName(portName+"1").withContainerPort(7474).build())
+                        .build())
+                .withVolumes(new VolumeBuilder().withName(pvcName)
+                        .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
+                .endSpec().build();
+        Pod newPod = kubes.getKubeclinet().pods().create(pod);
+        System.out.println(newPod);
         return true;
     }
 
@@ -136,7 +136,7 @@ public class Neo4JPod extends BaseConfig {
      * @param labelsValue
      * @param port
      */
-    public  Service createService(String namespace, String serviceName,  String labelsValue , Integer port){
+    public  Service createService(String namespace, String serviceName,  String labelsValue , Integer port, Integer nodePort){
         String type = "NodePort";
         Service build = new ServiceBuilder()
                 .withNewMetadata()
@@ -146,27 +146,27 @@ public class Neo4JPod extends BaseConfig {
                 .withNewSpec()
                 .addNewPort()
                 //内网端口
-                .withPort(port)
-                 .withName(serviceName)
-                .withProtocol("TCP")
-                .endPort()
-                .withType(type)
-
-                .addNewPort()
-                //内网端口
                 .withName(serviceName+"1")
                 .withPort(7474)
                 .withProtocol("TCP")
+                //.withNodePort(nodePort)
                 .endPort()
                 .withType(type)
-
+                .addNewPort()
+                //内网端口
+                .withPort(port)
+                .withName(serviceName)
+                .withProtocol("TCP")
+                .withNodePort(nodePort)
+                .endPort()
+                .withType(type)
                 .addToSelector(LABELS_KEY, labelsValue).endSpec()
                 .build();
         return kubes.getKubeclinet().services().create(build);
     }
 
 
-    public void create(String namespace, boolean isAnew){
+    public void create(String namespace, boolean isAnew,Integer nodePort){
         String labelsName="neo4j";
         String portName="neo4j";
         String podName="neo4j";
@@ -175,7 +175,7 @@ public class Neo4JPod extends BaseConfig {
             createDeployment(namespace,podName,labelsName,harborImageEnvPrefix+image,port,portName,isAnew);
             Service service = kubes.getKubeclinet().services().inNamespace(namespace).withName(podEnvPrefix+labelsName).get();
             if(service == null){
-                createService(namespace,labelsName,labelsName,port);
+                createService(namespace,labelsName,labelsName,port,nodePort);
             }
         }catch (Exception e){
             e.printStackTrace();
