@@ -15,6 +15,7 @@ import com.c3stones.util.KubeUtils;
 import com.c3stones.util.OpenFileUtils;
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.apps.DoneableDeployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -271,10 +272,16 @@ public class DeployController  extends BaseConfig {
 		System.out.println("namespace===>"+namespace);
 		System.out.println("replicas===>"+replicas);
 		KubernetesClient kubeclinet = kubes.getKubeclinet();
+		DoneableDeployment edit = kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).edit();
+
 		kubeclinet.apps().deployments().inNamespace(namespace).withName(deployname).edit()
 				.editSpec().withReplicas(replicas).editTemplate().editSpec().editContainer(0)
 				.withImage(harborImagePrefix+"/"+image)
-				.endContainer().endSpec().endTemplate().endSpec().done();
+				.endContainer()
+				.endSpec()
+				.endTemplate()
+				.endSpec()
+				.done();
 		return Response.success(true);
 	}
 
@@ -743,7 +750,7 @@ public class DeployController  extends BaseConfig {
 				log.info("制作目录--> homeDir : {}", homeDir);
 				multipartFileToFile(file[i], homeDir);
 				long size = file[i].getSize();
-				if ((size / 1024 / 1024)  >= 10 ){
+				if ((size / 1024 / 1024)  >= 30 ){
 					dockers.writeDockerfile(originalFilename, homeDir);
 				}else{
 					//最小化镜像

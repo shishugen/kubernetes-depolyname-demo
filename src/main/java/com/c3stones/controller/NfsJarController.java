@@ -142,13 +142,18 @@ public class NfsJarController  extends BaseConfig {
     public Response upload(MultipartFile file,String namespace,String podName ) throws Exception {
         Assert.notNull(file, "file不能为空");
         String originalFilename = "";
-            try {
+        File file1 = null;
+        try {
                 originalFilename = file.getOriginalFilename();
-                File file1 = XYFileUtils.multipartFileToFile(file);
+                file1 = XYFileUtils.multipartFileToFile(file);
                 kubes.getKubeclinet().pods().inNamespace(namespace).withName(podName).file(JAR_PATH+ originalFilename).upload(file1.toPath());
             }catch ( Exception e){
                 e.printStackTrace();
                 return Response.successCode(originalFilename,201);
+            }finally {
+            if (file1 != null){
+                file1.delete();
+            }
             }
 
         return Response.success("OK",originalFilename);

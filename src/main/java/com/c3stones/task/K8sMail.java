@@ -8,6 +8,8 @@ import cn.hutool.cron.CronUtil;
 import cn.hutool.cron.task.Task;
 import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
+import cn.hutool.poi.ofd.OfdWriter;
+import cn.hutool.poi.word.Word07Writer;
 import com.c3stones.client.BaseConfig;
 import com.c3stones.client.Kubes;
 import com.c3stones.entity.Config;
@@ -244,13 +246,14 @@ public class K8sMail {
     }
 
     public static void main(String[] args) {
+
         MailAccount account = new MailAccount();
-        account.setHost("mail.xuanyuan.com.cn");
+        account.setHost("smtp.qq.com");
         account.setPort(25);
         account.setAuth(true);
-        account.setFrom("sxzx@gupt.net");
-        account.setUser("sxzx@gupt.net");
-        account.setPass("Cb@123");
+        account.setFrom("576108653@qq.com");
+        account.setUser("576108653@qq.com");
+        account.setPass("yuszxblylmicbbaj");
         //标题
         String subject ="K8S群集故障";
         //内容

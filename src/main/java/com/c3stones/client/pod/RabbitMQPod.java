@@ -133,6 +133,7 @@ public class RabbitMQPod extends BaseConfig {
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMqStorageSize);
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -148,6 +149,7 @@ public class RabbitMQPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer()
                 .withName(podName)
                 .withImage(image)

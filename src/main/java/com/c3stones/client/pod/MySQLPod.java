@@ -103,6 +103,7 @@ public class MySQLPod extends BaseConfig {
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsMySqlStorageSize);
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -118,6 +119,7 @@ public class MySQLPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer().withName(podName).withImage(image)
                 .withImagePullPolicy(policy)
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("var/lib/mysql/").build())

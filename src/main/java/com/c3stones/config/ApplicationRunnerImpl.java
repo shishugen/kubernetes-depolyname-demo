@@ -24,6 +24,11 @@ public class ApplicationRunnerImpl implements ApplicationRunner {
         if(!file.isDirectory()){
             file.mkdirs();
         }
+        File file2 = new File(System.getProperty("user.home") + File.separator + ".kube-deployment/jar/");
+        if(!file2.isDirectory()){
+            file2.mkdirs();
+        }
+
         BaseConfig.initConfig();
         log.info("启动完成……");
     }

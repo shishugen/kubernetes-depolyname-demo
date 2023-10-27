@@ -58,6 +58,7 @@ public class NginxPod2 extends BaseConfig {
         //stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
         stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
         resource.setRequests(stringQuantityMap);
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podNginxPrefix+appName)
@@ -73,6 +74,7 @@ public class NginxPod2 extends BaseConfig {
                 .addToLabels(LABELS_KEY, podNginxPrefix+labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .withContainers(new ContainerBuilder()
                         .withName(labelsName)
                        // .withResources(resource)

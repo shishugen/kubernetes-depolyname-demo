@@ -2,13 +2,17 @@ package com.c3stones.client;
 
 
 import com.c3stones.entity.Config;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -17,10 +21,26 @@ import java.util.Properties;
  * @Author: stone
  * @Date: 2021/4/6 15:38
  */
+@Slf4j
 public class BaseConfig<T> {
+
+
+
+
 
     public  static  String LABELS_KEY_TEST = "app-test-memory2";
 
+    /**
+     * 节点选择器
+     */
+    public  static  String K8S_NODE_LABEL_KEY = "sys_x86_node_name";
+    /**
+     * 节点选择器
+     */
+    public  static  String K8S_NODE_LABEL_VALUE = "sys_x86";
+
+    @Value("${k8s.arm}")
+    public Boolean k8sArm;
 
     /**
      * libs
@@ -28,6 +48,7 @@ public class BaseConfig<T> {
     public final static String PVC_LIBS_LABEL ="JAVA-LIBS";
 
     public final static  String LABELS_JAR_NAME = "JAR_NAME";
+
 
 
     /**
@@ -82,6 +103,18 @@ public class BaseConfig<T> {
 
     protected static String checkNamespaces;
 
+    public   Map<String,String> nodeSelectorMap = new HashMap<>();
+    public  Map<String,String>  isk8sArm(){
+        if (k8sArm){
+            nodeSelectorMap.put(K8S_NODE_LABEL_KEY,K8S_NODE_LABEL_VALUE);
+        }
+        return nodeSelectorMap;
+    }
+    public void init(){
+        //isk8sArm();
+        log.info("初始化参数……",nodeSelectorMap.size());
+    }
+
     private static void getConfig(){
         Properties pro = new Properties();
         InputStream inputStream = null;
@@ -111,7 +144,6 @@ public class BaseConfig<T> {
         if (StringUtils.isNotBlank(property)){
             dockerPort =Integer.valueOf(property);
         }
-
          harborUser =pro.getProperty("harbor.user");
          harborPassword = pro.getProperty("harbor.password");
          harborUrl = pro.getProperty("harbor.url");
@@ -155,7 +187,17 @@ public class BaseConfig<T> {
         return System.getProperty("user.home") + File.separator + ".kube-deployment"+ File.separator +"config";
     }
 
+    /**
+     * docker 当前 配置
+     * @return
+     */
+    public static String getHomeJarFile() {
+        return System.getProperty("user.home") + File.separator + ".kube-deployment"+ File.separator +"jar";
+    }
+
+
     public static Config initConfig(){
+
         Properties pro = new Properties();
         InputStream inputStream = null;
         Config config = null;

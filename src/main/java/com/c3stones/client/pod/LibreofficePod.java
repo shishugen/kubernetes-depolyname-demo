@@ -96,6 +96,7 @@ public class LibreofficePod extends BaseConfig {
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -111,6 +112,7 @@ public class LibreofficePod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer().withName(podName).withImagePullPolicy(policy)
                 .withImage(image)
                      .withCommand("/bin/sh","-c")

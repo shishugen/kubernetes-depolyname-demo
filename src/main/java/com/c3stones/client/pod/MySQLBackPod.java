@@ -75,14 +75,15 @@ public class MySQLBackPod extends BaseConfig {
             kubes.createPVC(pvcName,namespace,nfsStorageClassName,podParameter.getNfsSize());
             Volume build = new VolumeBuilder().withName(pvcName)
                     .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build();
+            volumeMountList.add(new VolumeMountBuilder().withName(pvcName).withMountPath("/db").build());
             volumeList.add(build);
         }else{
             pvcName =podParameter.getNamespace() + podParameter.getPodName();
             podName =  podParameter.getPodName();
-            VolumeMount build2 = new VolumeMountBuilder().withName("data-nfs").withMountPath("/db").build();
+            VolumeMount build2 = new VolumeMountBuilder().withName(pvcName).withMountPath("/db").build();
             volumeMountList.add(build2);
             Volume build = new VolumeBuilder()
-                    .withName("data-nfs")
+                    .withName(pvcName)
                     .withNewNfs().withServer(podParameter.getNfsServer()).withPath(podParameter.getNfsPath()).endNfs()
                     .build();
             volumeList.add(build);
@@ -94,6 +95,7 @@ public class MySQLBackPod extends BaseConfig {
                 .endMetadata()
                 .withNewSpec()
                 .withNewSelector()
+
                 .addToMatchLabels(LABELS_KEY, labelsName)
                 .endSelector()
                 .withReplicas(1)
@@ -105,7 +107,7 @@ public class MySQLBackPod extends BaseConfig {
                 .addNewContainer().withName(podName).withImage(harborImageEnvPrefix+image)
                 .withImagePullPolicy(policy)
                 .addAllToVolumeMounts(volumeMountList)
-               // .addToVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/db").build())
+                //.addToVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/db").build())
               //  .addToVolumeMounts(new VolumeMountBuilder().withName("date-config").withMountPath("/etc/localtime").build())
                 .addToEnv(new EnvVarBuilder().withName("DB_DUMP_FREQ").withValue(podParameter.getBackDate().toString()).build())
                 .addToEnv(new EnvVarBuilder().withName("DB_DUMP_TARGET").withValue("/db").build())
@@ -177,6 +179,7 @@ public class MySQLBackPod extends BaseConfig {
         String podName =  podParameter.getPodName();
         String namespace =  podParameter.getNamespace();
         String labelsName =  podParameter.getLabelsName();
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -192,6 +195,7 @@ public class MySQLBackPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer().withName(podName).withImage(harborImageEnvPrefix+image)
                 .withImagePullPolicy(policy)
                 .addToVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/db").build())

@@ -109,6 +109,7 @@ public class NacosPod extends BaseConfig {
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNacosStorageSize);
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata().addNewFinalizer("foregroundDeletion")
                // .withDeletionTimestamp()
@@ -125,6 +126,7 @@ public class NacosPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer().withName(podName).withImage(image).withImagePullPolicy(policy)
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/nacos/data/").build())
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())

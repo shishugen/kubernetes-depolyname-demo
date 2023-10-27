@@ -115,14 +115,15 @@ public class Dockers extends BaseConfig{
             synchronized (Dockers.class) {
                 log.info("配置文件路径===" + confPath);
                 log.info("IP加端口===" + serverIp+":"+dockerPort);
-                DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerTlsVerify(true)
+                DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                        .withDockerTlsVerify(true)
                         .withCustomSslConfig(new LocalDirectorySSLConfig(confPath))
                         .withDockerHost("tcp://" + serverIp + ":" + dockerPort)
-                      //   .withDockerCertPath(confPath)
-                      //  .withDockerConfig(confPath )
-                     //   .withRegistryUrl(harborUrl)
-                      //  .withRegistryUsername(harborUser)
-                    //    .withRegistryPassword(harborPassword)
+                         .withDockerCertPath(confPath)
+                        .withDockerConfig(confPath )
+                        .withRegistryUrl(harborUrl)
+                        .withRegistryUsername(harborUser)
+                        .withRegistryPassword(harborPassword)
                         .build();
                 dockerClient = DockerClientBuilder.getInstance(config).build();
                 Version exec = dockerClient.versionCmd().exec();
@@ -175,8 +176,8 @@ public class Dockers extends BaseConfig{
       //  outputStream.write("RUN rm /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime".getBytes());
        // outputStream.write(separator.getBytes());
 
-        outputStream.write("RUN apk add --no-cache tzdata".getBytes());
-        outputStream.write(separator.getBytes());
+        //outputStream.write("RUN apk add --no-cache tzdata".getBytes());
+       // outputStream.write(separator.getBytes());
         outputStream.write("ENV TZ=Asia/Shanghai".getBytes());
         outputStream.write(separator.getBytes());
 
@@ -426,6 +427,7 @@ public class Dockers extends BaseConfig{
 
 
 
+
     public static String getHomeDir() {
         String dir = System.getProperty("user.home") + File.separator + ".kube-deployment"+ File.separator + ".docker";
         if(!new File(dir).exists()){
@@ -449,6 +451,7 @@ public class Dockers extends BaseConfig{
                 .build();
 //Harbor12345
         DockerClient dockerClient = DockerClientBuilder.getInstance(config).build();
+
 
 
 

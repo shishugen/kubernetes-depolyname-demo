@@ -159,7 +159,7 @@ public class SeataPod2 extends BaseConfig {
         VolumeMount build1 = new VolumeMountBuilder().withName(configNameMySql).withMountPath("/home/mysql/").build();
         volumeMountList.add(build);
         volumeMountList.add(build1);
-
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -175,6 +175,7 @@ public class SeataPod2 extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer()
                 .withImagePullPolicy("Always")
                 .withCommand("/home/start.sh")

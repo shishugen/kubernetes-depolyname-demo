@@ -88,6 +88,7 @@ public class Neo4JPod extends BaseConfig {
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsNeo4jStorageSize);
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -103,6 +104,7 @@ public class Neo4JPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer()
                 .withImage(image)
                 .withName(podName)

@@ -88,11 +88,11 @@ public class KKfileViewPod extends BaseConfig {
         if(StringUtils.isNotBlank(podParameter.getKkFileType())){
             envVars.add(envVar4);
         }
-
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(200),"M"));
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -108,6 +108,7 @@ public class KKfileViewPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .addNewContainer().withName(podName).withImage(image).withImagePullPolicy(policy)
                 .addToPorts(new ContainerPortBuilder().withName(portName).withContainerPort(port).build())
                 .withEnv(envVars)

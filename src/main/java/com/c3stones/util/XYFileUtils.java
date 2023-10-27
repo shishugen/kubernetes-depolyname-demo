@@ -1,5 +1,6 @@
 package com.c3stones.util;
 
+import com.c3stones.client.BaseConfig;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -15,7 +16,7 @@ import java.util.zip.ZipInputStream;
  * @Author: stone
  * @Date: 2021/1/25 12:37
  */
-public class XYFileUtils {
+public class  XYFileUtils {
 
 
     /**
@@ -101,7 +102,7 @@ public class XYFileUtils {
         } else {
             InputStream ins = null;
             ins = file.getInputStream();
-            toFile = new File(file.getOriginalFilename());
+            toFile = new File(BaseConfig.getHomeJarFile()+File.separator+file.getOriginalFilename());
             inputStreamToFile(ins, toFile);
             ins.close();
         }

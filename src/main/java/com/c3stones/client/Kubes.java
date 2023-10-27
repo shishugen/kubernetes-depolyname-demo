@@ -164,9 +164,12 @@ public class Kubes extends BaseConfig {
         VolumeMount volumeLogs = new VolumeMount();
         volumeLogs.setName(pvcName);
         volumeLogs.setMountPath("/home/");
-            Pod pod = new PodBuilder().withNewMetadata().withName(podName).withNamespace(namespace)
+        Map<String,String> nodeSelectorMap = isk8sArm();
+        Pod pod = new PodBuilder().withNewMetadata().withName(podName).withNamespace(namespace)
                     .addToLabels(LABELS_KEY, podName).endMetadata()
-                    .withNewSpec().withVolumes(jar)
+                    .withNewSpec()
+                    .addToNodeSelector(nodeSelectorMap)
+                    .withVolumes(jar)
                     .withContainers(new ContainerBuilder()
                             .withVolumeMounts(volumeLogs)
                            .withCommand("sleep","3600")
@@ -430,6 +433,7 @@ public class Kubes extends BaseConfig {
                     .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(podParameter.getPvcName()).build()).build();
             lists.add(jar);
         }
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -446,6 +450,7 @@ public class Kubes extends BaseConfig {
                 .addToLabels(labels)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .withContainers(container)
                 .addAllToVolumes(lists)
                 .addNewVolume()
@@ -481,7 +486,7 @@ public class Kubes extends BaseConfig {
                     .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(podParameter.getPvcName()).build()).build();
             lists.add(jar);
         }
-
+        Map<String,String> nodeSelectorMap = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -505,6 +510,7 @@ public class Kubes extends BaseConfig {
                 .addToLabels(labels)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .withTerminationGracePeriodSeconds(60L)
                 .withContainers(container)
                 .addAllToVolumes(lists)
@@ -749,6 +755,8 @@ public class Kubes extends BaseConfig {
     public  boolean createDeploymentPython(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
                                            String env,String userName , String password) {
         Container container = createContainerPython(appName, image,port,randomPortName,env , userName,password);
+        Map<String,String> nodeSelectorMap = isk8sArm();
+
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podAppPrefix+appName)
@@ -764,6 +772,7 @@ public class Kubes extends BaseConfig {
                 .addToLabels(LABELS_KEY, randomPortName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(nodeSelectorMap)
                 .withTerminationGracePeriodSeconds(60L)
                 .withContainers(container)
                 .endSpec().endTemplate().endSpec().build();
@@ -822,7 +831,7 @@ public class Kubes extends BaseConfig {
 
 
     public static KubernetesClient getKubeclinet2(){
-        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\kube-test-config-10");
+        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\10.49.0.11.config");
         Config config = new ConfigBuilder()
                 .build();
 
@@ -836,7 +845,7 @@ public class Kubes extends BaseConfig {
     }
 
     public static KubernetesClient getKubeclinetHauwei(){
-        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\hauwei\\121-37-27-47-PORT-5443");
+        System.setProperty(Config.KUBERNETES_KUBECONFIG_FILE,"E:\\dockerfile\\luzik8s");
         Config config = new ConfigBuilder()
                 .build();
         return new DefaultKubernetesClient(config);
@@ -848,27 +857,34 @@ public class Kubes extends BaseConfig {
         kubeclinet.network().ingress().inNamespace("app-sys").withName("nginxdist-1").delete();
     }
 
+    public void testpv(){
+        KubernetesClient kubeclinet2 = getKubeclinet2();
+        List<PersistentVolume> items = kubeclinet2.persistentVolumes().list().getItems();
+        PersistentVolume pv = new PersistentVolumeBuilder().withNewMetadata().withName("test").endMetadata()
+                .withNewSpec().addToCapacity("storage",new Quantity("2","Gi")).endSpec()
+
+                .build();
+
+
+    }
+
     @SneakyThrows
     public static void main(String[] args) {
-        KubernetesClient kubeclinet2 = getKubeclinet3();
-        List<Pod> items = kubeclinet2.pods().list().getItems();
-        System.out.println("items"+items.size());
-        String podName = "test";
-        String namespace = "default";
+        KubernetesClient kubeclinet2 = getKubeclinetHauwei();
+        String deploymentName = "1627854984015216642";
+        String namespace = "1627854984015216642";
 
-        ResourceRequirements resource= new ResourceRequirements();
-        Map<String,Quantity> map= new HashMap(2);
-        //map.put("cpu",new Quantity("m"));
-        map.put("nvidia.com/gpu",new Quantity("2"));
-        resource.setLimits(map);
+        kubeclinet2.apps().deployments()
+                .inNamespace(namespace)
+                .withName(deploymentName)
+                .rolling()
+                .pause();
 
-        Pod pod = new PodBuilder().withNewMetadata().withName(podName).withNamespace(namespace).addToLabels(LABELS_KEY, podName).endMetadata()
-                .withNewSpec().withContainers(new ContainerBuilder()
-                        .withName(podName)
-                        //.withImage("harbor.org/lixingqiao/centos7_vnc_desktop:v1.0")
-                        .withImage("harbor.org/library/pytorch1.9-jupyter-cuda10.2:debug-1.5.1")
-                        .withResources(resource).build()).endSpec().build();
-        Pod newPod = kubeclinet2.pods().create(pod);
+
+
+
+
+
 
 
 

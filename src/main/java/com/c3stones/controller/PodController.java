@@ -79,6 +79,7 @@ public class PodController extends BaseConfig{
      */
     @RequestMapping(value = "list")
     public String list(Model model) {
+        System.out.println("k8sArm=="+k8sArm);
         String defaultNamespace = BaseConfig.defaultNamespace;
         model.addAttribute("defaultNamespace",defaultNamespace);
         return "pages/pod/list";

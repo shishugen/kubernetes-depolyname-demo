@@ -56,6 +56,8 @@ public class FastdfsPod  extends BaseConfig {
         //stringQuantityMap.put("cpu",new Quantity(String.valueOf(500),"m"));
         stringQuantityMap.put("memory",new Quantity(String.valueOf(1000),"M"));
         resource.setRequests(stringQuantityMap);
+
+
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsFdfsStorageSize);
         Pod pod = new PodBuilder().withNewMetadata().withName(podEnvPrefix+podName).withNamespace(namespace).addToLabels(LABELS_KEY, podName).endMetadata()
                 .withNewSpec().withContainers(new ContainerBuilder()
@@ -99,6 +101,7 @@ public class FastdfsPod  extends BaseConfig {
         resource.setRequests(stringQuantityMap);
         String pvcName =namespace + podName;
         kubes.createPVC(pvcName,namespace,nfsStorageClassName,nfsFdfsStorageSize);
+        Map<String,String> isk8sArm = isk8sArm();
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -114,6 +117,7 @@ public class FastdfsPod  extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(isk8sArm)
                 .addNewContainer().withName(podName).withImage(image).withImagePullPolicy(policy)
                 .withCommand("/home/start2.sh")
                 .withVolumeMounts(new VolumeMountBuilder().withName(pvcName).withMountPath("/home/fdfs_storage/").build())

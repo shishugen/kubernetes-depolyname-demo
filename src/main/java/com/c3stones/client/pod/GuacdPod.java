@@ -94,6 +94,8 @@ public class GuacdPod extends BaseConfig {
         Map<String,Quantity> stringQuantityMap= new HashMap(1);
         stringQuantityMap.put("memory",new Quantity(String.valueOf(500),"M"));
         resource.setRequests(stringQuantityMap);
+        Map<String,String> isk8sArm = isk8sArm();
+
         Deployment newDeployment = new DeploymentBuilder()
                 .withNewMetadata()
                 .withName(podEnvPrefix+podName)
@@ -109,6 +111,7 @@ public class GuacdPod extends BaseConfig {
                 .addToLabels(LABELS_KEY,labelsName)
                 .endMetadata()
                 .withNewSpec()
+                .addToNodeSelector(isk8sArm)
                 .addNewContainer().withName(podName).withImagePullPolicy(policy)
                 .withImage(image)
                 .withCommand("/bin/sh","-c")
