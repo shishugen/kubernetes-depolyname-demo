@@ -699,7 +699,7 @@ public class Kubes extends BaseConfig {
      * @return
      */
     private  Container createContainerPython(String appName,String image,Integer ports,String serviceName,
-                                             String envNeo4j,String userName , String password){
+                                             String envNeo4j,String userName , String password,String pvcName,String podPath){
         log.info("ports :  {},serviceName  : {}",ports,serviceName);
 
         Container container = new  Container();
@@ -721,7 +721,11 @@ public class Kubes extends BaseConfig {
         envVar3.setName("NEO4J_PASSWORD");
         envVar3.setValue(password);
         env.add(envVar3);
+        VolumeMount build = new VolumeMountBuilder().withName(pvcName).withMountPath(podPath).build();
+        List<VolumeMount> volumeMountList = new ArrayList<>(1);
+        volumeMountList.add(build);
 
+        container.setVolumeMounts(volumeMountList);
         container.setEnv(env);
         container.setImagePullPolicy("Always");
         SecurityContext securityContext = new SecurityContext();
@@ -753,8 +757,8 @@ public class Kubes extends BaseConfig {
      * @return
      */
     public  boolean createDeploymentPython(String namespace, String deploymentName, String appName, Integer replicas, String image, Integer port,String randomPortName ,
-                                           String env,String userName , String password) {
-        Container container = createContainerPython(appName, image,port,randomPortName,env , userName,password);
+                                           String env,String userName , String password,String pvcName,String podPath) {
+        Container container = createContainerPython(appName, image,port,randomPortName,env , userName,password,pvcName,podPath);
         Map<String,String> nodeSelectorMap = isk8sArm();
 
         Deployment newDeployment = new DeploymentBuilder()
@@ -775,6 +779,8 @@ public class Kubes extends BaseConfig {
                 .addToNodeSelector(nodeSelectorMap)
                 .withTerminationGracePeriodSeconds(60L)
                 .withContainers(container)
+                .withVolumes(new VolumeBuilder().withName(pvcName)
+                        .withPersistentVolumeClaim(new PersistentVolumeClaimVolumeSourceBuilder().withClaimName(pvcName).build()).build())
                 .endSpec().endTemplate().endSpec().build();
         getKubeclinet().apps().deployments().createOrReplace(newDeployment);
         return true;

@@ -67,6 +67,19 @@
 						</div>
 					</div>
 
+					<div class="layui-form-item">
+						<label class="layui-form-label">nfs配置</label>
+						<div class="layui-input-inline">
+							<select id="nfs" lay-verify="required" name="pvcName">
+								<option value="">请选择</option>
+							</select>
+						</div>
+						<label class="layui-form-label">容器内路径</label>
+						<div class="layui-input-inline">
+							<input type="tel" name="podPath" lay-verify="required" value="/home/audio" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
 				</div>
 				<div class="layui-form-item">
                     <button type="submit" class="layui-btn" lay-submit lay-filter="*">提交</button>
@@ -123,6 +136,21 @@ $.ajax({
         layui.form.render("select")
     }
 });
+$.ajax({
+    url : "[[@{/}]]nfs/listData",
+    type : "get",
+    dataType : "json",
+    error : function(data) {
+        errorHandle(data);
+    },
+    success : function(data) {
+        data = data.data.records;
+        $.each(data, function (index, item) {
+            $('#nfs').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+        });
+        layui.form.render("select")
+    }
+});
 
 $.ajax({
     url : "[[@{/}]]harbor/list",
@@ -155,7 +183,7 @@ form.on('submit(*)', function(data){
             if(data.code == 200){
                 parent.location.reload();
                 var index = parent.layer.getFrameIndex(window.name);
-                parent.layer.close(index);
+                //parent.layer.close(index);
                 layer.msg("部署成功", {icon: 2});
             }else{
                 console.log("data404",data)

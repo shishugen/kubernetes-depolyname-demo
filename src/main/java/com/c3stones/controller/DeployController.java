@@ -611,7 +611,7 @@ public class DeployController  extends BaseConfig {
 	@RequestMapping(value = "pod/python")
 	@ResponseBody
 	public Response<Boolean> python(String namespace, String image,Integer port,Integer nodePort,
-	String env,String userName , String password) {
+	String env,String userName , String password,String pvcName, String podPath) {
 		System.out.println("namespace=="+namespace);
 		System.out.println("image=="+image);
 		System.out.println("port=="+port);
@@ -631,7 +631,7 @@ public class DeployController  extends BaseConfig {
 		try {
 			String randomPortName = KubeUtils.randomPortName();
 			kubes.createDeploymentPython(namespace,namespace,podName,1,image,port,randomPortName,
-					env,userName,password);
+					env,userName,password,pvcName,podPath);
 			if(nodePort != null  && port != null) {
 				kubes.createService(namespace,randomPortName,port,nodePort,false);
 			}
